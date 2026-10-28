@@ -9,8 +9,10 @@ Reproduce the disc-to-C++-to-browser workflow for the supplied Japanese v2.00 ga
 The local `0.1.0` baseline passed the bounded normal-boot/Arcade/Side 7 gameplay
 acceptance below, including controls and a completed loss/return flow. The
 matched build and generated translation are now included in local Git; raw
-captures remain ignored. No remote publication has occurred. Other modes, stages, browsers and save persistence
-remain unverified.
+captures remain ignored. Follow-up checks passed Side 7 victory into active
+stage 2 and system/options save persistence across a same-profile page reload.
+Other modes, campaign completion, browsers and cross-profile saves remain
+unverified. No remote publication has occurred.
 
 ## 2026-10-28: independent input and toolchain bring-up
 
@@ -237,14 +239,15 @@ server was stopped. The reference repository and its services were untouched.
 
 ### Limits of this baseline
 
-Acceptance covers the declared Arcade Side 7 loss/return journey, real keyboard
+The original acceptance covered the declared Arcade Side 7 loss/return journey, real keyboard
 controls and original timing on Chrome 156 with the tested PC's RTX 3080 Ti.
-It does not cover campaign completion, wins, other stages/modes, browser/GPU or
+At that point it did not cover campaign completion, wins, other stages/modes, browser/GPU or
 mobile compatibility, gamepads, memory-card persistence, or audible audio
 quality. Native nonzero samples and browser ring consumption are verified;
 audible fidelity was deliberately not tested. Rendering was not compared
 pixel-for-pixel with original hardware. No VU1 microprogram was observed on this
-path, which does not exclude one in untested content.
+path, which does not exclude one in untested content. Later coverage is recorded
+separately in the [follow-up checks](#2026-10-29-win-progression-and-save-reload).
 
 The compiler/runtime remain pristine. Necessary fixes discovered after this
 baseline belong to `0.1.x`; no optimization/high-refresh, multiplayer or Wiki
@@ -309,3 +312,37 @@ The 16 portable tests and retained-source/package verifier passed after the
 export. Packaging from the tracked prebuilt also passed its fingerprint checks.
 Neither source export nor a byte-identical rebuild adds new game-path coverage;
 the remaining runtime checks are tracked separately.
+
+## 2026-10-29: win progression and save/reload
+
+Two further silent PC runs used the fresh build whose four web files match the
+accepted package. No game code, guest memory or clock was changed. The
+[follow-up record](docs/evidence/baseline-followup.json) retains exact artifact
+and capture hashes, inputs, audio checks, selected screenshots and cleanup.
+
+| Check | Observed result | Conditions |
+| --- | --- | --- |
+| Win to next stage | Side 7 operation success, stage 2 briefing, active Satellite Orbit 1 space battle and usable pause | Original options set to difficulty 1 and infinite timer; real keyboard inputs |
+| System/options save | The original game formatted a dedicated blank card and reported save complete | Fresh isolated profile; difficulty changed from 4 to 2 |
+| Page reload | The game restored difficulty 2; exported card bytes matched before/after | Same browser profile and origin; no card import |
+| Silent audio workload | All eight checks found running audio and advancing ring consumption | Browser output muted; no system-volume changes |
+
+![Side 7 operation success](docs/evidence/followup/arcade-success.png)
+
+![Active second-stage space battle](docs/evidence/followup/stage02-active.png)
+
+![Saved difficulty 2 restored after reload](docs/evidence/followup/settings-after-reload.png)
+
+The win run recovered from a test-server outage before battle. A detached WSL
+server exited when its SSH invocation ended; retaining the serving SSH session
+fixed the connection. The record preserves its 9,237 console errors and request
+failure categories. The success and next-stage checkpoints were captured after
+recovery. The save run had no page, console or HTTP errors, with two untimed
+aborted requests retained in its log. No new performance measurement spans
+either interruption or reload.
+
+This adds one win/progression path and same-profile system-data persistence.
+Stage 2 completion, other modes, full campaigns, browser-process restart and
+fresh-profile card import remain untested. The game binaries and original
+`v0.1.0` tag are unchanged; these are additional validation commits, not a new
+game release. Private card images and full captures remain ignored.

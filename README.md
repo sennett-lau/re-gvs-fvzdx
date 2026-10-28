@@ -5,7 +5,9 @@ Reverse-engineering and browser recompilation of **Kidou Senshi Gundam - Renpou 
 **Status: local `0.1.0` baseline verified on the declared PC Chrome path.**
 Normal boot, menus, selection, active battle, controls, pause/resume, Continue,
 Game Over and return to the menu passed. This is a bounded first baseline;
-other modes, stages, browsers and save persistence remain untested.
+later checks also passed Side 7 victory into active stage 2 and system/options
+save persistence across a page reload in the same browser profile. Other modes,
+campaign completion, browsers and cross-profile saves remain untested.
 
 The baseline uses the original upstream NTSC timing, measured at approximately
 60 Hz during active gameplay. Correctness fixes use `0.1.x`. Optimization,
@@ -15,6 +17,8 @@ higher refresh rates and multiplayer are outside this stage.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
 - [0.1.0 acceptance manifest](docs/evidence/acceptance-0.1.0.json): exact builds,
   tests, selected screenshots and limitations.
+- [Follow-up checks](research.md#2026-10-29-win-progression-and-save-reload):
+  the added win and save paths, with test settings and selected evidence.
 
 The structure follows `re-gvs-gvzg`, without a research Wiki. The accepted C++
 translation is tracked in `generated/federation-vs-zeon-dx/`; its matched web

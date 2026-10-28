@@ -247,7 +247,7 @@ quality. Native nonzero samples and browser ring consumption are verified;
 audible fidelity was deliberately not tested. Rendering was not compared
 pixel-for-pixel with original hardware. No VU1 microprogram was observed on this
 path, which does not exclude one in untested content. Later coverage is recorded
-separately in the [follow-up checks](#2026-10-29-win-progression-and-save-reload).
+separately in the [follow-up checks](#2026-10-29-win-progression-and-savereload).
 
 The compiler/runtime remain pristine. Necessary fixes discovered after this
 baseline belong to `0.1.x`; no optimization/high-refresh, multiplayer or Wiki

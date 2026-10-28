@@ -17,7 +17,7 @@ higher refresh rates and multiplayer are outside this stage.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
 - [0.1.0 acceptance manifest](docs/evidence/acceptance-0.1.0.json): exact builds,
   tests, selected screenshots and limitations.
-- [Follow-up checks](research.md#2026-10-29-win-progression-and-save-reload):
+- [Follow-up checks](research.md#2026-10-29-win-progression-and-savereload):
   the added win and save paths, with test settings and selected evidence.
 
 The structure follows `re-gvs-gvzg`, without a research Wiki. The accepted C++

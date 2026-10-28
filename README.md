@@ -1,21 +1,27 @@
 # re-gvs-rvzdx
 
-Reverse-engineering and browser recompilation of **Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)**. The disc identity will be verified during extraction.
+Reverse-engineering and browser recompilation of **Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)**. The supplied disc identity is verified in `upstream.lock`.
 
-**Status: disc verified, first EE translation generated; native and browser
-acceptance in progress. No playable release has been verified yet.**
+**Status: local `0.1.0` baseline verified on the declared PC Chrome path.**
+Normal boot, menus, selection, active battle, controls, pause/resume, Continue,
+Game Over and return to the menu passed. This is a bounded first baseline;
+other modes, stages, browsers and save persistence remain untested.
 
-The first target is `0.1.0`: original-speed normal boot and playable gameplay. Correctness fixes use `0.1.x`. Optimization, higher refresh rates and multiplayer are outside this stage.
+The baseline uses the original upstream NTSC timing, measured at approximately
+60 Hz during active gameplay. Correctness fixes use `0.1.x`. Optimization,
+higher refresh rates and multiplayer are outside this stage.
 
 - [Research record](research.md): extraction, compilation, compatibility fixes and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
+- [0.1.0 acceptance manifest](docs/evidence/acceptance-0.1.0.json): exact builds,
+  tests, selected screenshots and limitations.
 
 The structure follows `re-gvs-gvzg`, without a research Wiki. Private disc inputs,
 generated game translation, build workspaces and raw captures stay under ignored
 `.local/`. The supplied image is ISO 9660, `SLPM-65076`, `VER = 2.00`, NTSC.
 `upstream.lock` fixes its full disc and executable hashes.
 
-## Reproduce the local candidate
+## Reproduce the local baseline
 
 Use Python 3.9+, CMake 3.20+, Ninja, `patch`, and a Clang C++20 toolchain with
 `std::format`. The web build uses Emscripten 6.0.11 and its emdawnwebgpu port.
@@ -33,8 +39,9 @@ python3 scripts/game/serve.py --build .local/game-build/web --disc /private/path
 The server uses `http://127.0.0.1:8642/`, HTTP byte ranges and cross-origin
 isolation. The original ELF is included in the generated `.data` file; the full
 disc remains a separate private runtime input. Keep HTML, JS, WASM, data and the
-build manifest together. Compilation does not establish a playable baseline;
-consult the dated results in `research.md` before relying on a candidate.
+build manifest together. Compilation alone does not establish acceptance; the
+dated `0.1.0` record identifies the tested artifacts. A new build needs its own
+comparison and runtime checks.
 
 For private archive extraction use `7zz x -o.local/disc ARCHIVE '*.iso'`.
 `scripts/game/extract.py --disc DISC --output NEW_DIRECTORY --full-hash` verifies
@@ -44,7 +51,19 @@ and the boot executable hash. Discovery inputs (`--entries`, `--overlays`,
 
 Keyboard mappings inherited from the runtime are Enter (Start), X (Circle), Z
 (Cross), A (Square), S (Triangle), arrows (D-pad), and I/J/K/L (left stick).
-Which in-game journey works remains subject to the acceptance record.
+The verified path is Arcade → Federation → Side 7 → Gundam/beam rifle,
+through a completed loss and return to the menu. At pilot-name entry, Start
+accepts a default name. Wait for menu transitions before confirming again.
+
+The prepared matched build is in ignored `.local/game-build/web`. Create a
+standalone local directory, including the server, notices and evidence:
+
+```sh
+python3 scripts/game/package.py --build .local/game-build/web
+```
+
+The resulting `.local/package-0.1.0` excludes the disc and private saves. It is
+a local artifact, not a downloadable or published release.
 
 ## Validation and scope
 

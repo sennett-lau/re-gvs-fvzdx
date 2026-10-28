@@ -6,4 +6,5 @@ Do not import adaptive timing, interpolation, multiplayer, or another game's
 address hooks. Record a patch's trigger, test and limits in `research.md`, and
 any reusable improvement in `ps2-web-re-pr.md`.
 
-The first build candidate uses the pristine upstream compiler/runtime.
+The accepted `0.1.0` baseline uses the pristine upstream compiler/runtime.
+No runtime, EE compiler or game-address patch was required by the tested path.

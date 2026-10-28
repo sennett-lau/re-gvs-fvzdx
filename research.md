@@ -6,9 +6,11 @@ Reproduce the disc-to-C++-to-browser workflow for the supplied Japanese v2.00 ga
 
 ## Current status
 
-Disc identification and the first EE translation are complete. Native/browser
-compilation and gameplay acceptance are in progress. No playable `0.1.0` release
-or tag is claimed. All work remains local.
+The local `0.1.0` baseline passed the bounded normal-boot/Arcade/Side 7 gameplay
+acceptance below, including controls and a completed loss/return flow. The
+matched build, generated translation and raw captures remain local. No remote
+publication has occurred. Other modes, stages, browsers and save persistence
+remain unverified.
 
 ## 2026-10-28: independent input and toolchain bring-up
 
@@ -189,3 +191,70 @@ continues from the observed screen; acceptance is still pending final review.
 7. Baseline acceptance and a truthful `0.1.x` fix history.
 
 Keep the narrative here. Supporting code and selected non-private evidence may live beside the tests. Raw captures, private paths, network addresses and credentials stay in ignored local output. Upstream candidates belong in [ps2-web-re-pr.md](ps2-web-re-pr.md).
+
+## 0.1.0 acceptance and retained evidence
+
+The second new-profile run was continued from its observed weapon-selection
+screen, then reached active Side 7 gameplay. Two-second captures preserved the
+Continue countdown, Game Over, post-game faction summary and return to the
+startup/title sequence. Start then returned to the original main menu. The
+accepted evidence is based on inspected screens, not the failed early automation
+labels. Run 001 ended at frame 50,745; run 002 ended at frame 44,888. Neither
+reported a page exception or missing-code halt. The two pilots observed were
+Amuro Ray and Sayla Mass; the tested suit/weapon was Gundam/beam rifle.
+
+A third clean-profile normal boot verified the corrected server: no console
+errors, page errors, failed resource entries or failed HTTP responses were
+recorded. It reached the menu and passed another running-AudioContext/ring
+consumption check. All three browser runs used the actual `--mute-audio` flag;
+no system-volume change or suspended-audio timing shortcut was used.
+
+For a battle interval excluding the pause transition, run 001 periodic samples
+144–155 advanced from frame 28,373 to 31,678 in 55.07208 seconds: **60.01226 Hz**.
+The runtime's original NTSC timing was unchanged. This is a bounded PC browser
+measurement, not a hardware-cycle equivalence or cross-device performance claim.
+
+[The acceptance manifest](docs/evidence/acceptance-0.1.0.json) fixes the input
+lock, generated-file manifest, exact four web artifacts, hardware/browser,
+checks, measurement and screenshot hashes. Selected screenshots:
+
+| Observation | Evidence |
+| --- | --- |
+| Fresh normal boot and menu | [Menu](docs/evidence/normal-boot-menu.png) |
+| Original mobile-suit selection | [Selection](docs/evidence/mobile-suit-selection.png) |
+| Position and ammunition respond to input | [Movement/fire](docs/evidence/movement-and-fire.png), [boost/fire](docs/evidence/boost-and-fire.png) |
+| Pause keeps the game timer at 106.00 | [Pause](docs/evidence/pause.png) |
+| Completed loss and Continue expiry | [Continue](docs/evidence/continue.png), [Game Over](docs/evidence/game-over.png) |
+| Post-game summary and usable return | [Faction summary](docs/evidence/faction-result.png), [main menu](docs/evidence/return-to-menu.png) |
+
+The local package copies the matched HTML/JS/WASM/data, fingerprint manifest,
+loopback range/isolation server, input lock, notices and selected evidence. It
+excludes the disc, original archive, private saves and raw captures. The final
+portable suite passed **16 tests** on Mac Python 3.9 and PC WSL Python 3.10.
+The optional-icon fix was also exercised in actual Chrome. All task-owned game
+browser contexts and scheduled tasks were closed/removed, and the PC test
+server was stopped. The reference repository and its services were untouched.
+
+### Limits of this baseline
+
+Acceptance covers the declared Arcade Side 7 loss/return journey, real keyboard
+controls and original timing on Chrome 156 with the tested PC's RTX 3080 Ti.
+It does not cover campaign completion, wins, other stages/modes, browser/GPU or
+mobile compatibility, gamepads, memory-card persistence, or audible audio
+quality. Native nonzero samples and browser ring consumption are verified;
+audible fidelity was deliberately not tested. Rendering was not compared
+pixel-for-pixel with original hardware. No VU1 microprogram was observed on this
+path, which does not exclude one in untested content.
+
+The compiler/runtime remain pristine. Necessary fixes discovered after this
+baseline belong to `0.1.x`; no optimization/high-refresh, multiplayer or Wiki
+work was introduced. The recorded upstream candidate concerns reproducible
+build-input validation. No PR, push, public site, release or external contact
+was made.
+
+Final package verification checked every copied file against its manifest and
+all four web files against the acceptance record. The standalone packaged
+server was started on an ephemeral loopback port: HEAD reported the actual
+4,282,515,456-byte disc, an HTTP 206 range at sector 311 matched the extracted
+ELF's first 512 bytes, isolation headers were present, and absent favicon GET
+returned 204. That verification server was then closed.

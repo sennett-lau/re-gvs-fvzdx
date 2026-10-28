@@ -5,35 +5,48 @@ import json
 import os
 from pathlib import Path
 import shutil
-from common import ROOT, digest, fingerprints, run, source_tree, verify_translation, write_json
+from common import ROOT, digest, fingerprints, run, source_tree, verify_generated, verify_translation, write_json
+from extract import extract
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--translation', type=Path, default=ROOT / '.local/translation')
+    inputs = parser.add_mutually_exclusive_group()
+    inputs.add_argument('--translation', type=Path, help='Build a separately regenerated candidate workspace')
+    inputs.add_argument('--disc', type=Path, help='Compile tracked C++; extract only the verified boot input from this private disc')
     parser.add_argument('--work', type=Path, default=ROOT / '.local/game-build')
     parser.add_argument('--target', choices=['native', 'web'], default='web')
     parser.add_argument('--emsdk', type=Path, default=os.environ.get('EMSDK'))
     parser.add_argument('--jobs', type=int, default=2)
     args = parser.parse_args()
-    translation = args.translation.resolve()
     lock = json.loads((ROOT / 'upstream.lock').read_text())
-    elf = translation / 'inputs' / lock['elf']['name']
-    if digest(elf) != lock['elf']['sha256']:
-        parser.error('ELF fingerprint mismatch')
-    verify_translation(translation)
+    if args.target == 'web' and not args.emsdk:
+        parser.error('Activate Emscripten 6.0.11 and pass --emsdk or set EMSDK')
+    if args.jobs < 1:
+        parser.error('--jobs must be positive')
     work = args.work.resolve()
+    if args.disc:
+        generated = ROOT / 'generated/federation-vs-zeon-dx'
+        verify_generated(generated, ROOT / 'src/generated/manifest.json')
+    else:
+        translation = (args.translation or ROOT / '.local/translation').resolve()
+        verify_translation(translation)
+        generated = translation / 'generated'
+        elf = translation / 'inputs' / lock['elf']['name']
+        if digest(elf) != lock['elf']['sha256']:
+            parser.error('ELF fingerprint mismatch')
     work.mkdir(parents=True, exist_ok=False)
+    if args.disc:
+        elf = extract(args.disc.resolve(), work / 'inputs')
+    boot_file = elf.parent / 'boot.txt'
     source = source_tree(work / 'source')
     build = work / args.target
     command = ['cmake', '-S', source, '-B', build, '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release',
-               '-DPS2_GENERATED=' + str(translation / 'generated')]
+               '-DPS2_GENERATED=' + str(generated)]
     if args.target == 'web':
-        if not args.emsdk:
-            parser.error('Activate Emscripten 6.0.11 and pass --emsdk or set EMSDK')
         command.insert(0, args.emsdk.resolve() / 'upstream/emscripten/emcmake')
         command += ['-DPS2_WEB_ELF=' + str(elf),
-                    '-DPS2_WEB_BOOT_FILE=' + str(translation / 'inputs/boot.txt')]
+                    '-DPS2_WEB_BOOT_FILE=' + str(boot_file)]
         target = 'ps2web'
     else:
         compiler = os.environ.get('CXX') or shutil.which('clang++')
@@ -48,7 +61,7 @@ def main():
     write_json(build / 'build-manifest.json', {
         'version_target': '0.1.0', 'acceptance': 'candidate; not a playable release claim',
         'target': args.target, 'upstream': lock['upstream']['revision'],
-        'elf_sha256': digest(elf), 'generated': fingerprints(translation / 'generated'),
+        'elf_sha256': digest(elf), 'generated': fingerprints(generated),
         'source_provenance_sha256': digest(source / 'provenance.json'),
         'cmake_cache_sha256': digest(build / 'CMakeCache.txt'), 'artifacts': artifacts,
     })

@@ -9,7 +9,7 @@ from common import ROOT, digest, fingerprints, write_json
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--build', type=Path, default=ROOT / '.local/game-build/web')
+    parser.add_argument('--build', type=Path, default=ROOT / 'apps/game/prebuilt')
     parser.add_argument('--output', type=Path, default=ROOT / '.local/package-0.1.0')
     args = parser.parse_args()
     build = args.build.resolve()

@@ -34,8 +34,12 @@ def fingerprints(directory):
 
 def verify_translation(directory):
     directory = Path(directory)
-    expected = json.loads((directory / 'translation.json').read_text())['generated']
-    if fingerprints(directory / 'generated') != expected:
+    verify_generated(directory / 'generated', directory / 'translation.json')
+
+
+def verify_generated(directory, manifest):
+    expected = json.loads(Path(manifest).read_text())['generated']
+    if fingerprints(directory) != expected:
         raise ValueError('Generated file set/fingerprint mismatch; regenerate or verify the transfer')
 
 

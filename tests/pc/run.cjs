@@ -72,6 +72,21 @@ async function action(step) {
       if (!(step.ms >= 0 && step.ms <= 60000)) throw Error('wait ms must be in [0, 60000]');
       await delay(step.ms); break;
     case 'click': await page.locator(step.selector).click({timeout: step.timeoutMs || 30000}); break;
+    case 'reload': await page.reload({timeout: 120000}); break;
+    case 'download': {
+      if (!/^[a-zA-Z0-9_-]+\.[a-zA-Z0-9]+$/.test(step.name)) throw Error('Unsafe download name');
+      const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.locator(step.selector).click(),
+      ]);
+      const destination = path.join(out, step.name);
+      if (fs.existsSync(destination)) throw Error('Refusing to overwrite download');
+      await download.saveAs(destination);
+      const bytes = fs.readFileSync(destination);
+      boundedLog('downloads.jsonl', {name: step.name, suggestedFilename: download.suggestedFilename(),
+        bytes: bytes.length, sha256: crypto.createHash('sha256').update(bytes).digest('hex')});
+      break;
+    }
     case 'press': {
       const keys = step.keys || [step.key];
       if (!keys.length || keys.some(key => typeof key !== 'string')) throw Error('press requires keys');

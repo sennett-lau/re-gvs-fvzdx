@@ -34,7 +34,13 @@ While the collector is in its configured keep-alive interval, write a new
 
 Actions are `wait` (up to 60 seconds), `click` (CSS selector), `press` (one `key`
 or an array of `keys`, held for `ms`), `screenshot` (safe `name`), `sample`,
-`verify-audio` and `end`. Keyboard events use Playwright's real input path. No
+`verify-audio`, `reload`, `download` and `end`. `reload` reloads the page in the
+same isolated profile; click the start button again before game input. `download`
+clicks a `selector`, saves the resulting browser download using a safe `name`
+(including its extension), and records its byte length and SHA-256. For example,
+`{"action":"download","selector":"#export-card","name":"saved-card.ps2"}`
+exports through the existing page UI; it does not write game memory. Memory-card
+files remain private raw artifacts. Keyboard events use Playwright's real input path. No
 game addresses, modes, overlay assumptions or timing changes are built into the
 harness. Review `control-result.json` before sending the next command. Raw output
 belongs under `.local/`; copy only selected reviewed evidence into tracked docs.
@@ -42,3 +48,9 @@ belongs under `.local/`; copy only selected reviewed evidence into tracked docs.
 The parameterized `scripts/pc/ssh.py --host PRIVATE_ALIAS` sends PowerShell stdin
 as an encoded command. Add `--wsl DISTRIBUTION` for Bash stdin. Host/account paths
 and credentials must remain in private configuration, never these scripts.
+
+Keep the serving SSH/WSL process alive for the entire browser run, and check the
+disc endpoint before starting. A detached `nohup` launch in the follow-up test
+stopped after its SSH session ended, causing disc-fetch failures until the server
+was restarted in a retained foreground session. Record such infrastructure errors
+separately; a recovered gameplay session is not an error-free run.

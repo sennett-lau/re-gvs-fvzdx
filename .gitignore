@@ -1,0 +1,19 @@
+# Private inputs, generated workspaces, captures and credentials
+.local/
+.env
+.env.*
+!.env.example
+*.iso
+*.ISO
+*.bin
+*.cue
+*.chd
+*.7z
+*.zip
+*.ps2
+*.mcd
+*.sav
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store

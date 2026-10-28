@@ -1,4 +1,5 @@
 # Private inputs, generated workspaces, captures and credentials
+# Accepted generated C++ and apps/game/prebuilt are intentionally tracked.
 .local/
 .env
 .env.*

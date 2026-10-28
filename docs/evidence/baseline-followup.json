@@ -463,5 +463,36 @@
     "Run001 contains the documented server outage and thousands of disc-fetch failures. Win/progression screenshots are after server recovery; the run is not claimed error-free.",
     "Full raw captures and card images remain ignored under .local/followup. Six inspected screenshots are retained under docs/evidence/followup; no private card payload is committed.",
     "No 0.2 optimization, runtime fix, new release/tag, remote push, PR, publication or remote authentication occurred."
-  ]
+  ],
+  "rebuild_evidence": {
+    "file": "docs/evidence/retained-source-rebuild.json",
+    "sha256": "fdb6adf2ca8c859ca64af9bc33ffccc8c477b34d8bf79e35269e9c717ccb1c46",
+    "inputs": {
+      "src/generated/manifest.json": {
+        "bytes": 23588,
+        "sha256": "19425660a79cb18f8e6ee2a1d7174fa437505409864cae8a79f40dc26eab8ef6"
+      },
+      "scripts/game/build.py": {
+        "bytes": 3497,
+        "sha256": "9735337b1603c091c4efda58bafce1fd85b43a7ffe952dc139276fd6c36a96e2"
+      },
+      "scripts/game/common.py": {
+        "bytes": 2394,
+        "sha256": "569b677061519623e10c6cd499021afaeb72a709a56f76f7aacde82bd2891550"
+      },
+      "scripts/game/extract.py": {
+        "bytes": 3023,
+        "sha256": "842a40c03e58d202ceb20e1d13986ca00fe35d30f627fcaf2316711d7c5474aa"
+      },
+      "upstream.lock": {
+        "bytes": 1184,
+        "sha256": "2ca39704a19e0bfce7df8e7d8af3b4dd224b2a178a6bb6de88439ca63ede2084"
+      },
+      "vendor/manifest.json": {
+        "bytes": 8916,
+        "sha256": "78c77d52a782015cb98080e25e6c1b36a73b509f151962674101a006b5e2f60c"
+      }
+    },
+    "scope": "These measured input hashes identify the tested fresh build, including build-support changes that were uncommitted at export; the evidence-assembly Git revision is not a claim about historical setup HEAD."
+  }
 }

@@ -8,8 +8,8 @@ Reproduce the disc-to-C++-to-browser workflow for the supplied Japanese v2.00 ga
 
 The local `0.1.0` baseline passed the bounded normal-boot/Arcade/Side 7 gameplay
 acceptance below, including controls and a completed loss/return flow. The
-matched build, generated translation and raw captures remain local. No remote
-publication has occurred. Other modes, stages, browsers and save persistence
+matched build and generated translation are now included in local Git; raw
+captures remain ignored. No remote publication has occurred. Other modes, stages, browsers and save persistence
 remain unverified.
 
 ## 2026-10-28: independent input and toolchain bring-up
@@ -267,3 +267,45 @@ acceptance run IDs, raw PC captures, fingerprints and the original `0.1.0`
 package retain their recorded names and bytes. The game build and disc identity
 are unchanged. Lobby import paths follow the renamed sibling directory; its
 existing `rvzdx` protocol ID remains stable.
+
+## Retained source and prebuilt export
+
+The initial baseline committed build tools and fingerprints but left generated
+game C++ and the matched web package in ignored workspaces. That did not carry
+over GVZG's complete source/prebuilt export structure. The later export fills
+this gap without changing any accepted game artifact or rewriting the old
+`v0.1.0` tag.
+
+All 169 generated files (168 C++ and one header, 45,855,118 bytes) are retained in
+`generated/federation-vs-zeon-dx/`. The original `src/generated/manifest.json`
+remains the canonical fingerprint record. `apps/game/prebuilt/` contains the
+same four accepted web files and their unchanged historical build manifest,
+24,072,200 bytes in total. The `.data` includes the original boot executable;
+the complete disc, archives, private saves and raw captures remain excluded.
+
+The new verifier compares retained source and vendor files, the build manifest
+and the earlier gameplay acceptance. `build.py --disc` compiles retained C++
+directly into a fresh workspace; `--translation` still builds a separately
+regenerated candidate. Packaging defaults to the tracked accepted package.
+Export verification is separate from the retained gameplay observations above.
+
+### Fresh build from the retained source
+
+On 2026-10-29, the tracked source set was exported into a new PC WSL directory.
+`build.py --disc` verified the 169 retained generated files, extracted the boot
+input and compiled with CMake 3.31.6, Ninja and Emscripten 6.0.11. It did not run
+the recompiler or reuse previous game object files. The existing SDK and its
+dependency cache were reused.
+
+All four outputs—HTML, JavaScript, WASM and data—matched the accepted `0.1.0`
+package byte for byte. This comparison uses the final accepted HTML, unlike the
+earlier candidate comparison where the page title changed. The selected
+[rebuild record](docs/evidence/retained-source-rebuild.json) includes exact script
+and input hashes, toolchain versions, output sizes and output hashes. Raw logs
+remain private. This is one successful fresh build on WSL, not a guarantee of
+identical output across every toolchain or host.
+
+The 16 portable tests and retained-source/package verifier passed after the
+export. Packaging from the tracked prebuilt also passed its fingerprint checks.
+Neither source export nor a byte-identical rebuild adds new game-path coverage;
+the remaining runtime checks are tracked separately.

@@ -16,23 +16,57 @@ higher refresh rates and multiplayer are outside this stage.
 - [0.1.0 acceptance manifest](docs/evidence/acceptance-0.1.0.json): exact builds,
   tests, selected screenshots and limitations.
 
-The structure follows `re-gvs-gvzg`, without a research Wiki. Private disc inputs,
-generated game translation, build workspaces and raw captures stay under ignored
-`.local/`. The supplied image is ISO 9660, `SLPM-65076`, `VER = 2.00`, NTSC.
+The structure follows `re-gvs-gvzg`, without a research Wiki. The accepted C++
+translation is tracked in `generated/federation-vs-zeon-dx/`; its matched web
+package is tracked in `apps/game/prebuilt/`. Private disc inputs, new build
+workspaces and raw captures stay under ignored `.local/`.
+The supplied image is ISO 9660, `SLPM-65076`, `VER = 2.00`, NTSC.
 `upstream.lock` fixes its full disc and executable hashes.
 
-## Reproduce the local baseline
+## Local workflow
+
+Run the retained `0.1.0` package without compiling it again:
+
+```sh
+python3 scripts/game/verify.py
+python3 scripts/game/serve.py --build apps/game/prebuilt --disc /private/path/disc.iso
+```
+
+Open **http://127.0.0.1:8642/**. The matched package includes HTML, JavaScript,
+WASM, `.data` and its original build manifest. The `.data` contains the boot
+executable, not the complete disc assets; the supported private ISO remains a
+separate runtime input.
+
+### Compile the retained C++
 
 Use Python 3.9+, CMake 3.20+, Ninja, `patch`, and a Clang C++20 toolchain with
 `std::format`. The web build uses Emscripten 6.0.11 and its emdawnwebgpu port.
-Supply the verified disc separately. These commands create fresh workspaces:
+The `--disc` path compiles tracked C++ directly and extracts the verified boot
+input into the new workspace. It does not invoke the recompiler or consume
+historical object files. Use a new `--work` directory for each build:
+
+```sh
+python3 scripts/game/build.py --disc /private/path/disc.iso --target web \
+  --emsdk /path/to/emsdk --work .local/rebuild-001 --jobs 2
+```
+
+For a native build, use `--target native` and another work directory.
+
+A fresh PC WSL build from these retained sources produced all four accepted
+web files byte for byte. See the [rebuild record](docs/evidence/retained-source-rebuild.json)
+for the exact toolchain, input hashes and comparison scope.
+
+### Regenerate a separate translation candidate
+
+Regeneration is distinct from compiling the retained source. These commands
+write fresh ignored workspaces, preserving the accepted source and prebuilt:
 
 ```sh
 python3 scripts/game/tools.py --jobs 2
 python3 scripts/game/regenerate.py --disc /private/path/disc.iso
-python3 scripts/game/build.py --target native --work .local/native-build --jobs 2
+python3 scripts/game/build.py --translation .local/translation --target native --work .local/native-build --jobs 2
 # Activate the existing SDK before the browser build.
-python3 scripts/game/build.py --target web --emsdk /path/to/emsdk --jobs 2
+python3 scripts/game/build.py --translation .local/translation --target web --emsdk /path/to/emsdk --jobs 2
 python3 scripts/game/serve.py --build .local/game-build/web --disc /private/path/disc.iso
 ```
 
@@ -55,20 +89,34 @@ The verified path is Arcade → Federation → Side 7 → Gundam/beam rifle,
 through a completed loss and return to the menu. At pilot-name entry, Start
 accepts a default name. Wait for menu transitions before confirming again.
 
-The prepared matched build is in ignored `.local/game-build/web`. Create a
-standalone local directory, including the server, notices and evidence:
+Create a standalone local directory from the tracked matched package, including
+the server, notices and evidence:
 
 ```sh
-python3 scripts/game/package.py --build .local/game-build/web
+python3 scripts/game/package.py --output .local/package-export-001
 ```
 
-The resulting `.local/package-0.1.0` excludes the disc and private saves. It is
+The resulting `.local/package-export-001` excludes the disc and private saves. It is
 a local artifact, not a downloadable or published release.
+
+### Tracked source and package
+
+| Path | Contents | File bytes |
+| --- | --- | ---: |
+| `generated/federation-vs-zeon-dx/` | 168 C++ files and one header | 45,855,118 |
+| `src/generated/manifest.json` | Original generator/input fingerprints | 23,588 |
+| `apps/game/prebuilt/` | Four accepted web files and build manifest | 24,072,200 |
+
+The largest generated file is 407,872 bytes; the WASM is 17,360,658 bytes. These
+files use ordinary Git without LFS or split archives. Only this accepted web set
+is tracked; experimental builds remain ignored. Original ISO/ROM archives and
+raw diagnostic captures are excluded.
 
 ## Validation and scope
 
 ```sh
 python3 -m unittest discover -s tests -p 'test_*.py'
+python3 scripts/game/verify.py
 node --check tests/pc/run.cjs
 ```
 

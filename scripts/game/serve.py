@@ -100,6 +100,9 @@ def handler(build, disc, record=None):
             self.end_headers()
 
         def send_file(self, head=False):
+            if self.request_path() == "/favicon.ico" and not (build / 'favicon.ico').is_file():
+                self.empty_response(204)
+                return
             file = self.target()
             if file is None:
                 self.send_error(404)

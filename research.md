@@ -112,8 +112,71 @@ contained 430,336 frames, peak absolute sample 9,613, and 61,156 nonzero samples
 The headless runner produced no audible output. This only establishes startup
 and nonzero native audio, not browser audio-ring pacing or gameplay.
 
-A longer native menu/selection exploration is running. The PC browser SDK setup
-and silent browser acceptance remain outstanding.
+The longer native run reached its requested 3,600-frame limit without a
+missing-code halt. Frame 2,400 shows the pilot-name screen. No VU1 recording was
+created during this bounded native menu path. The native executable is
+19,364,032 bytes, SHA-256
+`adf01cbb1c461421041ea0c9922da77781d048fe85ef244fa69c981b35d3f84c`.
+
+### First browser journey and fresh build
+
+Emscripten 6.0.11 was installed inside the PC's project workspace, SDK Git
+revision `d7b4130688bfa348392b921ab04015aa15c4f154`, compiler revision
+`a0014542110d6078c3a1a7941fa1ddb3a2281f16`. Python's SDK downloader hit TLS
+failures; `EMSDK_USE_CURL=1` completed the same downloads. A small WASM program
+compiled and ran before the game build. No global SDK/account settings changed.
+
+Two fresh web workspaces were built through `scripts/game/build.py --target web
+--translation .local/translation-pristine --jobs 6`. The native-only libc++
+environment flags were cleared first. WASM, JavaScript and data were
+byte-identical across both builds. Only the page title changed from the initial
+candidate label to the game name. Artifacts:
+
+| File | Bytes | SHA-256 |
+| --- | ---: | --- |
+| ps2web.wasm | 17,360,658 | `49bed2bc5fd253b752159779f4150e18d441143f13ddb38dd1f57638f58e8094` |
+| ps2web.js | 151,840 | `636a2e1344c6dd32881edd86881ffaec99e53d730392454b69133223b3649728` |
+| ps2web.data | 6,511,266 | `efc67275b871452f021038df43c008d52b32e7769ccd06f45600e01f501bc006` |
+
+The first Chrome run used a new profile, the normal disc boot, a fresh card,
+hardware NVIDIA WebGPU and `--mute-audio`. No save state or game-memory write
+was used. The AudioContext remained running and the ring read pointer advanced.
+Real keyboard input entered Arcade, selected Federation/Side 7, accepted the
+default pilot name with Start, and selected Gundam with beam rifle for both
+ground and space. The battle rendered mobile suits, scenery, radar, HUD and
+the original timer. Movement changed position; two shooting inputs reduced
+main ammunition from 10 to 9 to 8; Cross plus movement produced visible boost.
+Pause screenshots kept the game timer at `106.00` while the runtime frame count
+advanced. Resume restored the countdown. These observations support functional
+controls, not pixel-perfect hardware emulation.
+
+The run continued through a defeat animation and returned to the startup/title
+flow, then accepted Start back to the main menu. The first pass did not capture
+the short textual result/continue screen. It reached more than 50,000 runtime
+frames without a page exception or missing-code halt. A 62.579-second interval
+from the first battle capture to the pause capture advanced 3,756 frames
+(approximately 60.02 Hz). This is the untouched upstream NTSC model with audio
+consumption active, not adaptive/high-refresh rendering. The on-screen FPS
+readout fluctuates; measurements use timestamped counter differences.
+
+No VU1 program was recorded through this battle, and the exposed interpreted
+VU counter remained zero. Generated EE code contains VU0 macro operations
+(for example `ld128` into `c.vu0.vf` and `vu::mul(c.vu0, ...)`). No VU code from
+another game is used. This bounded observation does not establish that every
+mode has no VU1 microprogram.
+
+The second fresh-profile run identified the two startup console resource errors
+as `/favicon.ico` 404s. No game data request failure was established. The local
+server now returns 204 for an absent optional favicon, with a synthetic GET/HEAD
+regression, while still serving a real icon if supplied.
+
+The second run's short fixed waits sent some inputs during selection fades,
+so its screenshot names did not reliably identify the actual screen: a capture
+named `battle-start` still showed pilot entry. This is a test-sequence failure,
+not evidence of gameplay or a reproduced engine defect. Screenshot inspection
+found the run later waiting at ground-weapon selection. The collector explicitly
+does not decide acceptance from its exit status or labels. Subsequent operation
+continues from the observed screen; acceptance is still pending final review.
 
 ## Record as work proceeds
 

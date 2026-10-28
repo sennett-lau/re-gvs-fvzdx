@@ -54,6 +54,8 @@ async function snapshot() {
       audioRing: ring, audioContexts: (window.__rvzdxAudioContexts || []).map(audio => ({state: audio.state, currentTime: audio.currentTime, sampleRate: audio.sampleRate})),
       canvas: mod.canvas ? [mod.canvas.width, mod.canvas.height] : null,
       viewport: [innerWidth, innerHeight], bodyData: {...document.body.dataset},
+      failedResources: performance.getEntriesByType('resource').filter(entry => entry.responseStatus >= 400)
+        .map(entry => ({url: entry.name, status: entry.responseStatus})),
     };
   });
 }
@@ -133,6 +135,9 @@ async function action(step) {
   page.on('pageerror', error => boundedLog('errors.jsonl', {at: Date.now(), error: String(error), stack: error.stack}));
   page.on('console', message => boundedLog('console.jsonl', {at: Date.now(), type: message.type(), text: message.text()}));
   page.on('requestfailed', request => boundedLog('requests-failed.jsonl', {url: request.url(), failure: request.failure()}));
+  page.on('response', response => {
+    if (response.status() >= 400) boundedLog('http-errors.jsonl', {url: response.url(), status: response.status()});
+  });
   const browser = await context.browser().newBrowserCDPSession();
   save('browser.json', await browser.send('Browser.getVersion'));
   const arguments = await browser.send('Browser.getBrowserCommandLine');

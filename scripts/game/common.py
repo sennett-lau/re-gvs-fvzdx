@@ -32,6 +32,13 @@ def fingerprints(directory):
             for p in sorted(directory.rglob('*')) if p.is_file()}
 
 
+def verify_translation(directory):
+    directory = Path(directory)
+    expected = json.loads((directory / 'translation.json').read_text())['generated']
+    if fingerprints(directory / 'generated') != expected:
+        raise ValueError('Generated file set/fingerprint mismatch; regenerate or verify the transfer')
+
+
 def source_tree(destination):
     """Verify the pristine snapshot before applying this project's explicit patches."""
     vendor = ROOT / 'vendor/ps2-web-recomp'

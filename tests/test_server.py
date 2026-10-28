@@ -79,6 +79,15 @@ class ServerTests(unittest.TestCase):
         (self.build / "index.html").rename(self.build / "ps2web.html")
         self.assertEqual(self.request("GET", "/")[2], (self.build / "ps2web.html").read_bytes())
 
+    def test_optional_favicon_does_not_report_missing_game_resource(self):
+        for method in ['GET', 'HEAD']:
+            status, headers, data = self.request(method, '/favicon.ico')
+            self.assertEqual(status, 204)
+            self.assertEqual(data, b'')
+            self.assert_isolated(headers)
+        (self.build / 'favicon.ico').write_bytes(b'synthetic icon')
+        self.assertEqual(self.request('GET', '/favicon.ico')[0], 200)
+
     def test_disc_head_does_not_transfer_data(self):
         status, headers, data = self.request("HEAD", "/disc.iso?probe=1")
         self.assertEqual(status, 200)

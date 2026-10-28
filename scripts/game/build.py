@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 import shutil
-from common import ROOT, digest, fingerprints, run, source_tree, write_json
+from common import ROOT, digest, fingerprints, run, source_tree, verify_translation, write_json
 
 
 def main():
@@ -21,9 +21,7 @@ def main():
     elf = translation / 'inputs' / lock['elf']['name']
     if digest(elf) != lock['elf']['sha256']:
         parser.error('ELF fingerprint mismatch')
-    translated = json.loads((translation / 'translation.json').read_text())
-    if fingerprints(translation / 'generated') != translated['generated']:
-        parser.error('Generated file set/fingerprint mismatch; regenerate or verify the transfer')
+    verify_translation(translation)
     work = args.work.resolve()
     work.mkdir(parents=True, exist_ok=False)
     source = source_tree(work / 'source')

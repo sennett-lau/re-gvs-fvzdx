@@ -75,6 +75,46 @@ export instead copies regular members from the known local Git archive.
 Repository scripts target Python 3.9 or later. These setup failures did not
 change the reference project.
 
+### Repeatable scripts and first PC execution
+
+The scripted regeneration matched all 169 files from the direct pristine
+translation byte-for-byte. The local HTTP server passed 14 synthetic tests on
+Python 3.9.6: range/HEAD semantics, isolation headers, WASM MIME, path bounds,
+and strict 16,384-byte VU recording with non-overwriting conflict handling.
+The PC harness passed an actual Chrome self-test: the captured browser command
+line included `--mute-audio`, while AudioContext time advanced. That fixture is
+a harness check, not game acceptance.
+
+The PC build uses project-local CMake 3.31.6, Clang 17.0.3 and extracted libc++17
+headers/libraries. A `std::format` probe passed. The native build uses ordinary
+`-O1 -DNDEBUG`, six jobs on the PC, and the software GS (no window). A first
+transfer accidentally included macOS AppleDouble `._*.cpp` sidecars; CMake
+globbed them as source and compilation failed. Only those task-created sidecars
+were removed. Later transfers use `COPYFILE_DISABLE=1 tar --no-xattrs`; the
+builder now rejects a generated file set or hash differing from
+`translation.json`. The corrected build linked `ps2run` in 200 build steps.
+
+The first native command was:
+
+```sh
+PS2_VU_RECORD=RUN/vu1 PS2_DUMP=RUN/ram.bin PS2_DUMP_AUDIO=RUN/audio.wav \
+  timeout 90s BUILD/native/ps2run INPUTS/SLPM_650.76 --disc DISC --ntsc \
+  --misses RUN/misses.txt --memcard RUN/blank.ps2 --frames 900 \
+  --press 300:start --press 600:circle --frames-dir RUN/shots --frame-every 150
+```
+
+It reached the requested 900-frame limit without a missing-code halt. The
+frame-900 screenshot was inspected and shows the ADX startup logo. The newly
+created card was unformatted. IOP reboot and modules loaded from this disc;
+DEV9 reported unknown hardware, while the sound modules reached their startup
+messages. No networking functionality is claimed. The stereo 48 kHz WAV
+contained 430,336 frames, peak absolute sample 9,613, and 61,156 nonzero samples.
+The headless runner produced no audible output. This only establishes startup
+and nonzero native audio, not browser audio-ring pacing or gameplay.
+
+A longer native menu/selection exploration is running. The PC browser SDK setup
+and silent browser acceptance remain outstanding.
+
 ## Record as work proceeds
 
 1. Disc metadata, executable serial, sizes and SHA-256 fingerprints.

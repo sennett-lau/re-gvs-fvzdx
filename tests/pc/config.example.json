@@ -1,0 +1,16 @@
+{
+  "runName": "rvzdx-boot-001",
+  "outputRoot": "C:/path/to/private/rvzdx/results",
+  "url": "http://127.0.0.1:8641/",
+  "chromePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "playwrightPath": "C:/path/to/node_modules/playwright-core",
+  "startSelector": "#start:enabled",
+  "requireAudioRing": true,
+  "sampleMs": 5000,
+  "keepAliveSeconds": 900,
+  "steps": [
+    {"action": "wait", "ms": 10000},
+    {"action": "screenshot", "name": "boot"},
+    {"action": "verify-audio"}
+  ]
+}

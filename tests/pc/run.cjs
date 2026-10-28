@@ -51,7 +51,7 @@ async function snapshot() {
       frames: call('_ps2web_frames'), primitives: call('_ps2web_primitives'),
       gpuMs: call('_ps2web_gpu_ms'), vuInterpreted: call('_ps2web_vu_interpreted'),
       audioQueuedMs: call('_ps2web_audio_queued_ms'),
-      audioRing: ring, audioContexts: (window.__rvzdxAudioContexts || []).map(audio => ({state: audio.state, currentTime: audio.currentTime, sampleRate: audio.sampleRate})),
+      audioRing: ring, audioContexts: (window.__fvzdxAudioContexts || []).map(audio => ({state: audio.state, currentTime: audio.currentTime, sampleRate: audio.sampleRate})),
       canvas: mod.canvas ? [mod.canvas.width, mod.canvas.height] : null,
       viewport: [innerWidth, innerHeight], bodyData: {...document.body.dataset},
       failedResources: performance.getEntriesByType('resource').filter(entry => entry.responseStatus >= 400)
@@ -119,13 +119,13 @@ async function action(step) {
     args: ['--mute-audio', '--no-first-run', '--window-position=100,100', '--window-size=1280,900'],
   });
   await context.addInitScript(() => {
-    window.__rvzdxAudioContexts = [];
+    window.__fvzdxAudioContexts = [];
     for (const key of ['AudioContext', 'webkitAudioContext']) {
       const Constructor = window[key];
       if (!Constructor) continue;
       window[key] = new Proxy(Constructor, {construct(target, args, newTarget) {
         const instance = Reflect.construct(target, args, newTarget);
-        window.__rvzdxAudioContexts.push(instance);
+        window.__fvzdxAudioContexts.push(instance);
         return instance;
       }});
     }

@@ -1,4 +1,4 @@
-# re-gvs-rvzdx
+# rg-gvs-fvzdx
 
 Reverse-engineering and browser recompilation of **Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)**. The supplied disc identity is verified in `upstream.lock`.
 

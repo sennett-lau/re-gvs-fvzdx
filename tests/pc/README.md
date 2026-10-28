@@ -18,7 +18,7 @@ Windows SSH launches services outside the interactive desktop. Start the test
 using an interactive, Limited scheduled task:
 
 ```powershell
-./launch.ps1 -Config ./config.json -Node C:/path/to/node.exe -Runner ./run.cjs -TaskName Rvzdx-boot-001
+./launch.ps1 -Config ./config.json -Node C:/path/to/node.exe -Runner ./run.cjs -TaskName Fvzdx-boot-001
 ```
 
 The task refuses to overwrite any existing task. Its ownership record is written

@@ -6,7 +6,7 @@ param(
 )
 $ErrorActionPreference='Stop'
 $ProgressPreference='SilentlyContinue'
-if ($TaskName -notmatch '^Rvzdx-[a-zA-Z0-9_-]+$') { throw 'Use a unique Rvzdx- task name' }
+if ($TaskName -notmatch '^Fvzdx-[a-zA-Z0-9_-]+$') { throw 'Use a unique Fvzdx- task name' }
 if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) { throw 'Task already exists; refusing to overwrite it' }
 $Config=(Resolve-Path $Config).Path
 $Node=(Resolve-Path $Node).Path

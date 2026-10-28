@@ -1,6 +1,6 @@
 {
-  "runName": "rvzdx-boot-001",
-  "outputRoot": "C:/path/to/private/rvzdx/results",
+  "runName": "fvzdx-boot-001",
+  "outputRoot": "C:/path/to/private/fvzdx/results",
   "url": "http://127.0.0.1:8641/",
   "chromePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "playwrightPath": "C:/path/to/node_modules/playwright-core",

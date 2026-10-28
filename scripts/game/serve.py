@@ -57,7 +57,7 @@ def handler(build, disc, record=None):
     record_lock = threading.Lock()
 
     class Handler(http.server.BaseHTTPRequestHandler):
-        server_version = "RVZDXLocal/0.1"
+        server_version = "FVZDXLocal/0.1"
 
         def setup(self):
             super().setup()

@@ -258,3 +258,12 @@ server was started on an ephemeral loopback port: HEAD reported the actual
 4,282,515,456-byte disc, an HTTP 206 range at sector 311 matched the extracted
 ELF's first 512 bytes, isolation headers were present, and absent favicon GET
 returned 204. That verification server was then closed.
+
+## Repository naming update
+
+The local project folder and current project references now use `rg-gvs-fvzdx`.
+New test harness identifiers and the local server label use FVZDX. Historical
+acceptance run IDs, raw PC captures, fingerprints and the original `0.1.0`
+package retain their recorded names and bytes. The game build and disc identity
+are unchanged. Lobby import paths follow the renamed sibling directory; its
+existing `rvzdx` protocol ID remains stable.

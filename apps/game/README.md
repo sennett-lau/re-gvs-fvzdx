@@ -1,8 +1,23 @@
 # Browser host
 
 `shell.html` starts from the pinned upstream browser host, with this project's
-title. It retains the original runtime timing and controller mappings. A matched
-HTML/JS/WASM/data set is produced under `.local` by `scripts/game/build.py`.
+title. It retains the original runtime timing and controller mappings.
+
+`prebuilt/` contains the exact four accepted `0.1.0` HTML/JS/WASM/data files and
+their original build manifest. The historical manifest still calls its build a
+candidate; the subsequent [acceptance record](../../docs/evidence/acceptance-0.1.0.json)
+establishes the bounded gameplay result for those exact bytes. Both records are
+preserved unchanged.
+
+Launch with `python3 scripts/game/serve.py --build apps/game/prebuilt --disc
+/private/path/disc.iso` from the repository root. The `.data` contains the boot
+executable and boot string, not the complete game assets. The supported private
+disc remains a separate runtime input. This export does not host the game or
+publish a release.
+
+New builds are written into ignored `.local` workspaces and do not overwrite
+the accepted package. Run `python3 scripts/game/verify.py` to check retained
+source, vendor and prebuilt fingerprints.
 
 Automated tests mute Chrome output using `--mute-audio`, preserving the running
 AudioContext, AudioWorklet and audio ring. Do not use suspended audio for timing

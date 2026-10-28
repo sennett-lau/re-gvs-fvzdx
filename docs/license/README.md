@@ -20,6 +20,10 @@ The SDK's linked standard-library/runtime notices are also retained:
 [libc++abi](LLVM-libcxxabi.txt), and [compiler-rt](LLVM-compiler-rt.txt).
 
 The original disc, executable, game assets, derived game translation and built
-game package are separate from these third-party source licenses. They remain
-local; no redistribution or release has been performed. This project is not
-affiliated with or endorsed by the game publisher or PlayStation.
+game package are separate from these third-party source licenses. The retained
+translation and matched prebuilt package are now included in the local Git
+repository. The prebuilt `.data` contains the original boot executable; it is
+game-derived content, not a complete ISO or independently authored game source.
+The disc, archives, private saves and raw captures remain excluded. No remote
+publication or release has been performed. This project is not affiliated with
+or endorsed by the game publisher or PlayStation.

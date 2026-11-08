@@ -17,8 +17,8 @@ SPEC.loader.exec_module(serve)
 
 
 @contextmanager
-def running_server(build, disc, record=None):
-    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), serve.handler(build, disc, record))
+def running_server(build, disc, record=None, online_config=None):
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), serve.handler(build, disc, record, online_config))
     thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01}, daemon=True)
     thread.start()
     try:
@@ -198,6 +198,20 @@ class ServerTests(unittest.TestCase):
             self.assertEqual((status, data), (501, b""))
             self.assert_isolated(headers)
         self.assertFalse(self.record.exists())
+
+    def test_online_config_is_served_only_when_explicit(self):
+        status, _, _ = self.request("GET", "/online-config.json")
+        self.assertEqual(status, 404)
+        (self.build / "online-config.json").write_text('{"from": "build"}')
+        status, _, _ = self.request("GET", "/online-config.json")
+        self.assertEqual(status, 404)
+        private = self.root / "private-online.json"
+        private.write_text('{"gatewayURL": "ws://127.0.0.1:1/", "token": "t"}')
+        with running_server(self.build, self.disc, online_config=private) as port:
+            status, headers, data = self.request("GET", "/online-config.json", port=port)
+            self.assertEqual((status, data), (200, private.read_bytes()))
+            self.assertTrue(headers["Content-Type"].startswith("application/json"))
+            self.assert_isolated(headers)
 
 
 if __name__ == "__main__":

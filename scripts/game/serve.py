@@ -50,9 +50,10 @@ def byte_range(value, size):
     return start, end
 
 
-def handler(build, disc, record=None):
+def handler(build, disc, record=None, online_config=None):
     """Create a handler bound to explicit local inputs; never list directories."""
     build, disc = Path(build).resolve(), Path(disc).resolve()
+    online_config = Path(online_config).resolve() if online_config is not None else None
     record = Path(record).resolve() if record is not None else None
     record_lock = threading.Lock()
 
@@ -82,6 +83,9 @@ def handler(build, disc, record=None):
                 return None
             if name == "/disc.iso":
                 return disc
+            if name == "/online-config.json":
+                # Private client settings for the opt-in Online build; never read from the build.
+                return online_config
             if name in ("/", "/index.html"):
                 name = "/index.html" if (build / "index.html").is_file() else "/ps2web.html"
             try:
@@ -202,6 +206,8 @@ def main():
     parser.add_argument("--disc", type=Path, required=True, help="Private ISO served at /disc.iso")
     parser.add_argument("--record", type=Path, help="Private directory for discovered VU1 programs")
     parser.add_argument("--port", type=int, default=8642)
+    parser.add_argument("--online-config", type=Path,
+                        help="Private Online client JSON served at /online-config.json (gateway URL and token)")
     args = parser.parse_args()
     if not args.build.is_dir() or not any((args.build / name).is_file() for name in ("index.html", "ps2web.html")):
         parser.error("--build must contain index.html or ps2web.html")
@@ -209,9 +215,11 @@ def main():
         parser.error("--disc must be an existing file")
     if args.record is not None and args.record.exists() and not args.record.is_dir():
         parser.error("--record must name a directory")
+    if args.online_config is not None and not args.online_config.is_file():
+        parser.error("--online-config must be an existing file")
     if not 0 <= args.port <= 65535:
         parser.error("--port must be between 0 and 65535")
-    server = http.server.ThreadingHTTPServer(("127.0.0.1", args.port), handler(args.build, args.disc, args.record))
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", args.port), handler(args.build, args.disc, args.record, args.online_config))
     print("Game ready at http://127.0.0.1:%d/" % server.server_port, flush=True)
     try:
         server.serve_forever()

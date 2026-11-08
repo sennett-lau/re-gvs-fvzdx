@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 from common import ROOT, digest, fingerprints, run, source_tree, verify_generated, verify_translation, write_json
 from extract import extract
+import online
 
 
 def main():
@@ -18,6 +19,8 @@ def main():
     parser.add_argument('--target', choices=['native', 'web'], default='web')
     parser.add_argument('--emsdk', type=Path, default=os.environ.get('EMSDK'))
     parser.add_argument('--jobs', type=int, default=2)
+    parser.add_argument('--online', action='store_true',
+                        help='Opt-in Online Mode profile: hook verified network call sites in a copy of the C++')
     args = parser.parse_args()
     lock = json.loads((ROOT / 'upstream.lock').read_text())
     if args.target == 'web' and not args.emsdk:
@@ -39,6 +42,10 @@ def main():
     if args.disc:
         elf = extract(args.disc.resolve(), work / 'inputs')
     boot_file = elf.parent / 'boot.txt'
+    online_manifest = None
+    if args.online:
+        online_manifest = online.prepare(generated, elf, work / 'online')
+        generated = work / 'online/generated'
     source = source_tree(work / 'source')
     build = work / args.target
     command = ['cmake', '-S', source, '-B', build, '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release',
@@ -48,6 +55,9 @@ def main():
         command += ['-DPS2_WEB_ELF=' + str(elf),
                     '-DPS2_WEB_BOOT_FILE=' + str(boot_file)]
         target = 'ps2web'
+        if online_manifest:
+            command += ['-DPS2_WEB_PATCHES=' + str(work / 'online/patches.txt'),
+                        '-DCMAKE_EXE_LINKER_FLAGS=--pre-js ' + str(work / 'online/online-bridge.js')]
     else:
         compiler = os.environ.get('CXX') or shutil.which('clang++')
         if not compiler:
@@ -64,6 +74,8 @@ def main():
         'elf_sha256': digest(elf), 'generated': fingerprints(generated),
         'source_provenance_sha256': digest(source / 'provenance.json'),
         'cmake_cache_sha256': digest(build / 'CMakeCache.txt'), 'artifacts': artifacts,
+        'profile': 'online-gdxsv' if online_manifest else 'default',
+        'online_manifest_sha256': digest(work / 'online/online-manifest.json') if online_manifest else None,
     })
     print('Candidate artifacts: ' + str(build))
 

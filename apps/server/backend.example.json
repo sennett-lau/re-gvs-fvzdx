@@ -1,0 +1,21 @@
+{
+  "root": ".",
+  "gdxsv_clone": "../src/gdxsv",
+  "base_port": 19800,
+  "toolchain": "go1.26.0",
+  "origins": [
+    "http://127.0.0.1:8642",
+    "http://127.0.0.1:8643"
+  ],
+  "tailnet_address": "<this machine's tailnet IPv4, or omit to ask tailscale ip -4>",
+  "tailnet_listeners": {
+    "tailnet": {
+      "port": 19830,
+      "peers": [
+        "<allowed peer tailnet IPv4>",
+        "<another peer>"
+      ]
+    }
+  },
+  "battle_read_timeout": "120s"
+}

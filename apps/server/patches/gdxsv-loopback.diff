@@ -1,0 +1,227 @@
+gdxsv loopback binding patch for the private Online Mode backend.
+Upstream: https://github.com/inada-s/gdxsv commit 46ee80b715f76ac0c7c254f6f983e5dcd9940306
+License: AGPL-3.0 (this patch is distributed under the same license).
+
+- main.go: the lobby and battle (MCS) listeners use the configured address
+  instead of stripHost(), which upstream uses to bind all interfaces.
+- main.go: the optional pprof listener binds 127.0.0.1 (backendctl also passes -pprof=0).
+- lbs.go: the lobby UDP responder binds the lobby TCP host instead of all interfaces.
+- loopback_bind_test.go: regression test; it fails on the pristine source
+  because the lobby UDP responder answers on a non-loopback address.
+
+- mcs_tcp.go and mcs_read_timeout.go: the battle peer read deadline (30 s
+  upstream) can be raised with GDXSV_BATTLE_READ_TIMEOUT; unset keeps 30 s.
+- mcs_read_timeout_test.go: regression test for that setting.
+
+Apply from the source root with: patch -p1 --forward --batch < gdxsv-loopback.diff
+
+--- a/gdxsv/lbs.go
++++ b/gdxsv/lbs.go
+@@ -140,7 +140,7 @@
+ 	}
+ 
+ 	go lbs.eventLoop()
+-	go lbs.serveUDP(tcpAddr.Port)
++	go lbs.serveUDP(tcpAddr.IP, tcpAddr.Port)
+ 	for {
+ 		tcpConn, err := listener.AcceptTCP()
+ 		if err != nil {
+@@ -153,8 +153,8 @@
+ 	}
+ }
+ 
+-func (lbs *Lbs) serveUDP(port int) {
+-	udpConn, err := net.ListenUDP("udp", &net.UDPAddr{Port: port})
++func (lbs *Lbs) serveUDP(ip net.IP, port int) {
++	udpConn, err := net.ListenUDP("udp", &net.UDPAddr{IP: ip, Port: port})
+ 	if err != nil {
+ 		logger.Fatal("net.ListenUDP", zap.Error(err))
+ 	}
+@@ -182,7 +182,7 @@
+ 		if err != nil {
+ 			logger.Error("udpConn.ReadFromUDP", zap.Error(err))
+ 			if err == net.ErrClosed {
+-				go lbs.serveUDP(port)
++				go lbs.serveUDP(ip, port)
+ 				return
+ 			}
+ 		}
+--- /dev/null
++++ b/gdxsv/loopback_bind_test.go
+@@ -0,0 +1,89 @@
++package main
++
++import (
++	"errors"
++	"net"
++	"strconv"
++	"syscall"
++	"testing"
++	"time"
++)
++
++// nonLoopbackIPv4 returns an address of this machine that is not loopback, so a
++// test can check that a loopback listener is not reachable through it.
++func nonLoopbackIPv4(t *testing.T) net.IP {
++	t.Helper()
++	addrs, err := net.InterfaceAddrs()
++	must(t, err)
++	for _, a := range addrs {
++		if n, ok := a.(*net.IPNet); ok {
++			if ip := n.IP.To4(); ip != nil && !ip.IsLoopback() && !ip.IsLinkLocalUnicast() {
++				return ip
++			}
++		}
++	}
++	t.Skip("no non-loopback IPv4 address on this machine")
++	return nil
++}
++
++func freeLoopbackPort(t *testing.T) int {
++	t.Helper()
++	l, err := net.Listen("tcp4", "127.0.0.1:0")
++	must(t, err)
++	port := l.Addr().(*net.TCPAddr).Port
++	must(t, l.Close())
++	return port
++}
++
++// assertTCPOnlyLoopback requires a TCP listener on 127.0.0.1:port and no TCP
++// listener for the same port on the other address.
++func assertTCPOnlyLoopback(t *testing.T, other net.IP, port int) {
++	t.Helper()
++	loopback := &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: port}
++	conn := dialWithRetry(t, loopback.String(), 5*time.Second)
++	conn.Close()
++	remote := &net.TCPAddr{IP: other, Port: port}
++	if c, err := net.DialTimeout("tcp4", remote.String(), time.Second); err == nil {
++		c.Close()
++		t.Fatalf("TCP listener on port %d is reachable through %v", port, other)
++	}
++}
++
++// assertUDPNotOn requires that a UDP datagram to other:port is refused, which a
++// connected UDP socket reports after the ICMP port-unreachable reply.
++func assertUDPNotOn(t *testing.T, other net.IP, port int) {
++	t.Helper()
++	conn, err := net.DialUDP("udp4", nil, &net.UDPAddr{IP: other, Port: port})
++	must(t, err)
++	defer conn.Close()
++	for i := 0; i < 3; i++ {
++		_, _ = conn.Write([]byte{0})
++		must(t, conn.SetReadDeadline(time.Now().Add(500*time.Millisecond)))
++		_, err = conn.Read(make([]byte, 16))
++		if errors.Is(err, syscall.ECONNREFUSED) {
++			return
++		}
++	}
++	t.Fatalf("UDP port %d on %v was not refused (last error %v)", port, other, err)
++}
++
++// TestLoopbackBinding checks that the lobby (TCP and its UDP responder) and the
++// battle server (TCP and UDP) bind only the configured loopback host. Upstream
++// passed every game listener through stripHost, which bound all interfaces.
++func TestLoopbackBinding(t *testing.T) {
++	other := nonLoopbackIPv4(t)
++
++	lobbyPort := freeLoopbackPort(t)
++	lbs := NewLbs()
++	defer lbs.Quit()
++	go lbs.ListenAndServe(net.JoinHostPort("127.0.0.1", strconv.Itoa(lobbyPort)))
++	assertTCPOnlyLoopback(t, other, lobbyPort)
++	assertUDPNotOn(t, other, lobbyPort)
++
++	battlePort := freeLoopbackPort(t)
++	mcs := NewMcs(0)
++	defer mcs.Quit()
++	mcs.ListenAndServe(net.JoinHostPort("127.0.0.1", strconv.Itoa(battlePort)))
++	assertTCPOnlyLoopback(t, other, battlePort)
++	assertUDPNotOn(t, other, battlePort)
++}
+--- a/gdxsv/main.go
++++ b/gdxsv/main.go
+@@ -166,7 +166,7 @@
+ 		}
+ 		go func() {
+ 			port := pprofPort(command)
+-			addr := fmt.Sprintf(":%v", port)
++			addr := fmt.Sprintf("127.0.0.1:%v", port)
+ 			err := http.ListenAndServe(addr, nil)
+ 			logger.Error("http.ListenAndServe error", zap.Error(err), zap.String("addr", addr))
+ 		}()
+@@ -227,10 +227,11 @@
+ 			logger.Error("local relay not started", zap.Error(err))
+ 		}
+ 	}
+-	go lbs.ListenAndServe(stripHost(conf.LobbyAddr))
++	// Bind the configured host; upstream stripHost widened this to all interfaces.
++	go lbs.ListenAndServe(conf.LobbyAddr)
+ 
+ 	mcs := NewMcs(*mcsdelay)
+-	go mcs.ListenAndServe(stripHost(conf.BattleAddr))
++	go mcs.ListenAndServe(conf.BattleAddr)
+ 
+ 	if conf.LobbyHttpAddr != "" {
+ 		if conf.ReplayBucket != "" {
+@@ -266,7 +267,7 @@
+ 
+ func mainMcs() {
+ 	mcs := NewMcs(*mcsdelay)
+-	go mcs.ListenAndServe(stripHost(conf.BattleAddr))
++	go mcs.ListenAndServe(conf.BattleAddr)
+ 	defer mcs.Quit()
+ 
+ 	for i := 0; i < 10; i++ {
+--- a/gdxsv/mcs_tcp.go
++++ b/gdxsv/mcs_tcp.go
+@@ -108,7 +108,7 @@
+ 	inbuf := make([]byte, 0, 128)
+ 
+ 	for {
+-		err := u.conn.SetReadDeadline(time.Now().Add(time.Second * 30))
++		err := u.conn.SetReadDeadline(time.Now().Add(mcsReadTimeout))
+ 		if err != nil {
+ 			logger.Warn("SetReadDeadline failed", zap.Error(err))
+ 		}
+--- /dev/null
++++ b/gdxsv/mcs_read_timeout.go
+@@ -0,0 +1,19 @@
++package main
++
++import (
++	"os"
++	"time"
++)
++
++// mcsReadTimeout is how long a battle TCP peer may stay silent before the MCS
++// drops it. Upstream uses 30 s. Browser clients loading a stage from a remote
++// disc image can be silent longer, so GDXSV_BATTLE_READ_TIMEOUT (a Go
++// duration) may raise it for a private backend.
++var mcsReadTimeout = parseMcsReadTimeout(os.Getenv("GDXSV_BATTLE_READ_TIMEOUT"))
++
++func parseMcsReadTimeout(s string) time.Duration {
++	if d, err := time.ParseDuration(s); err == nil && d > 0 {
++		return d
++	}
++	return 30 * time.Second
++}
+--- /dev/null
++++ b/gdxsv/mcs_read_timeout_test.go
+@@ -0,0 +1,17 @@
++package main
++
++import (
++	"testing"
++	"time"
++)
++
++func TestParseMcsReadTimeout(t *testing.T) {
++	for in, want := range map[string]time.Duration{
++		"": 30 * time.Second, "bogus": 30 * time.Second, "0s": 30 * time.Second,
++		"-5s": 30 * time.Second, "2m": 2 * time.Minute, "45s": 45 * time.Second,
++	} {
++		if got := parseMcsReadTimeout(in); got != want {
++			t.Errorf("parseMcsReadTimeout(%q) = %v, want %v", in, got, want)
++		}
++	}
++}

@@ -1,8 +1,8 @@
-# rg-gvs-fvzdx
+# re-gvs-fvzdx
 
 Reverse-engineering and browser recompilation of **Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)**. The supplied disc identity is verified in `upstream.lock`.
 
-**Status: local `0.1.0` baseline verified on the declared PC Chrome path.**
+**Status: `0.1.0` baseline verified on the declared PC Chrome path.**
 Normal boot, menus, selection, active battle, controls, pause/resume, Continue,
 Game Over and return to the menu passed. This is a bounded first baseline;
 later checks also passed Side 7 victory into active stage 2 and system/options
@@ -13,6 +13,7 @@ The baseline uses the original upstream NTSC timing, measured at approximately
 60 Hz during active gameplay. Correctness fixes use `0.1.x`. Optimization,
 higher refresh rates and multiplayer are outside this stage.
 
+- [Research wiki](https://sennett-lau.github.io/re-gvs-fvzdx/): the hosted research reader.
 - [Research reader source](docs/research.zh-HK.md): a Cantonese comparison with GVZG, reusable methods, new findings and further work.
 - [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
@@ -47,7 +48,7 @@ record and upstream proposals remain secondary references. Output is ignored in
 An opt-in Online build connects original clients to a private compatible
 server ([gdxsv](https://github.com/inada-s/gdxsv)) through a token-protected
 gateway. Four browser clients on a PC and a MacBook Pro completed one original
-2v2 lobby battle with three consecutive matches and returned to the lobby. It is private and not published;
+2v2 lobby battle with three consecutive matches and returned to the lobby. The tested server remains private;
 see [docs/online-mode.md](docs/online-mode.md) and
 [apps/server/README.md](apps/server/README.md).
 
@@ -154,6 +155,8 @@ profile. Test execution is through the user's authorized SSH PC, using
 project-owned resources. Timing tests use `--mute-audio`, preserving the audio
 engine; they do not change system volume.
 
-The local history uses the approved personal identity. There is no remote,
-published release, PR or public tunnel. [Third-party notices](docs/license/README.md)
+The repository is published at [sennett-lau/re-gvs-fvzdx](https://github.com/sennett-lau/re-gvs-fvzdx).
+The research wiki uses GitHub Pages; `.github/workflows/wiki-pages.yml` deploys
+only `.local/wiki/` when deliberately dispatched on `main`. No public game
+server, release or PR is created by that workflow. [Third-party notices](docs/license/README.md)
 describe the pinned source and external dependencies.

@@ -105,7 +105,7 @@ Repository 跟返 GVZG 將 code、matched build 同 evidence 分開嘅做法：
 | `ps2-web-re-pr.md` | 尚未提交嘅上游改善候選 |
 | `.local/` | 忽略嘅 disc、private saves、完整 logs 同實驗 build |
 
-C++ 同 matched web files 已經喺本機 Git。ISO／ROM、原裝 archive 同私人 card 唔會加入 repo。現有 game runtime 仍然需要另外提供受支援 disc 作資產來源；**呢個 research reader 只載入文件同證據圖片**。
+C++ 同 matched web files 已經喺 Git。ISO／ROM、原裝 archive 同私人 card 唔會加入 repo。現有 game runtime 仍然需要另外提供受支援 disc 作資產來源；**呢個 research reader 只載入文件同證據圖片**。
 
 想重做可以睇 [README 嘅 build／verify 指令](../README.md#local-workflow)。完整英文實驗次序見 [research.md](../research.md)；本頁係按研究問題整理嘅廣東話閱讀版，HTML 由 [呢份 Markdown](research.zh-HK.md) 生成。
 
@@ -137,4 +137,4 @@ C++ 同 matched web files 已經喺本機 Git。ISO／ROM、原裝 archive 同�
 
 呢次只證明指定 PC 同 MacBook Pro、Chrome 156、私有 server 嘅原裝四人流程可行。未驗證公開 hosting、其他裝置／browser、長時間穩定性、對戰中斷線或 backend restart 後恢復，亦未評估 latency 同操作手感。Lobby 閒置斷線後可以重新登入，唔代表對戰中斷亦已經處理好。
 
-下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗，未有新 release、公開服務或發布。
+下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗，未有新 game release 或公開遊戲服務。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。

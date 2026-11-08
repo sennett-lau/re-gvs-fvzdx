@@ -25,8 +25,8 @@ stage 2 and system/options save persistence across a same-profile page reload.
 Other modes, campaign completion, browsers and cross-profile saves remain
 unverified for the baseline. The later opt-in Online build passed a private
 four-client 2v2 session across a PC and a MacBook Pro (three matches, results
-and lobby return); see the dated Online Mode record below. No remote publication
-has occurred.
+and lobby return); see the dated Online Mode record below. Repository and wiki
+publication setup is recorded at the end of this log.
 
 ## 2026-10-28: independent input and toolchain bring-up
 
@@ -451,3 +451,20 @@ Validation used `npm ci --ignore-scripts`, `npm run wiki:build`, JavaScript
 syntax checks and a local HTML link/fragment check across all seven pages.
 Online screenshot hashes were checked against the retained evidence manifest.
 This documentation update adds no new gameplay test or publication.
+
+## 2026-11-09: authorized repository and wiki publication
+
+The user created `sennett-lau/re-gvs-fvzdx` and authorized pushing this project,
+updating its description and hosting the research wiki. The destination was
+verified as an empty public repository. Every outgoing commit used the approved
+`sennett-lau <47737641+sennett-lau@users.noreply.github.com>` author and committer.
+GitHub authentication is selected per command and verified with `GET /user`;
+the shared active account and global Git identity are unchanged.
+
+The Pages workflow follows the reference repository's manual-dispatch design:
+Node 24, pinned Actions, `npm ci --ignore-scripts`, `npm run wiki:build`, a local
+link/fragment and artifact-boundary check, then upload/deploy of `.local/wiki/`
+only. The reference repository and its services were read-only. The wiki URL is
+`https://sennett-lau.github.io/re-gvs-fvzdx/`. The publication scope is `main`
+and the documentation site; it does not launch a public Online Mode backend,
+push tags or create a release or PR.

@@ -39,6 +39,6 @@ game package are separate from these third-party source licenses. The retained
 translation and matched prebuilt package are now included in the local Git
 repository. The prebuilt `.data` contains the original boot executable; it is
 game-derived content, not a complete ISO or independently authored game source.
-The disc, archives, private saves and raw captures remain excluded. No remote
-publication or release has been performed. This project is not affiliated with
+The disc, archives, private saves and raw captures remain excluded. The repository and research wiki are published separately; no game release
+is created by the wiki deployment. This project is not affiliated with
 or endorsed by the game publisher or PlayStation.

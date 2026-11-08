@@ -19,6 +19,17 @@ The SDK's linked standard-library/runtime notices are also retained:
 [musl](musl-COPYRIGHT.txt), [libc++](LLVM-libcxx.txt),
 [libc++abi](LLVM-libcxxabi.txt), and [compiler-rt](LLVM-compiler-rt.txt).
 
+The opt-in Online Mode backend in `apps/server/` builds
+[gdxsv](https://github.com/inada-s/gdxsv) (commit
+`46ee80b715f76ac0c7c254f6f983e5dcd9940306`) under the GNU Affero General Public
+License version 3; `apps/server/patches/gdxsv-loopback.diff` modifies it and is
+under the same license. Each backend build keeps the upstream archive, applied
+patch, license and notice. The gateway uses
+[gorilla/websocket](https://github.com/gorilla/websocket) v1.5.3 (BSD-2-Clause).
+The client hook table follows the call sites of gdxsv's retired PCSX2 patch
+(`inada-s/pcsx2`, branch `gdxsv-dev`); no gdxsv or PCSX2 code is linked into the
+game package. See [`docs/online-mode.md`](../online-mode.md).
+
 The original disc, executable, game assets, derived game translation and built
 game package are separate from these third-party source licenses. The retained
 translation and matched prebuilt package are now included in the local Git

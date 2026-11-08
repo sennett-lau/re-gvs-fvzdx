@@ -1,0 +1,108 @@
+{
+  "record": "Private Online Mode multi-device run; selected evidence only. Raw captures, cards, tokens and login keys stay in ignored .local/.",
+  "date": "2026-11-09 (Asia/Hong_Kong)",
+  "claim": "Four original clients in browsers on two machines registered or logged in through a private gdxsv backend, were matched into one original 2v2 lobby battle, played three consecutive matches with synchronized timers and kills, posted results and returned to the lobby map.",
+  "not_claimed": [
+    "public hosting",
+    "two-player battles (the original online battle is 2v2)",
+    "other browsers or devices",
+    "long sessions, reconnect during battle, backend restart during battle",
+    "gameplay feel or latency quality"
+  ],
+  "client_build": {
+    "profile": "online-gdxsv",
+    "built_on": "sennett-pc WSL, Emscripten 6.0.11",
+    "command": "python3 scripts/game/build.py --disc <private-disc.iso> --online --target web --emsdk <emsdk-6.0.11> --work .local/online-web-002 --jobs 16",
+    "artifacts": {
+      "ps2web.data": "edf67f18d2147fa3d6b23841ea00a003ca523889a308327b378e38c9cd13e67c",
+      "ps2web.html": "e07ebc8ec8f88e94e461892a3a40ebc5b06988778cbd9e8d5034f16ad1333abd",
+      "ps2web.js": "1315c93237df6a5536b8689ec3c304c47c0b521238d1c8cbe4366d914ba32058",
+      "ps2web.wasm": "a2e84c9da3c1c2c55bf54635c9cef79e5be621c80271bbe5f8d2a24e966599e6"
+    },
+    "elf_sha256": "222e5a12e9dbb7e5be674327b9e2f53abbaf75fd19fc9136c7a11879c2f3d092",
+    "changed_units": [
+      "unit_0095.cpp",
+      "unit_0096.cpp",
+      "unit_0099.cpp",
+      "unit_009F.cpp",
+      "unit_00A0.cpp"
+    ],
+    "hooked_sites": 20,
+    "entry_hooks": 1,
+    "data_patches": 1,
+    "reference": "inada-s/pcsx2 gdxsv-dev 84263d2787bcd28a36e5175bf675f71d4164cbde gdxsv_patch/src/main.c"
+  },
+  "backend": {
+    "gdxsv_revision": "46ee80b715f76ac0c7c254f6f983e5dcd9940306",
+    "patch": "apps/server/patches/gdxsv-loopback.diff",
+    "patch_sha256": "0688f7c6a08e2be560c8bbddb2c00c306c9394e34b409adbec2b542ab7e1debb",
+    "outputs": {
+      "gdxsv": "6416edf646a3b61afd2ae2c07a1899837c17cae2a786ec0c5a0b7251a56cb6a8",
+      "gateway": "f1af17477bec21ded81af8d211d3a29b537b5644fd254462565be43f3eddc5c2"
+    },
+    "go": "go1.26.0",
+    "host": "this Mac (loopback services; gateway tailnet listener restricted to the two test peers)",
+    "battle_read_timeout": "120s"
+  },
+  "clients": [
+    {
+      "label": "PC-A",
+      "device": "Windows PC, Chrome 156.0.8078.81",
+      "user_id": "WHSCAC",
+      "team": "連邦",
+      "page": "http://127.0.0.1:8642/ served from PC WSL"
+    },
+    {
+      "label": "PC-B",
+      "device": "Windows PC, Chrome 156.0.8078.81",
+      "user_id": "4YJDON",
+      "team": "ジオン",
+      "page": "http://127.0.0.1:8644/ served from PC WSL"
+    },
+    {
+      "label": "PC-C",
+      "device": "Windows PC, Chrome 156.0.8078.81",
+      "user_id": "FRLIJT",
+      "team": "ジオン",
+      "page": "http://127.0.0.1:8645/ served from PC WSL"
+    },
+    {
+      "label": "MacBook Pro",
+      "device": "MacBook Pro (M2 Pro), Chrome 156.0.8078.80",
+      "user_id": "ZS8JIP",
+      "team": "連邦",
+      "page": "http://127.0.0.1:8643/ through an SSH reverse tunnel to this Mac"
+    }
+  ],
+  "battle": {
+    "gdxsv_battle_code": "1794153391031",
+    "mcs_room": "2026-11-09T00:56:39+09:00 to 01:08:27+09:00 (709 s)",
+    "stage": "サイド7内部",
+    "gateway_streams": "four /tcp/battle streams (three from the PC tailnet address, one from the MacBook Pro), each about 346 KB up and 1.04 MB down, closed normally by the client (1000)",
+    "results_logged_by_gdxsv": {
+      "WHSCAC": "3 battles, 2 wins, 4 kills",
+      "ZS8JIP": "3 battles, 2 wins, 7 kills",
+      "4YJDON": "3 battles, 2 losses"
+    },
+    "all_clients_returned_to_lobby_map": true
+  },
+  "collector": {
+    "harness": "tests/pc/run.cjs (isolated profiles, --mute-audio, AudioContext and audio-ring checks)",
+    "muted": true,
+    "audio_checks": "running and consuming on all four clients",
+    "page_errors": 0,
+    "battle_average_fps": {
+      "PC-A": 60.0,
+      "PC-B": 60.0,
+      "PC-C": 60.0,
+      "MacBook Pro": 60.0
+    }
+  },
+  "screenshots": {
+    "four-client-battle.png": "a1dca89c0175e5f4228f8bebee299db824fd4fc8d5a72080427ca1061f98556b",
+    "four-client-kill.png": "1b8c4e01d04207d4a34aed4365b538953cea45775acaed13415e9ce35a531770",
+    "four-client-lobby-return.png": "718222dd448c4fde7c4b23ca0524d90f7c3dd8b1dd7913b4a2deaf7cf483d2ee",
+    "four-client-result.png": "2d2db8d5fefc0b62f263ced8f4c8e9e957c3eaf3f1813de4a4f001c173f82167",
+    "four-client-round2.png": "f7c46308fed47cf25963269af93260144341d989b78ae55bc7b12473cb094f3a"
+  }
+}

@@ -31,6 +31,25 @@ compatibility patch has been applied.
 - **Observed result:** the corrected real transfer compiled and reached normal
   boot and battle on the PC. The synthetic regression passes without game data.
 
+## Feature candidate: host handlers for selected guest calls
+
+- **Source revision:** `6526f4803d98e10de50bea3af104a4d26e9df033`, generated
+  call statements in `recomp/codegen.cpp`.
+- **Observed need:** Online Mode replaces 20 original `jal` statements with host
+  handlers (`docs/online-mode.md`). Without a compiler option this is done by
+  rewriting a copy of the generated C++ with exact-match checks
+  (`scripts/game/online.py`). Each call statement already has a stable shape:
+  return address, delay slot, depth-checked unit call, return check.
+- **Proposed upstream improvement:** accept a list of `site=handler` pairs and
+  emit `handler(c)` in place of the unit call at those sites, verifying that
+  the original word is a `jal`. Guest code and memory stay unchanged, and
+  diagnostics can name the hooked sites.
+- **Regression test:** `tests/test_online.py` checks exact single replacement,
+  duplicate and wrong-callee rejection on synthetic C++.
+- **Observed result:** the hooked build reached the original lobby and a
+  four-client battle; the default build is unchanged. This is a feature
+  candidate, not a defect.
+
 See [research.md](research.md) for the complete experiment and remaining
 acceptance limits. No upstream contact or submission has occurred.
 

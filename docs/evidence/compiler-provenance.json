@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-10-29T04:10:06.855546+00:00",
+  "scope": "Compiler provenance check for the FVZDX replication; no new game execution or timing result.",
+  "source_revision": "6526f4803d98e10de50bea3af104a4d26e9df033",
+  "source_files_compared": 88,
+  "source_files_match": true,
+  "toolchain": "AppleClang 16.0.0, macOS arm64",
+  "compile_flags": [
+    "-O3",
+    "-DNDEBUG",
+    "-std=gnu++20",
+    "-arch",
+    "arm64",
+    "-Wall",
+    "-Wextra"
+  ],
+  "objects": [
+    {
+      "name": "main",
+      "rebuilt_sha256": "965df2438c348a08d6a11d37496be66ab2128e478dc8ef985e84e1e8a166d946",
+      "retained_sha256": "965df2438c348a08d6a11d37496be66ab2128e478dc8ef985e84e1e8a166d946",
+      "equal": true
+    },
+    {
+      "name": "r5900",
+      "rebuilt_sha256": "e0e9d73dfa50f03a33df9d2583955f01f6640fa9b700a75be2744620130b8fc8",
+      "retained_sha256": "e0e9d73dfa50f03a33df9d2583955f01f6640fa9b700a75be2744620130b8fc8",
+      "equal": true
+    },
+    {
+      "name": "elf",
+      "rebuilt_sha256": "c01b625bc93e855f95d4a8980b1933fec14a6a6a50a65e845f7a35b5b0e41955",
+      "retained_sha256": "c01b625bc93e855f95d4a8980b1933fec14a6a6a50a65e845f7a35b5b0e41955",
+      "equal": true
+    },
+    {
+      "name": "analysis",
+      "rebuilt_sha256": "76785de23d46eb2c29689a9a0d5e611496e6d9df33ad1eb0f111800071ddf2c7",
+      "retained_sha256": "76785de23d46eb2c29689a9a0d5e611496e6d9df33ad1eb0f111800071ddf2c7",
+      "equal": true
+    },
+    {
+      "name": "codegen",
+      "rebuilt_sha256": "09757dfcf3948a1e1e8d96e67609e26fc7c77d549acb6a6ada60c7d2e94fae24",
+      "retained_sha256": "09757dfcf3948a1e1e8d96e67609e26fc7c77d549acb6a6ada60c7d2e94fae24",
+      "equal": true
+    },
+    {
+      "name": "snr2",
+      "rebuilt_sha256": "e8ca501d29cd11cffc29e2a518736aef6fa191a97517f3955bcb893ff4606ca4",
+      "retained_sha256": "e8ca501d29cd11cffc29e2a518736aef6fa191a97517f3955bcb893ff4606ca4",
+      "equal": true
+    },
+    {
+      "name": "vurecomp",
+      "rebuilt_sha256": "dc64e1e9a24e19ec215e7fa4ad97a30c58c10a7315c5b86b5d49b8fafd27508b",
+      "retained_sha256": "dc64e1e9a24e19ec215e7fa4ad97a30c58c10a7315c5b86b5d49b8fafd27508b",
+      "equal": true
+    }
+  ],
+  "binaries": [
+    {
+      "name": "eerecomp",
+      "rebuilt_sha256": "e0c369f9d901fb866a817b109993a22422aa27599fdf8d1834fe821f2badee9b",
+      "retained_sha256": "e0c369f9d901fb866a817b109993a22422aa27599fdf8d1834fe821f2badee9b",
+      "equal": true,
+      "bytes": 428968
+    },
+    {
+      "name": "vurecomp",
+      "rebuilt_sha256": "92f95f8c1c6cbe8a312bad8c5e01722ff7ddaf3be7159912c6b2620966cba676",
+      "retained_sha256": "92f95f8c1c6cbe8a312bad8c5e01722ff7ddaf3be7159912c6b2620966cba676",
+      "equal": true,
+      "bytes": 233720
+    }
+  ],
+  "private_record_sha256": {
+    "audit.json": "03971e0d103d95e991f29db6722804236d2915c4dfc439d684fed401308571c4",
+    "compiler-rebuild-02.json": "10f7aa9d473dadb21a125ab968f0d6a71dd051df9db6103c753e27038b222a1f"
+  },
+  "interpretation": "Both retained compiler binaries reproduce byte-for-byte from the pinned upstream source; GVZG-specific compiler patches are not required to account for these binaries."
+}

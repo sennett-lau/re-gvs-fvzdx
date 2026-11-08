@@ -13,19 +13,43 @@ The baseline uses the original upstream NTSC timing, measured at approximately
 60 Hz during active gameplay. Correctness fixes use `0.1.x`. Optimization,
 higher refresh rates and multiplayer are outside this stage.
 
-- [Research record](research.md): extraction, compilation, compatibility fixes and test evidence.
+- [Research reader source](docs/research.zh-HK.md): a Cantonese comparison with GVZG, reusable methods, new findings and further work.
+- [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
 - [0.1.0 acceptance manifest](docs/evidence/acceptance-0.1.0.json): exact builds,
   tests, selected screenshots and limitations.
 - [Follow-up checks](research.md#2026-10-29-win-progression-and-savereload):
   the added win and save paths, with test settings and selected evidence.
 
-The structure follows `re-gvs-gvzg`, without a research Wiki. The accepted C++
+The structure follows `re-gvs-gvzg`, with a separate static research reader. The accepted C++
 translation is tracked in `generated/federation-vs-zeon-dx/`; its matched web
 package is tracked in `apps/game/prebuilt/`. Private disc inputs, new build
 workspaces and raw captures stay under ignored `.local/`.
 The supplied image is ISO 9660, `SLPM-65076`, `VER = 2.00`, NTSC.
 `upstream.lock` fixes its full disc and executable hashes.
+
+## Research reader
+
+```sh
+npm ci --ignore-scripts
+npm run wiki:build
+npm run wiki:serve
+```
+
+Open **http://127.0.0.1:8777/**. The reader covers replication of the baseline,
+comparison with GVZG, the later Online Mode experiment and selected evidence. It contains no game runtime or disc
+assets. The Cantonese article has one Markdown source; the English technical
+record and upstream proposals remain secondary references. Output is ignored in
+`.local/wiki/`. No public deployment is performed by these commands.
+
+## Online Mode (experimental)
+
+An opt-in Online build connects original clients to a private compatible
+server ([gdxsv](https://github.com/inada-s/gdxsv)) through a token-protected
+gateway. Four browser clients on a PC and a MacBook Pro completed one original
+2v2 lobby battle with three consecutive matches and returned to the lobby. It is private and not published;
+see [docs/online-mode.md](docs/online-mode.md) and
+[apps/server/README.md](apps/server/README.md).
 
 ## Local workflow
 

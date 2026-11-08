@@ -30,6 +30,10 @@ The client hook table follows the call sites of gdxsv's retired PCSX2 patch
 (`inada-s/pcsx2`, branch `gdxsv-dev`); no gdxsv or PCSX2 code is linked into the
 game package. See [`docs/online-mode.md`](../online-mode.md).
 
+The research reader bundles Manrope under its [SIL Open Font License](../../apps/wiki/fonts/OFL.txt).
+Its Markdown build dependency, Marked 17.0.5, is MIT-licensed; it is used at
+build time and is not loaded by the reader in the browser.
+
 The original disc, executable, game assets, derived game translation and built
 game package are separate from these third-party source licenses. The retained
 translation and matched prebuilt package are now included in the local Git

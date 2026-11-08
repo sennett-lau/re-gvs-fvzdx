@@ -1,8 +1,19 @@
 # Research record
 
+For a question-led Cantonese reading experience, see the
+[research reader source](docs/research.zh-HK.md). This English record retains
+the detailed commands, chronological experiments and evidence limits.
+
 ## Scope
 
-Reproduce the disc-to-C++-to-browser workflow for the supplied Japanese v2.00 game. Deliver a verified `0.1.0` baseline, then only necessary `0.1.x` fixes. Preserve original game timing; do not add optimization or multiplayer work.
+Reproduce the disc-to-C++-to-browser workflow established by
+[GVZG](https://sennett-lau.github.io/re-gvs-gvzg/) for the supplied Japanese
+v2.00 game. The research question is whether that workflow transfers, which
+findings remain useful, and what new failures appear. Deliver a verified
+`0.1.0` baseline, then only necessary `0.1.x` fixes. The baseline stops
+at original-timing validation. A later request adds an opt-in Online Mode
+experiment, recorded separately below; the accepted baseline remains unchanged.
+The reader covers both stages without treating the experiment as a new release.
 
 ## Current status
 
@@ -12,7 +23,10 @@ matched build and generated translation are now included in local Git; raw
 captures remain ignored. Follow-up checks passed Side 7 victory into active
 stage 2 and system/options save persistence across a same-profile page reload.
 Other modes, campaign completion, browsers and cross-profile saves remain
-unverified. No remote publication has occurred.
+unverified for the baseline. The later opt-in Online build passed a private
+four-client 2v2 session across a PC and a MacBook Pro (three matches, results
+and lobby return); see the dated Online Mode record below. No remote publication
+has occurred.
 
 ## 2026-10-28: independent input and toolchain bring-up
 
@@ -49,6 +63,12 @@ upstream working tree and reference project's adaptive package are not source
 inputs. Required reference documentation, extraction/build/server scripts and
 baseline/rebuild evidence were reviewed read-only. The reference's old native
 round completion and later adaptive browser checks do not transfer to this game.
+
+A later [compiler provenance check](docs/evidence/compiler-provenance.json)
+compared all 88 vendor files with the pinned Git object and rebuilt both tools
+from that source. All seven object files and both compiler binaries matched
+the retained tools byte-for-byte. This confirms the pristine compiler lineage;
+it adds no new gameplay result.
 
 Initial commands on the Mac (two compile jobs):
 
@@ -346,3 +366,88 @@ Stage 2 completion, other modes, full campaigns, browser-process restart and
 fresh-profile card import remain untested. The game binaries and original
 `v0.1.0` tag are unchanged; these are additional validation commits, not a new
 game release. Private card images and full captures remain ignored.
+
+## 2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept
+
+This later request extends the project beyond the `0.1.x` baseline; the default
+build and tracked package are unchanged. The full method, hook table, findings
+and limits are in [docs/online-mode.md](docs/online-mode.md); selected evidence
+is in [docs/evidence/online-mode-2026-11-09.json](docs/evidence/online-mode-2026-11-09.json).
+
+The disc's network stack differs from GVZG's (`AVETCP.IRX`, `AVEPPP.IRX`,
+modem drivers, `MCS_WRAP.IRX`; no DNAS or settings program). The server project
+for this game, gdxsv (commit `46ee80b715f76ac0c7c254f6f983e5dcd9940306`),
+already implements its PS2 lobby protocol. Its retired PCSX2 patch replaced 19
+call sites into the AVE library, removed one form-check call, and redirected a
+dial-table entry and a menu-table entry. All of those words were checked
+against this ELF (`python3 scripts/game/online.py --elf ... --check-only`) and
+matched exactly; the removed form-check call lies in the local function
+`entry_move`, which a size-based symbol lookup had first misattributed.
+`scripts/game/build.py --online` hooks a copy of
+the tracked C++ (5 units) and links a main-thread WebSocket bridge. The backend
+in `apps/server/` (built by a delegated agent, reviewed and then extended here)
+runs patched gdxsv and a token-protected gateway.
+
+Commands actually used:
+
+```sh
+python3 apps/server/backendctl.py --config .local/online/backend/config.json build --activate
+python3 apps/server/backendctl.py --config .local/online/backend/config.json init
+python3 apps/server/backendctl.py --config .local/online/backend/config.json start
+# PC WSL, Emscripten 6.0.11 (work directory online-web-001 stopped when WSL idled)
+python3 scripts/game/build.py --disc <private-disc.iso> --online --target web \
+  --emsdk <emsdk-6.0.11> --work .local/online-web-002 --jobs 16
+python3 scripts/game/serve.py --build .local/online-web-002/web --disc <private-disc.iso> \
+  --port 8642 --online-config <private client.json>
+```
+
+Output hashes: `ps2web.wasm` `a2e84c9d…6599e6`, `ps2web.js` `1315c932…ba32058`,
+`ps2web.data` `edf67f18…cd13e67c`; backend gdxsv `6416edf6…a56cb6a8`, gateway
+`f1af1747…eddc5c2`.
+
+Sequence of results:
+
+1. One PC client reached the original lobby map on the first build: gdxsv
+   received `lbsPlatformInfo`, created an account and served the lobby. A
+   MacBook Pro client followed through a reverse tunnel for the page and the
+   gateway's tailnet listener.
+2. A two-player force start reached one MCS room, but both clients stalled in
+   the pre-battle ping stage. Stream traces showed correct intro, ping and pong
+   exchanges. Guest memory reads (`guest-peek`) and runtime store watches
+   (`?PS2_WATCH=...`) showed the pong counters incrementing while the
+   participant mask stayed `0x0F`; `internet_to_modem` writes that mask and the
+   count `4` unconditionally. One early RAM reading used a wrong gp offset and
+   was corrected before this conclusion. The original online battle is 2v2;
+   no gameplay patch was added.
+3. A four-client attempt (two per machine) reached the briefing on all four;
+   the MacBook Pro clients then loaded the stage over a measured ~0.66 MB/s
+   path for more than 30 s and gdxsv dropped them. The gdxsv patch now reads
+   `GDXSV_BATTLE_READ_TIMEOUT` (default unchanged); the backend used `120s`.
+4. With three clients on the PC and one on the MacBook Pro, gdxsv matched a 2v2
+   lobby battle without force start. The four clients played three consecutive
+   matches over 709 s with matching timers and cross-device kills, posted
+   results to gdxsv and returned to the lobby map. All collectors were muted,
+   kept audio running and consuming, showed no page errors and averaged 60 fps.
+
+Not established: public hosting, more than these two machines, other
+browsers, disconnect or backend restart during a battle, long sessions, and
+play quality. Background SSH processes for the WSL keep-alive, game servers and
+tunnels hit the agent's 30-minute limit twice; one interrupted a MacBook Pro
+disc read, which recovered after the server was restarted.
+
+## 2026-11-09: research reader update
+
+The Cantonese reader now distinguishes the accepted baseline from the later
+private Online Mode proof of concept: four independent clients on two machines,
+three matches, results and lobby return. It retains the failed two-player and
+slow-loading attempts and the untested disconnect, restart, longevity and
+latency cases. The English current status and README reflect the same scope.
+
+`scripts/build-wiki.mjs` renders seven pages from the canonical Markdown,
+including the Online Mode record and backend instructions. The reader assets,
+pinned Marked dependency, compiler-provenance record and font license are
+retained in Git; generated output remains ignored in `.local/wiki/`.
+Validation used `npm ci --ignore-scripts`, `npm run wiki:build`, JavaScript
+syntax checks and a local HTML link/fragment check across all seven pages.
+Online screenshot hashes were checked against the retained evidence manifest.
+This documentation update adds no new gameplay test or publication.

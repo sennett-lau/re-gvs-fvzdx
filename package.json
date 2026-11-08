@@ -1,0 +1,11 @@
+{
+  "name": "rg-gvs-fvzdx",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "wiki:build": "node scripts/build-wiki.mjs",
+    "wiki:serve": "python3 -m http.server 8777 --bind 127.0.0.1 --directory .local/wiki"
+  },
+  "engines": {"node": ">=20"},
+  "devDependencies": {"marked": "17.0.5"}
+}

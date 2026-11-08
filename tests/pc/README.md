@@ -54,3 +54,23 @@ disc endpoint before starting. A detached `nohup` launch in the follow-up test
 stopped after its SSH session ended, causing disc-fetch failures until the server
 was restarted in a retained foreground session. Record such infrastructure errors
 separately; a recovered gameplay session is not an error-free run.
+
+### Online Mode runs
+
+The same collector drives the opt-in Online build. Each sample then includes
+the bridge's connection counters (`online`); `online-stats` saves the bridge's
+full counters and lobby command ids under a safe `name`. No payload is recorded
+by default.
+
+Several clients may share one desktop: give each its own `runName`, page port
+and private client configuration, a distinct `windowPosition` (`"x,y"`), and
+set `keepOccludedRunning` so Chrome does not throttle covered windows.
+`profileDir` (absolute) continues an earlier run's isolated profile, for
+example to keep its memory card; never point it at a personal profile.
+
+Two private diagnosis actions exist for failures; their output stays under
+`.local/`. `online-trace` wraps the bridge and records bounded hex of stream
+reads and writes (save it with `online-trace-save`). `guest-peek` locates guest
+RAM by a hex code `signature` at guest address `at` and reads `spans`
+(`[[address, length], ...]`). Neither writes guest memory. The runtime's own
+`PS2_WATCH=ADDR,LEN` page parameter prints guest stores to that range.

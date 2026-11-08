@@ -54,6 +54,13 @@ async function snapshot() {
       audioRing: ring, audioContexts: (window.__fvzdxAudioContexts || []).map(audio => ({state: audio.state, currentTime: audio.currentTime, sampleRate: audio.sampleRate})),
       canvas: mod.canvas ? [mod.canvas.width, mod.canvas.height] : null,
       viewport: [innerWidth, innerHeight], bodyData: {...document.body.dataset},
+      // Opt-in Online build only: connection counters, never payload bytes.
+      online: typeof window.fvzdxOnlineStats === 'function' ? (() => {
+        const stats = window.fvzdxOnlineStats();
+        return {configError: stats.configError, current: stats.current, connections: stats.connections.map(c => ({
+          id: c.id, kind: c.kind, guestPort: c.guestPort, connected: c.connected, closed: c.closed, closeReason: c.closeReason,
+          bytesIn: c.bytesIn, bytesOut: c.bytesOut, messagesIn: c.messagesIn, messagesOut: c.messagesOut, commands: c.commands.length}))};
+      })() : null,
       failedResources: performance.getEntriesByType('resource').filter(entry => entry.responseStatus >= 400)
         .map(entry => ({url: entry.name, status: entry.responseStatus})),
     };
@@ -103,6 +110,49 @@ async function action(step) {
       await page.screenshot({path: path.join(out, step.name + '.png')}); break;
     }
     case 'sample': break;
+    case 'online-trace': {
+      // Private diagnosis only: record bounded hex of Online stream reads/writes in this page.
+      await page.evaluate(limit => {
+        const bridge = Module.fvzdxOnline;
+        if (!bridge || bridge.__traced) return;
+        const trace = window.__fvzdxOnlineTrace = [];
+        const heap = () => Module.HEAPU8;
+        const hex = (ptr, n) => Array.from(heap().subarray(ptr, ptr + Math.min(n, 96)), b => b.toString(16).padStart(2, '0')).join('');
+        const read = bridge.read, write = bridge.write, open = bridge.open;
+        bridge.open = (...a) => { trace.length < limit && trace.push({t: Math.round(performance.now()), op: 'open', a}); return open(...a); };
+        bridge.read = (ptr, size) => { const n = read(ptr, size); if (n > 0 && trace.length < limit) trace.push({t: Math.round(performance.now()), op: 'r', n, hex: hex(ptr, n)}); return n; };
+        bridge.write = (ptr, size) => { if (trace.length < limit) trace.push({t: Math.round(performance.now()), op: 'w', n: size, hex: hex(ptr, size)}); return write(ptr, size); };
+        bridge.__traced = true;
+      }, step.limit || 2000);
+      break;
+    }
+    case 'online-trace-save': {
+      if (!/^[a-zA-Z0-9_-]+$/.test(step.name)) throw Error('Unsafe trace name');
+      save(step.name + '.json', await page.evaluate(() => window.__fvzdxOnlineTrace || null));
+      break;
+    }
+    case 'guest-peek': {
+      // Private diagnosis only: locate guest RAM by a known code signature, then read spans.
+      if (!/^[a-zA-Z0-9_-]+$/.test(step.name) || !/^([0-9a-f]{2}){16,64}$/.test(step.signature)) throw Error('guest-peek needs name and hex signature');
+      save(step.name + '.json', await page.evaluate(({signature, at, spans}) => {
+        const heap = Module.HEAPU8, sig = signature.match(/../g).map(h => parseInt(h, 16));
+        let base = window.__fvzdxGuestBase;
+        if (base === undefined) {
+          for (let i = heap.indexOf(sig[0]); i >= 0 && i < heap.length; i = heap.indexOf(sig[0], i + 1)) {
+            if (sig.every((b, k) => heap[i + k] === b)) { base = i - at; break; }
+          }
+          window.__fvzdxGuestBase = base;
+        }
+        if (base === undefined) return {error: 'signature not found'};
+        return {base, spans: spans.map(([address, length]) => ({address: address.toString(16), hex: Array.from(heap.subarray(base + address, base + address + length), b => b.toString(16).padStart(2, '0')).join('')}))};
+      }, {signature: step.signature, at: step.at, spans: step.spans}));
+      break;
+    }
+    case 'online-stats': {
+      if (!/^[a-zA-Z0-9_-]+$/.test(step.name)) throw Error('Unsafe stats name');
+      save(step.name + '.json', await page.evaluate(() => typeof window.fvzdxOnlineStats === 'function' ? window.fvzdxOnlineStats() : null));
+      break;
+    }
     case 'verify-audio': {
       const before = await snapshot(); await delay(1200); const after = await snapshot();
       const running = after.audioContexts.some((audio, index) => audio.state === 'running' && audio.currentTime > (before.audioContexts[index]?.currentTime ?? Infinity));
@@ -129,9 +179,15 @@ async function action(step) {
     identity.manifest = await response.json();
   }
   save('identity.json', identity);
-  context = await chromium.launchPersistentContext(path.join(out, 'profile'), {
+  const windowPosition = config.windowPosition || '100,100';
+  if (!/^[0-9]{1,4},[0-9]{1,4}$/.test(windowPosition)) throw Error('windowPosition must be x,y');
+  // Optionally continue an earlier isolated test profile (for example its memory card).
+  if (config.profileDir && !path.isAbsolute(config.profileDir)) throw Error('profileDir must be absolute');
+  context = await chromium.launchPersistentContext(config.profileDir || path.join(out, 'profile'), {
     executablePath: config.chromePath, headless: false, viewport: null,
-    args: ['--mute-audio', '--no-first-run', '--window-position=100,100', '--window-size=1280,900'],
+    args: ['--mute-audio', '--no-first-run', '--window-position=' + windowPosition, '--window-size=1280,900',
+      // Several game windows on one desktop: keep occluded ones rendering at full rate.
+      ...(config.keepOccludedRunning ? ['--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding', '--disable-background-timer-throttling'] : [])],
   });
   await context.addInitScript(() => {
     window.__fvzdxAudioContexts = [];

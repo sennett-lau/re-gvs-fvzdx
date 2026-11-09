@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research record · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
 <body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#scope">Scope</a><a href="#current-status">Current status</a><a href="#2026-10-28-independent-input-and-toolchain-bring-up">2026-10-28: independent input and toolchain bring-up</a><a href="#record-as-work-proceeds">Record as work proceeds</a><a href="#010-acceptance-and-retained-evidence">0.1.0 acceptance and retained evidence</a><a href="#repository-naming-update">Repository naming update</a><a href="#retained-source-and-prebuilt-export">Retained source and prebuilt export</a><a href="#2026-10-29-win-progression-and-savereload">2026-10-29: win progression and save/reload</a><a href="#2026-11-08-to-2026-11-09-opt-in-online-mode-proof-of-concept">2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept</a><a href="#2026-11-09-research-reader-update">2026-11-09: research reader update</a><a href="#2026-11-09-authorized-repository-and-wiki-publication">2026-11-09: authorized repository and wiki publication</a><a href="#2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#scope">Scope</a><a href="#current-status">Current status</a><a href="#2026-10-28-independent-input-and-toolchain-bring-up">2026-10-28: independent input and toolchain bring-up</a><a href="#record-as-work-proceeds">Record as work proceeds</a><a href="#010-acceptance-and-retained-evidence">0.1.0 acceptance and retained evidence</a><a href="#repository-naming-update">Repository naming update</a><a href="#retained-source-and-prebuilt-export">Retained source and prebuilt export</a><a href="#2026-10-29-win-progression-and-savereload">2026-10-29: win progression and save/reload</a><a href="#2026-11-08-to-2026-11-09-opt-in-online-mode-proof-of-concept">2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept</a><a href="#2026-11-09-research-reader-update">2026-11-09: research reader update</a><a href="#2026-11-09-authorized-repository-and-wiki-publication">2026-11-09: authorized repository and wiki publication</a><a href="#2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</a><a href="#2026-11-10-manual-wiki-and-release-publishing">2026-11-10: manual wiki and release publishing</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
 <main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="research.md">Markdown source ↗</a></div><h1>Research record</h1><p class="subtitle">rg-gvs-fvzdx / Technical record</p><article class="article-body"><p>For a question-led Cantonese reading experience, see the
 <a href="index.html">research reader source</a>. This English record retains
 the detailed commands, chronological experiments and evidence limits.</p>
@@ -458,6 +458,8 @@ only. The reference repository and its services were read-only. The wiki URL is
 and the documentation site; it does not launch a public Online Mode backend,
 push tags or create a release or PR.</p>
 <h2 id="2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</h2>
+<p><em>Superseded on 2026-11-10: the experiment was dropped and the workflow removed. See
+<a href="#2026-11-10-manual-wiki-and-release-publishing">manual wiki and release publishing</a>.</em></p>
 <p>The first manual Pages attempt (<a href="https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42510423196">run 42510423196</a>)
 failed before build steps with an account billing-lock annotation. A self-hosted
 runner is an experiment in providing compute, not an established workaround for
@@ -492,4 +494,40 @@ of the workflow against the reviewed candidate. No game test, authenticated API,
 runner registration, workflow dispatch or site deployment was performed for
 this preparation. Real REST/JIT behavior, billing capability and production
 admission remain unverified.</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>
+<h2 id="2026-11-10-manual-wiki-and-release-publishing">2026-11-10: manual wiki and release publishing</h2>
+<p>Pushing <code>ded3d2b</code> started no workflow, because both workflows had only
+<code>workflow_dispatch</code>. One manual dispatch of the diagnostic workflow
+(<a href="https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42669997402">run 42669997402</a>)
+queued job <code>129343717147</code> with the expected run-specific label. No runner was
+registered, and the run was cancelled.</p>
+<p>The self-hosted runner approach was then dropped for security reasons. In this
+public repository, a pull request can edit a workflow so that a <code>pull_request</code>
+job targets a self-hosted runner. The actor check in the workflow cannot prevent
+that, because the edited copy is the one that runs. The repository approval
+policy (<code>first_time_contributors</code>) requires approval only for first-time
+contributors. <code>runner-diagnostic.yml</code> was removed; no runner was ever registered.
+The manual <code>wiki-pages.yml</code> workflow is retained for when GitHub-hosted jobs can
+run again.</p>
+<p>Wiki publication without Actions jobs:</p>
+<pre><code class="language-sh">npm ci --ignore-scripts
+npm run wiki:build
+python3 scripts/check-wiki.py
+# copy .local/wiki/ plus an empty .nojekyll into a fresh repository
+# on branch gh-pages and push it to origin gh-pages
+gh api -X PUT repos/sennett-lau/re-gvs-fvzdx/pages -f build_type=legacy \
+  -f &#39;source[branch]=gh-pages&#39; -f &#39;source[path]=/&#39;
+gh api -X POST repos/sennett-lau/re-gvs-fvzdx/pages/builds
+</code></pre>
+<p>GitHub&#39;s built-in deployment ran on the <code>gh-pages</code> branch
+(<a href="https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42679717397">run 42679717397</a>)
+and succeeded despite the billing lock. The site returned HTTP 200 at
+<code>https://sennett-lau.github.io/re-gvs-fvzdx/</code>. To use <code>wiki-pages.yml</code> later, the
+Pages source must be switched back to GitHub Actions.</p>
+<p>The <code>v0.1.0</code> release assets were built locally from the tracked accepted package:
+<code>scripts/game/package.py --release v0.1.0</code> produces the browser export, and
+the wiki archive is the checked <code>.local/wiki/</code> output. Local checks before
+publication: <code>python3 -m unittest discover -s tests -p &#39;test_*.py&#39;</code> (24 tests
+passed), <code>python3 scripts/game/verify.py</code>, <code>node --check tests/pc/run.cjs</code>, the
+wiki build and <code>python3 scripts/check-wiki.py</code>. <code>SHA256SUMS</code> identifies both
+ZIP files. No hosted CI ran for this release, and no new game test was added.</p>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e619531909b8</code></span></footer></main></div></body></html>

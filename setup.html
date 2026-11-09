@@ -13,7 +13,8 @@ campaign completion, browsers and cross-profile saves remain untested.</p>
 60 Hz during active gameplay. Correctness fixes use <code>0.1.x</code>. Optimization,
 higher refresh rates and multiplayer are outside this stage.</p>
 <ul>
-<li><a href="https://sennett-lau.github.io/re-gvs-fvzdx/">Research wiki URL</a>: deployment pending; see the publishing status below.</li>
+<li><a href="https://sennett-lau.github.io/re-gvs-fvzdx/">Research wiki</a>: the hosted research reader.</li>
+<li><a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0">v0.1.0 release</a>: the matched browser package and a wiki archive. No disc is included.</li>
 <li><a href="index.html">Research reader source</a>: a Cantonese comparison with GVZG, reusable methods, new findings and further work.</li>
 <li><a href="research.html">Research record</a>: the English technical log, extraction, compilation and test evidence.</li>
 <li><a href="upstream-ideas.html">Upstream improvement candidates</a>: findings to review before any future contribution.</li>
@@ -38,14 +39,16 @@ comparison with GVZG, the later Online Mode experiment and selected evidence. It
 assets. The Cantonese article has one Markdown source; the English technical
 record and upstream proposals remain secondary references. Output is ignored in
 <code>.local/wiki/</code>. No public deployment is performed by these commands.</p>
-<h3 id="publishing-status-2026-11-09">Publishing status (2026-11-09)</h3>
-<p>The first Pages workflow attempt stopped before its build steps because GitHub
-reported an account billing lock. Self-hosted compute has not been shown to
-resolve that restriction. A separate, owner-only manual diagnostic workflow is
-prepared to observe one disposable runner assignment; its reviewed runner must
-reject every workflow step. Offline preparation and independent review do not
-establish real registration, service compatibility or a deployed wiki. See the
-<a href="research.html#2026-11-09-isolated-runner-diagnostic-preparation">research record</a>.</p>
+<h3 id="publishing-status-2026-11-10">Publishing status (2026-11-10)</h3>
+<p>GitHub-hosted Actions jobs for this account are blocked by a billing lock, so
+<code>.github/workflows/wiki-pages.yml</code> cannot run at present. The self-hosted runner
+experiment was dropped: in a public repository, a pull request can change a
+workflow to target a self-hosted runner and run its own code there.</p>
+<p>Until the lock is lifted, the maintainer builds and checks the wiki locally and
+pushes <code>.local/wiki/</code> with a <code>.nojekyll</code> marker to the <code>gh-pages</code> branch. GitHub
+Pages serves that branch through its built-in deployment, which was not blocked.
+Release assets are also built and checked locally. See the
+<a href="research.html#2026-11-10-manual-wiki-and-release-publishing">research record</a>.</p>
 <h2 id="online-mode-experimental">Online Mode (experimental)</h2>
 <p>An opt-in Online build connects original clients to a private compatible
 server (<a href="https://github.com/inada-s/gdxsv">gdxsv</a>) through a token-protected
@@ -106,7 +109,7 @@ the server, notices and evidence:</p>
 <pre><code class="language-sh">python3 scripts/game/package.py --output .local/package-export-001
 </code></pre>
 <p>The resulting <code>.local/package-export-001</code> excludes the disc and private saves. It is
-a local artifact, not a downloadable or published release.</p>
+a local artifact. The <code>v0.1.0</code> release attaches the same export as a ZIP file.</p>
 <h3 id="tracked-source-and-package">Tracked source and package</h3>
 <p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
 <thead>
@@ -147,8 +150,9 @@ profile. Test execution is through the user&#39;s authorized SSH PC, using
 project-owned resources. Timing tests use <code>--mute-audio</code>, preserving the audio
 engine; they do not change system volume.</p>
 <p>The repository is published at <a href="https://github.com/sennett-lau/re-gvs-fvzdx">sennett-lau/re-gvs-fvzdx</a>.
-The research wiki uses GitHub Pages; <code>.github/workflows/wiki-pages.yml</code> deploys
-only <code>.local/wiki/</code> when deliberately dispatched on <code>main</code>. No public game
-server, release or PR is created by that workflow. <a href="docs/license/index.html">Third-party notices</a>
+The research wiki is served by GitHub Pages from the <code>gh-pages</code> branch. The
+manual <code>.github/workflows/wiki-pages.yml</code> deploys only <code>.local/wiki/</code> once
+Actions jobs can run again; the Pages source must then be switched back to
+GitHub Actions. No public game server is hosted. <a href="docs/license/index.html">Third-party notices</a>
 describe the pinned source and external dependencies.</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e619531909b8</code></span></footer></main></div></body></html>

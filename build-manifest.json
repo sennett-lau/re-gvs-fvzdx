@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "sources": {
-    "docs/research.zh-HK.md": "cdf276c5d94810fbc32814e9865235b47fbe71830ba79027d38a0805c3c1ba22",
-    "research.md": "89283fa109be8773d91c7a43224b11cce68c797d01f4fe82619e82e6d2ce84cf",
-    "README.md": "064d5f1fbcf95bea57b40f043f61a0a1cb5f610c6fcae010b87debf14301c171",
+    "docs/research.zh-HK.md": "451379f1729955d9aa2889f1c7db853efec7b4d61858ff63f6b7b5da6d790f0c",
+    "research.md": "1fc0fefa64b8fac1faff51bb60d42d7bac2dfa8eaa422e9ba6fcaf847f40b4d5",
+    "README.md": "af932b3a606e9c52547994261f8bfe4226c6def32fbd94acee537a8159244fcb",
     "docs/online-mode.md": "d0ed88962023c8d1d2df0d4f08e53eef2b2bb9c00625dba8aa2e17541663394d",
     "apps/server/README.md": "bc3b6d37a5ea8f764b62b994b547280e36e72780471cda39d82a147f8a581872",
     "ps2-web-re-pr.md": "395d3351e110547dcf75626c96606ecdc758793bec0019718a48bb75f87ae9a0",
@@ -53,5 +53,5 @@
     "package.json": "14cc60d5523d5d6365fc88796356584d129447d96bd83080adc758d61eda7d6d",
     "package-lock.json": "8e87b37dce56227b1e156ba2f03ba9b56e8b0a1a4bcc636772c559bdfa007cbf"
   },
-  "sourceSet": "2a33107908204c0a94f901ff7dbb4055d45188e07b5e229ca51840fb70fce4d9"
+  "sourceSet": "e619531909b80472a02f9eea012e920955c6502282dce01e645e75d0ff1707f5"
 }

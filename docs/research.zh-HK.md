@@ -140,8 +140,10 @@ C++ 同 matched web files 已經喺 Git。ISO／ROM、原裝 archive 同私人 c
 下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗，未有新 game release 或公開遊戲服務。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。
 
 
-### 研究網站同 CI 嘅狀態（2026-11-09）
+### 研究網站同 CI 嘅狀態（2026-11-10）
 
-第一次 GitHub Pages workflow 喺 build steps 開始之前，因為帳戶 billing lock 而失敗；暫時未有成功部署研究網站嘅證據。自架 runner 能提供運算資源，但未證明可以解決呢個帳戶限制。
+呢個帳戶嘅 GitHub-hosted Actions job 因為 billing lock 未能執行，原本手動觸發嘅 Pages workflow 保留，等限制解除再用。
 
-後續已準備一個獨立、一次性嘅 runner 診斷流程。佢只觀察 assignment，同時必須拒絕所有 workflow steps；離線測試同獨立審核接受嘅只係提出指定版本嘅診斷授權建議，唔代表真實註冊、CI 或 Pages 已經可用。公開 repo 入面準備咗只容許 owner 手動觸發嘅診斷 workflow；發布、dispatch 同實際 runner 註冊仍然要按指定範圍授權。詳細狀態見 [英文研究紀錄](../research.md#2026-11-09-isolated-runner-diagnostic-preparation)。呢項 CI 工作冇新增遊戲測試，亦冇改動上面 Online Mode 實測嘅範圍。
+自架 runner 嘅方向已經放棄。呢個 repo 係公開嘅，任何人開 PR 都可以改 workflow，令佢喺自架 runner 上面執行自己嘅程式碼；為咗避免呢個風險，唔再註冊任何 runner。
+
+現時研究網站喺本機 build 同檢查連結，再推送到 `gh-pages` branch，由 GitHub Pages 內置嘅部署發布；呢個部署冇被 billing lock 阻擋。`v0.1.0` release 嘅 browser package 同 wiki archive 亦係本機 build 同核對 SHA-256 之後上載。詳細步驟見 [英文研究紀錄](../research.md#2026-11-10-manual-wiki-and-release-publishing)。呢項發布工作冇新增遊戲測試。

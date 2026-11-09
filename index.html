@@ -185,9 +185,9 @@
 <p><img src="docs/evidence/online/four-client-lobby-return.png" alt="三場對戰之後四個 client 返回原裝 lobby map" loading="lazy"></p>
 <h3 id="仲有邊啲未驗證">仲有邊啲未驗證？</h3>
 <p>呢次只證明指定 PC 同 MacBook Pro、Chrome 156、私有 server 嘅原裝四人流程可行。未驗證公開 hosting、其他裝置／browser、長時間穩定性、對戰中斷線或 backend restart 後恢復，亦未評估 latency 同操作手感。Lobby 閒置斷線後可以重新登入，唔代表對戰中斷亦已經處理好。</p>
-<p>下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗，未有新 game release 或公開遊戲服務。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。</p>
+<p>下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗。今次測試用嘅 client build 已經放喺 <code>v0.2.0</code> pre-release，但冇公開遊戲服務或者 backend；用嘅人要自己起 gdxsv 同 gateway。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。</p>
 <h3 id="研究網站同-ci-嘅狀態2026-11-10">研究網站同 CI 嘅狀態（2026-11-10）</h3>
 <p>呢個帳戶嘅 GitHub-hosted Actions job 因為 billing lock 未能執行，原本手動觸發嘅 Pages workflow 保留，等限制解除再用。</p>
 <p>自架 runner 嘅方向已經放棄。呢個 repo 係公開嘅，任何人開 PR 都可以改 workflow，令佢喺自架 runner 上面執行自己嘅程式碼；為咗避免呢個風險，唔再註冊任何 runner。</p>
 <p>現時研究網站喺本機 build 同檢查連結，再推送到 <code>gh-pages</code> branch，由 GitHub Pages 內置嘅部署發布；呢個部署冇被 billing lock 阻擋。<code>v0.1.0</code> release 嘅 browser package 同 wiki archive 亦係本機 build 同核對 SHA-256 之後上載。詳細步驟見 <a href="research.html#2026-11-10-manual-wiki-and-release-publishing">英文研究紀錄</a>。呢項發布工作冇新增遊戲測試。</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e619531909b8</code></span></footer></main></div></body></html>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>

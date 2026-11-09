@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research record · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
 <body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#scope">Scope</a><a href="#current-status">Current status</a><a href="#2026-10-28-independent-input-and-toolchain-bring-up">2026-10-28: independent input and toolchain bring-up</a><a href="#record-as-work-proceeds">Record as work proceeds</a><a href="#010-acceptance-and-retained-evidence">0.1.0 acceptance and retained evidence</a><a href="#repository-naming-update">Repository naming update</a><a href="#retained-source-and-prebuilt-export">Retained source and prebuilt export</a><a href="#2026-10-29-win-progression-and-savereload">2026-10-29: win progression and save/reload</a><a href="#2026-11-08-to-2026-11-09-opt-in-online-mode-proof-of-concept">2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept</a><a href="#2026-11-09-research-reader-update">2026-11-09: research reader update</a><a href="#2026-11-09-authorized-repository-and-wiki-publication">2026-11-09: authorized repository and wiki publication</a><a href="#2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</a><a href="#2026-11-10-manual-wiki-and-release-publishing">2026-11-10: manual wiki and release publishing</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#scope">Scope</a><a href="#current-status">Current status</a><a href="#2026-10-28-independent-input-and-toolchain-bring-up">2026-10-28: independent input and toolchain bring-up</a><a href="#record-as-work-proceeds">Record as work proceeds</a><a href="#010-acceptance-and-retained-evidence">0.1.0 acceptance and retained evidence</a><a href="#repository-naming-update">Repository naming update</a><a href="#retained-source-and-prebuilt-export">Retained source and prebuilt export</a><a href="#2026-10-29-win-progression-and-savereload">2026-10-29: win progression and save/reload</a><a href="#2026-11-08-to-2026-11-09-opt-in-online-mode-proof-of-concept">2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept</a><a href="#2026-11-09-research-reader-update">2026-11-09: research reader update</a><a href="#2026-11-09-authorized-repository-and-wiki-publication">2026-11-09: authorized repository and wiki publication</a><a href="#2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</a><a href="#2026-11-10-manual-wiki-and-release-publishing">2026-11-10: manual wiki and release publishing</a><a href="#2026-11-10-loading-progress-and-the-v020-online-client-release">2026-11-10: loading progress and the v0.2.0 Online client release</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
 <main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="research.md">Markdown source ↗</a></div><h1>Research record</h1><p class="subtitle">rg-gvs-fvzdx / Technical record</p><article class="article-body"><p>For a question-led Cantonese reading experience, see the
 <a href="index.html">research reader source</a>. This English record retains
 the detailed commands, chronological experiments and evidence limits.</p>
@@ -530,4 +530,31 @@ publication: <code>python3 -m unittest discover -s tests -p &#39;test_*.py&#39;<
 passed), <code>python3 scripts/game/verify.py</code>, <code>node --check tests/pc/run.cjs</code>, the
 wiki build and <code>python3 scripts/check-wiki.py</code>. <code>SHA256SUMS</code> identifies both
 ZIP files. No hosted CI ran for this release, and no new game test was added.</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e619531909b8</code></span></footer></main></div></body></html>
+<h2 id="2026-11-10-loading-progress-and-the-v020-online-client-release">2026-11-10: loading progress and the v0.2.0 Online client release</h2>
+<p>A phone on the tailnet (Android Chrome) opened the <code>0.1.0</code> package through
+<code>tailscale serve</code> HTTPS on this Mac. The page only showed 「Loading…」. Plain
+<code>http://100.x</code> was not used because the page needs cross-origin isolation and
+WebGPU, which need a secure context. On a narrow screen, the status text in the
+bottom bar has no room, so download progress was invisible. The cause of the
+apparent stall is still unknown.</p>
+<p><code>apps/game/shell.html</code> now shows a loading panel in the start overlay. It counts
+the bytes of the runtime&#39;s own <code>fetch</code> calls for <code>ps2web.wasm</code> and <code>ps2web.data</code>
+and the size of <code>ps2web.js</code>. It shows the file count, MB received and the
+transfer rate, then the start-up stages. Script errors and aborts appear in red.
+Checked in headless desktop Chrome on this Mac at a 412×860 touch viewport with
+the network throttled to 3 MB/s: the panel updated every second through
+22.9 MB, then the Start button appeared. After Start, the game ran with the
+<code>0.1.0</code> JavaScript, WASM and data: frame counters advanced at the same rate as with
+the original HTML (about 60 per second). The phone itself has not yet been confirmed. The
+accepted <code>prebuilt/</code> HTML is unchanged. The phone host serves the same three
+runtime files with an HTML generated from the new shell.</p>
+<p>The <code>v0.2.0</code> pre-release attaches the Online client from
+<code>.local/online/builds/online-web-002/site</code>. Its four web files match
+<code>client_build.artifacts</code> in <code>docs/evidence/online-mode-2026-11-09.json</code>. Its
+hook manifest matches <code>online_manifest_sha256</code> in its build manifest. The
+package was made with
+<code>scripts/game/package.py --build &lt;site&gt; --online &lt;online&gt; --version 0.2.0 --release v0.2.0</code>.
+The tag marks <code>e562edd</code>, the commit that completed the Online Mode record. No
+backend binary, token, client configuration or login key is included. Unit
+tests passed (24) before upload.</p>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>

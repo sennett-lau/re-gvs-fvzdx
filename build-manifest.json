@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "sources": {
-    "docs/research.zh-HK.md": "451379f1729955d9aa2889f1c7db853efec7b4d61858ff63f6b7b5da6d790f0c",
-    "research.md": "1fc0fefa64b8fac1faff51bb60d42d7bac2dfa8eaa422e9ba6fcaf847f40b4d5",
-    "README.md": "af932b3a606e9c52547994261f8bfe4226c6def32fbd94acee537a8159244fcb",
-    "docs/online-mode.md": "d0ed88962023c8d1d2df0d4f08e53eef2b2bb9c00625dba8aa2e17541663394d",
+    "docs/research.zh-HK.md": "ccacad51390c4a8312db066d6ba41554e930d3fe058657a56687ab76801de138",
+    "research.md": "3d1b4b0d763b8f1b6bffe1810b371c22075a70c435cea67545c8f660063c850f",
+    "README.md": "a226453858d031c34d2acf9c2013fa2fab41884d15859e055b984d6cb2948944",
+    "docs/online-mode.md": "327eba5866929dc07ac867b0d1d05c396e40e55494c995c49d3503bc1e2f60b5",
     "apps/server/README.md": "bc3b6d37a5ea8f764b62b994b547280e36e72780471cda39d82a147f8a581872",
     "ps2-web-re-pr.md": "395d3351e110547dcf75626c96606ecdc758793bec0019718a48bb75f87ae9a0",
     "docs/license/README.md": "d4ac9d50e4f7f8c834c2f431a233fd281298272492961b89ecbba0db38f0281d",
@@ -53,5 +53,5 @@
     "package.json": "14cc60d5523d5d6365fc88796356584d129447d96bd83080adc758d61eda7d6d",
     "package-lock.json": "8e87b37dce56227b1e156ba2f03ba9b56e8b0a1a4bcc636772c559bdfa007cbf"
   },
-  "sourceSet": "e619531909b80472a02f9eea012e920955c6502282dce01e645e75d0ff1707f5"
+  "sourceSet": "e5814f4865378eb0e8acf508c9ff8f7c86ba16b52c2aa6ecf597be6c267fb325"
 }

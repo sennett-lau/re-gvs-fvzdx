@@ -137,7 +137,7 @@ C++ 同 matched web files 已經喺 Git。ISO／ROM、原裝 archive 同私人 c
 
 呢次只證明指定 PC 同 MacBook Pro、Chrome 156、私有 server 嘅原裝四人流程可行。未驗證公開 hosting、其他裝置／browser、長時間穩定性、對戰中斷線或 backend restart 後恢復，亦未評估 latency 同操作手感。Lobby 閒置斷線後可以重新登入，唔代表對戰中斷亦已經處理好。
 
-下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗，未有新 game release 或公開遊戲服務。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。
+下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗。今次測試用嘅 client build 已經放喺 `v0.2.0` pre-release，但冇公開遊戲服務或者 backend；用嘅人要自己起 gdxsv 同 gateway。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。
 
 
 ### 研究網站同 CI 嘅狀態（2026-11-10）

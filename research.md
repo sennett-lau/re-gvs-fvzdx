@@ -558,3 +558,35 @@ publication: `python3 -m unittest discover -s tests -p 'test_*.py'` (24 tests
 passed), `python3 scripts/game/verify.py`, `node --check tests/pc/run.cjs`, the
 wiki build and `python3 scripts/check-wiki.py`. `SHA256SUMS` identifies both
 ZIP files. No hosted CI ran for this release, and no new game test was added.
+
+
+## 2026-11-10: loading progress and the v0.2.0 Online client release
+
+A phone on the tailnet (Android Chrome) opened the `0.1.0` package through
+`tailscale serve` HTTPS on this Mac. The page only showed 「Loading…」. Plain
+`http://100.x` was not used because the page needs cross-origin isolation and
+WebGPU, which need a secure context. On a narrow screen, the status text in the
+bottom bar has no room, so download progress was invisible. The cause of the
+apparent stall is still unknown.
+
+`apps/game/shell.html` now shows a loading panel in the start overlay. It counts
+the bytes of the runtime's own `fetch` calls for `ps2web.wasm` and `ps2web.data`
+and the size of `ps2web.js`. It shows the file count, MB received and the
+transfer rate, then the start-up stages. Script errors and aborts appear in red.
+Checked in headless desktop Chrome on this Mac at a 412×860 touch viewport with
+the network throttled to 3 MB/s: the panel updated every second through
+22.9 MB, then the Start button appeared. After Start, the game ran with the
+`0.1.0` JavaScript, WASM and data: frame counters advanced at the same rate as with
+the original HTML (about 60 per second). The phone itself has not yet been confirmed. The
+accepted `prebuilt/` HTML is unchanged. The phone host serves the same three
+runtime files with an HTML generated from the new shell.
+
+The `v0.2.0` pre-release attaches the Online client from
+`.local/online/builds/online-web-002/site`. Its four web files match
+`client_build.artifacts` in `docs/evidence/online-mode-2026-11-09.json`. Its
+hook manifest matches `online_manifest_sha256` in its build manifest. The
+package was made with
+`scripts/game/package.py --build <site> --online <online> --version 0.2.0 --release v0.2.0`.
+The tag marks `e562edd`, the commit that completed the Online Mode record. No
+backend binary, token, client configuration or login key is included. Unit
+tests passed (24) before upload.

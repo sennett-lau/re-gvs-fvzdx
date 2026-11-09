@@ -8,10 +8,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, '.local/wiki');
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pages = [
-  {source:'docs/research.zh-HK.md', output:'index.html', lang:'zh-HK', label:'研究閱讀版'},
+  {source:'docs/research-reader.md', output:'index.html', lang:'en', label:'Research reader'},
   {source:'research.md', output:'research.html', lang:'en', label:'Technical record'},
   {source:'README.md', output:'setup.html', lang:'en', label:'Build & setup'},
   {source:'docs/online-mode.md', output:'online-mode.html', lang:'en', label:'Online Mode experiment'},
+  {source:'docs/online-server-setup.md', output:'online-server-setup.html', lang:'en', label:'Run your own server'},
   {source:'apps/server/README.md', output:'online-backend.html', lang:'en', label:'Private backend setup'},
   {source:'ps2-web-re-pr.md', output:'upstream-ideas.html', lang:'en', label:'Upstream proposals'},
   {source:'docs/license/README.md', output:'docs/license/index.html', lang:'en', label:'Third-party notices'},
@@ -26,7 +27,7 @@ const publicFiles = [...pages.map(p=>p.source),'upstream.lock','tests/pc/README.
 const assetFiles = await files('apps/wiki');
 const manifest = {schema:1, sources:{}};
 for (const name of [...new Set([...publicFiles,...assetFiles,'scripts/build-wiki.mjs','package.json','package-lock.json'])]) {
-  if (!/\.(?:md|json|png|jpg|jpeg|webp|txt|lock|mjs|js|css|ttf)$/i.test(name)) throw Error('Unexpected reader input: '+name);
+  if (!/\.(?:md|json|png|jpg|jpeg|webp|txt|lock|mjs|js|css|ttf)$/i.test(name) && !/(?:^|\/)LICENSE$/.test(name)) throw Error('Unexpected reader input: '+name);
   manifest.sources[name] = createHash('sha256').update(await fs.readFile(path.join(root,name))).digest('hex');
 }
 manifest.sourceSet = createHash('sha256').update(JSON.stringify(manifest.sources)).digest('hex');
@@ -66,16 +67,16 @@ for (const page of pages) {
     const marker=/^\[!(IMPORTANT|NOTE|TIP)\]\s*\n/.exec(text);
     if(!marker)return `<blockquote>${this.parser.parse(tokens)}</blockquote>`;
     const kind=marker[1].toLowerCase();
-    return `<aside class="callout ${kind}"><p class="callout-label">${kind==='important'?'研究重點':kind==='note'?'證據範圍':'下一步'}</p>${this.parser.parse(marked.lexer(text.slice(marker[0].length)))}</aside>`;
+    return `<aside class="callout ${kind}"><p class="callout-label">${kind==='important'?'Key finding':kind==='note'?'Evidence scope':'Next step'}</p>${this.parser.parse(marked.lexer(text.slice(marker[0].length)))}</aside>`;
   };
-  const body=marked.parse(text,{renderer,gfm:true}).replace(/^<h1[^>]*>[\s\S]*?<\/h1>\s*/,'').replace(/<table>/g,'<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>').replace(/<\/table>/g,'</table></div>');
+  const body=marked.parse(text,{renderer,gfm:true}).replace(/^<h1[^>]*>[\s\S]*?<\/h1>\s*/,'').replace(/<table>/g,'<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>').replace(/<\/table>/g,'</table></div>');
   const nav=outline.map(h=>`<a href="#${escape(h.id)}">${escape(h.label)}</a>`).join('');
   const references=pages.filter(p=>p.source!==page.source).map(p=>`<a href="${escape(rel(p.output))}">${escape(p.label)}</a>`).join('');
   const html=`<!doctype html>
-<html lang="${page.lang}" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)} · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="${rel('assets/reader.js')}"></script><link rel="stylesheet" href="${rel('assets/wiki.css')}"></head>
-<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="${rel('index.html')}">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節">${nav}</nav></details><details class="references"><summary>技術紀錄與參考</summary><nav>${references}<a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
-<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="${escape(rel(page.source))}">Markdown source ↗</a></div><h1>${escape(title)}</h1><p class="subtitle">rg-gvs-fvzdx / ${escape(page.label)}</p><article class="article-body">${body}</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>${manifest.sourceSet.slice(0,12)}</code></span></footer></main></div></body></html>`;
+<html lang="${page.lang}" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)} · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="${rel('assets/reader.js')}"></script><link rel="stylesheet" href="${rel('assets/wiki.css')}"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="${rel('index.html')}">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections">${nav}</nav></details><details class="references"><summary>Technical record and references</summary><nav>${references}<a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="${escape(rel(page.source))}">Markdown source ↗</a></div><h1>${escape(title)}</h1><p class="subtitle">rg-gvs-fvzdx / ${escape(page.label)}</p><article class="article-body">${body}</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>${manifest.sourceSet.slice(0,12)}</code></span></footer></main></div></body></html>`;
   const target=path.join(out,page.output);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,html);
 }
 await fs.writeFile(path.join(out,'build-manifest.json'),JSON.stringify(manifest,null,2)+'\n');

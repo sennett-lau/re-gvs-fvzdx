@@ -1,7 +1,7 @@
 # Research record
 
-For a question-led Cantonese reading experience, see the
-[research reader source](docs/research.zh-HK.md). This English record retains
+For a question-led reading experience, see the
+[research reader source](docs/research-reader.md). This English record retains
 the detailed commands, chronological experiments and evidence limits.
 
 ## Scope
@@ -563,7 +563,7 @@ ZIP files. No hosted CI ran for this release, and no new game test was added.
 ## 2026-11-10: loading progress and the v0.2.0 Online client release
 
 A phone on the tailnet (Android Chrome) opened the `0.1.0` package through
-`tailscale serve` HTTPS on this Mac. The page only showed 「Loading…」. Plain
+`tailscale serve` HTTPS on this Mac. The page only showed "Loading…". Plain
 `http://100.x` was not used because the page needs cross-origin isolation and
 WebGPU, which need a secure context. On a narrow screen, the status text in the
 bottom bar has no room, so download progress was invisible. The cause of the
@@ -590,3 +590,62 @@ package was made with
 The tag marks `e562edd`, the commit that completed the Online Mode record. No
 backend binary, token, client configuration or login key is included. Unit
 tests passed (24) before upload.
+
+
+## 2026-11-10: server setup guide, touch menu and licences
+
+**Server setup guide.** `docs/online-server-setup.md` explains how to build,
+initialise and start a private backend. It also explains what each generated
+private file is (token, client files, gateway settings, database, login key)
+and why none of them is published. Steps 1 to 6 were repeated on this Mac from
+a fresh `git clone` of gdxsv in `.local/guide-test/`, with base port 19900 and
+one origin, `http://127.0.0.1:8652`:
+
+- `build --activate` succeeded with Go 1.26.0, which Go 1.22.5 fetched. The
+  gateway hash `f1af1747…` equals the 2026-11-09 evidence.
+- `init` created `token`, `gdxsv.db`, `gateway.json` and `client.json`.
+- `start` and `status` reported `ready: true`.
+- `lobby_probe.mjs` passed with `--origin http://127.0.0.1:8652`. Without that
+  flag it uses `http://127.0.0.1:8642`, which this config does not allow, and
+  failed as intended.
+
+The `v0.2.0` release ZIP was then downloaded and served with that
+`client.json`. In headless Chrome, its bridge opened a lobby stream through the
+gateway, sent `lbsPlatformInfo` (`0x9950`) and received the lobby's first
+message (`0x6102`). The game menus were not driven, so no new gameplay or
+battle is claimed. The test backend was stopped; the existing backend
+(base 19800) was not touched.
+
+The `C="python3 …"; $C start` form in `apps/server/README.md` fails in zsh,
+because zsh does not split the variable into words. The README now uses an
+alias.
+
+**Touch menu.** On phones the settings bar did not fit, and in landscape
+fullscreen the fixed exit button covered R1 and R2. In touch mode the bar is now
+a bottom sheet opened by a small Menu button at the top centre. The fullscreen
+exit is inside the sheet. Checked in headless Chrome with touch emulation at
+393×851 and 851×393. No touch control overlapped the Menu button in either
+orientation. The exit button stayed hidden in fullscreen, and frames kept
+advancing. A real phone has not yet confirmed the new layout.
+
+**Licences, following GVZG.** Added the project's MIT licence
+(`docs/license/LICENSE`) for independently written code and documentation. Also
+added a content notice for game-derived material, the complete unmodified
+gdxsv AGPL-3.0 text from commit `46ee80b`, and the gorilla/websocket v1.5.3
+BSD-2-Clause licence. The gdxsv source and binaries remain unbundled.
+
+**English wiki.** At the user's request, the reader article was translated into
+English as `docs/research-reader.md`, replacing `docs/research.zh-HK.md`. The
+wiki interface strings were translated too. A separate reviewing agent checked
+the article against this record, `docs/online-mode.md`, `README.md` and the
+evidence JSON before translating. It narrowed six claims:
+
+- publication status and the two releases
+- the scope of the 60 Hz measurement
+- the AFS header scan coverage
+- the upstream test's independence from game data
+- the dropped runner experiment
+- the date and scope of the Online result
+
+Japanese in-game text in `docs/online-mode.md` keeps English glosses. The wiki
+build now accepts the extensionless `docs/license/LICENSE`.

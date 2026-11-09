@@ -37,7 +37,7 @@ def main():
         if not p.is_file():
             continue
         rel = str(p.relative_to(OUT))
-        if rel not in allowed or p.suffix.lower() not in {'.html', '.md', '.json', '.png', '.jpg', '.jpeg', '.webp', '.txt', '.lock', '.js', '.css', '.ttf'}:
+        if rel not in allowed or (p.name != 'LICENSE' and p.suffix.lower() not in {'.html', '.md', '.json', '.png', '.jpg', '.jpeg', '.webp', '.txt', '.lock', '.js', '.css', '.ttf'}):
             raise SystemExit(f'Unexpected artifact: {rel}')
     for name, expected in manifest['sources'].items():
         if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:

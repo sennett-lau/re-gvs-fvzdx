@@ -1,6 +1,6 @@
 # Research reader
 
-The Cantonese research article is `docs/research.zh-HK.md`. The English
+The English research reader article is `docs/research-reader.md`. The English
 `research.md` remains the detailed experiment log. Edit those sources rather
 than generated HTML. Numeric evidence and original capture identities remain
 in `docs/evidence/`; the article links to those records. The later Online Mode

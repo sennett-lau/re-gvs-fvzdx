@@ -138,3 +138,10 @@ C++ 同 matched web files 已經喺 Git。ISO／ROM、原裝 archive 同私人 c
 呢次只證明指定 PC 同 MacBook Pro、Chrome 156、私有 server 嘅原裝四人流程可行。未驗證公開 hosting、其他裝置／browser、長時間穩定性、對戰中斷線或 backend restart 後恢復，亦未評估 latency 同操作手感。Lobby 閒置斷線後可以重新登入，唔代表對戰中斷亦已經處理好。
 
 下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗，未有新 game release 或公開遊戲服務。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。
+
+
+### 研究網站同 CI 嘅狀態（2026-11-09）
+
+第一次 GitHub Pages workflow 喺 build steps 開始之前，因為帳戶 billing lock 而失敗；暫時未有成功部署研究網站嘅證據。自架 runner 能提供運算資源，但未證明可以解決呢個帳戶限制。
+
+後續已準備一個獨立、一次性嘅 runner 診斷流程。佢只觀察 assignment，同時必須拒絕所有 workflow steps；離線測試同獨立審核接受嘅只係提出指定版本嘅診斷授權建議，唔代表真實註冊、CI 或 Pages 已經可用。公開 repo 入面準備咗只容許 owner 手動觸發嘅診斷 workflow；發布、dispatch 同實際 runner 註冊仍然要按指定範圍授權。詳細狀態見 [英文研究紀錄](../research.md#2026-11-09-isolated-runner-diagnostic-preparation)。呢項 CI 工作冇新增遊戲測試，亦冇改動上面 Online Mode 實測嘅範圍。

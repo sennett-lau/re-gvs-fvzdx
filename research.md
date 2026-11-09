@@ -468,3 +468,45 @@ only. The reference repository and its services were read-only. The wiki URL is
 `https://sennett-lau.github.io/re-gvs-fvzdx/`. The publication scope is `main`
 and the documentation site; it does not launch a public Online Mode backend,
 push tags or create a release or PR.
+
+
+## 2026-11-09: isolated runner diagnostic preparation
+
+The first manual Pages attempt ([run 42510423196](https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42510423196))
+failed before build steps with an account billing-lock annotation. A self-hosted
+runner is an experiment in providing compute, not an established workaround for
+that account restriction. No successful Pages deployment is claimed here.
+
+Separate local infrastructure now contains a default-inert, disposable Docker
+runner diagnostic, a Mac controller and bounded SSH/API adapters. A patched
+runner rejects jobs before action preparation and workflow steps; it collects
+only bounded field-presence/type comparisons. This diagnostic does not solve
+production job admission or prove raw-message-to-REST numeric identity binding.
+The accepted shared Docker/WSL kernel limitation remains.
+
+Offline validation reached 72 passing Python test methods, retained six compiled
+diagnostic refusal/default-binding/update-denial tests, and dated PC evidence for
+immutable package checks, fake-JIT delivery with no network, exact-owned cleanup
+and an independent watchdog. Independent review identified and verified fixes
+for lost sentinel evidence at correlation/deadline boundaries, malformed-row
+scanning, and preserving the approved journal location. The final review accepts
+only presenting the exact diagnostic version for a scoped authorization request;
+it does not authorize a live run. Private infrastructure, approval data and raw
+captures remain outside this repository.
+
+The prepared `.github/workflows/runner-diagnostic.yml` is byte-identical to the
+reviewed candidate (SHA256
+`54d700ec1476480a1ac9adcbaded4e380aee8cbcfa46b34b9baf2ecc8551251c`).
+It has only `workflow_dispatch`, no inputs, both owner-actor checks, fixed
+repository/main guards, empty token permissions, one `observe` job and a
+run/attempt/job routing label. Its sole sentinel must never execute. Publishing
+and dispatching this workflow require explicit approval; actual runner
+registration requires the exact approved run/attempt/job and reviewed package.
+The existing Pages workflow has not been switched to the diagnostic runner.
+
+Validation for this repository change: `npm run wiki:build`,
+`python3 scripts/check-wiki.py`, `git diff --check`, and an exact SHA256 comparison
+of the workflow against the reviewed candidate. No game test, authenticated API,
+runner registration, workflow dispatch or site deployment was performed for
+this preparation. Real REST/JIT behavior, billing capability and production
+admission remain unverified.

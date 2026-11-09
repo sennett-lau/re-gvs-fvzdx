@@ -13,7 +13,7 @@ The baseline uses the original upstream NTSC timing, measured at approximately
 60 Hz during active gameplay. Correctness fixes use `0.1.x`. Optimization,
 higher refresh rates and multiplayer are outside this stage.
 
-- [Research wiki](https://sennett-lau.github.io/re-gvs-fvzdx/): the hosted research reader.
+- [Research wiki URL](https://sennett-lau.github.io/re-gvs-fvzdx/): deployment pending; see the publishing status below.
 - [Research reader source](docs/research.zh-HK.md): a Cantonese comparison with GVZG, reusable methods, new findings and further work.
 - [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
@@ -42,6 +42,16 @@ comparison with GVZG, the later Online Mode experiment and selected evidence. It
 assets. The Cantonese article has one Markdown source; the English technical
 record and upstream proposals remain secondary references. Output is ignored in
 `.local/wiki/`. No public deployment is performed by these commands.
+
+### Publishing status (2026-11-09)
+
+The first Pages workflow attempt stopped before its build steps because GitHub
+reported an account billing lock. Self-hosted compute has not been shown to
+resolve that restriction. A separate, owner-only manual diagnostic workflow is
+prepared to observe one disposable runner assignment; its reviewed runner must
+reject every workflow step. Offline preparation and independent review do not
+establish real registration, service compatibility or a deployed wiki. See the
+[research record](research.md#2026-11-09-isolated-runner-diagnostic-preparation).
 
 ## Online Mode (experimental)
 

@@ -472,6 +472,9 @@ push tags or create a release or PR.
 
 ## 2026-11-09: isolated runner diagnostic preparation
 
+*Superseded on 2026-11-10: the experiment was dropped and the workflow removed. See
+[manual wiki and release publishing](#2026-11-10-manual-wiki-and-release-publishing).*
+
 The first manual Pages attempt ([run 42510423196](https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42510423196))
 failed before build steps with an account billing-lock annotation. A self-hosted
 runner is an experiment in providing compute, not an established workaround for
@@ -510,3 +513,48 @@ of the workflow against the reviewed candidate. No game test, authenticated API,
 runner registration, workflow dispatch or site deployment was performed for
 this preparation. Real REST/JIT behavior, billing capability and production
 admission remain unverified.
+
+
+## 2026-11-10: manual wiki and release publishing
+
+Pushing `ded3d2b` started no workflow, because both workflows had only
+`workflow_dispatch`. One manual dispatch of the diagnostic workflow
+([run 42669997402](https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42669997402))
+queued job `129343717147` with the expected run-specific label. No runner was
+registered, and the run was cancelled.
+
+The self-hosted runner approach was then dropped for security reasons. In this
+public repository, a pull request can edit a workflow so that a `pull_request`
+job targets a self-hosted runner. The actor check in the workflow cannot prevent
+that, because the edited copy is the one that runs. The repository approval
+policy (`first_time_contributors`) requires approval only for first-time
+contributors. `runner-diagnostic.yml` was removed; no runner was ever registered.
+The manual `wiki-pages.yml` workflow is retained for when GitHub-hosted jobs can
+run again.
+
+Wiki publication without Actions jobs:
+
+```sh
+npm ci --ignore-scripts
+npm run wiki:build
+python3 scripts/check-wiki.py
+# copy .local/wiki/ plus an empty .nojekyll into a fresh repository
+# on branch gh-pages and push it to origin gh-pages
+gh api -X PUT repos/sennett-lau/re-gvs-fvzdx/pages -f build_type=legacy \
+  -f 'source[branch]=gh-pages' -f 'source[path]=/'
+gh api -X POST repos/sennett-lau/re-gvs-fvzdx/pages/builds
+```
+
+GitHub's built-in deployment ran on the `gh-pages` branch
+([run 42679717397](https://github.com/sennett-lau/re-gvs-fvzdx/actions/runs/42679717397))
+and succeeded despite the billing lock. The site returned HTTP 200 at
+`https://sennett-lau.github.io/re-gvs-fvzdx/`. To use `wiki-pages.yml` later, the
+Pages source must be switched back to GitHub Actions.
+
+The `v0.1.0` release assets were built locally from the tracked accepted package:
+`scripts/game/package.py --release v0.1.0` produces the browser export, and
+the wiki archive is the checked `.local/wiki/` output. Local checks before
+publication: `python3 -m unittest discover -s tests -p 'test_*.py'` (24 tests
+passed), `python3 scripts/game/verify.py`, `node --check tests/pc/run.cjs`, the
+wiki build and `python3 scripts/check-wiki.py`. `SHA256SUMS` identifies both
+ZIP files. No hosted CI ran for this release, and no new game test was added.

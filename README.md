@@ -13,7 +13,8 @@ The baseline uses the original upstream NTSC timing, measured at approximately
 60 Hz during active gameplay. Correctness fixes use `0.1.x`. Optimization,
 higher refresh rates and multiplayer are outside this stage.
 
-- [Research wiki URL](https://sennett-lau.github.io/re-gvs-fvzdx/): deployment pending; see the publishing status below.
+- [Research wiki](https://sennett-lau.github.io/re-gvs-fvzdx/): the hosted research reader.
+- [v0.1.0 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0): the matched browser package and a wiki archive. No disc is included.
 - [Research reader source](docs/research.zh-HK.md): a Cantonese comparison with GVZG, reusable methods, new findings and further work.
 - [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
@@ -43,15 +44,18 @@ assets. The Cantonese article has one Markdown source; the English technical
 record and upstream proposals remain secondary references. Output is ignored in
 `.local/wiki/`. No public deployment is performed by these commands.
 
-### Publishing status (2026-11-09)
+### Publishing status (2026-11-10)
 
-The first Pages workflow attempt stopped before its build steps because GitHub
-reported an account billing lock. Self-hosted compute has not been shown to
-resolve that restriction. A separate, owner-only manual diagnostic workflow is
-prepared to observe one disposable runner assignment; its reviewed runner must
-reject every workflow step. Offline preparation and independent review do not
-establish real registration, service compatibility or a deployed wiki. See the
-[research record](research.md#2026-11-09-isolated-runner-diagnostic-preparation).
+GitHub-hosted Actions jobs for this account are blocked by a billing lock, so
+`.github/workflows/wiki-pages.yml` cannot run at present. The self-hosted runner
+experiment was dropped: in a public repository, a pull request can change a
+workflow to target a self-hosted runner and run its own code there.
+
+Until the lock is lifted, the maintainer builds and checks the wiki locally and
+pushes `.local/wiki/` with a `.nojekyll` marker to the `gh-pages` branch. GitHub
+Pages serves that branch through its built-in deployment, which was not blocked.
+Release assets are also built and checked locally. See the
+[research record](research.md#2026-11-10-manual-wiki-and-release-publishing).
 
 ## Online Mode (experimental)
 
@@ -136,7 +140,7 @@ python3 scripts/game/package.py --output .local/package-export-001
 ```
 
 The resulting `.local/package-export-001` excludes the disc and private saves. It is
-a local artifact, not a downloadable or published release.
+a local artifact. The `v0.1.0` release attaches the same export as a ZIP file.
 
 ### Tracked source and package
 
@@ -166,7 +170,8 @@ project-owned resources. Timing tests use `--mute-audio`, preserving the audio
 engine; they do not change system volume.
 
 The repository is published at [sennett-lau/re-gvs-fvzdx](https://github.com/sennett-lau/re-gvs-fvzdx).
-The research wiki uses GitHub Pages; `.github/workflows/wiki-pages.yml` deploys
-only `.local/wiki/` when deliberately dispatched on `main`. No public game
-server, release or PR is created by that workflow. [Third-party notices](docs/license/README.md)
+The research wiki is served by GitHub Pages from the `gh-pages` branch. The
+manual `.github/workflows/wiki-pages.yml` deploys only `.local/wiki/` once
+Actions jobs can run again; the Pages source must then be switched back to
+GitHub Actions. No public game server is hosted. [Third-party notices](docs/license/README.md)
 describe the pinned source and external dependencies.

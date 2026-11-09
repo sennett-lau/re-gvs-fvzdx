@@ -11,6 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--build', type=Path, default=ROOT / 'apps/game/prebuilt')
     parser.add_argument('--output', type=Path, default=ROOT / '.local/package-0.1.0')
+    parser.add_argument('--release', metavar='TAG', help='GitHub release tag this export is attached to')
     args = parser.parse_args()
     build = args.build.resolve()
     manifest = json.loads((build / 'build-manifest.json').read_text())
@@ -39,10 +40,12 @@ def main():
         'Open http://127.0.0.1:8642/ in a browser supporting WebGPU and JSPI.\n'
         'Keyboard: Enter=Start, X=Circle, Z=Cross, A=Square, S=Triangle, arrows=D-pad.\n'
         'See research.md for the actual acceptance evidence and limitations.\n'
-        'This directory contains local game-derived output. It is not a published release.\n'
+        + ('This package is attached to the GitHub release ' + args.release + '. It contains no disc.\n'
+           if args.release else
+           'This directory contains local game-derived output. It is not a published release.\n')
     )
     write_json(output / 'package-manifest.json', {
-        'version': '0.1.0', 'publication': 'local only', 'files': fingerprints(output),
+        'version': '0.1.0', 'publication': ('GitHub release ' + args.release) if args.release else 'local only', 'files': fingerprints(output),
     })
     print('Verified local package: ' + str(output))
 

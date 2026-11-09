@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Attribution and local game inputs · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="../../assets/reader.js"></script><link rel="stylesheet" href="../../assets/wiki.css"></head>
+<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="../../index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="../../index.html">研究閱讀版</a><a href="../../research.html">Technical record</a><a href="../../setup.html">Build &amp; setup</a><a href="../../online-mode.html">Online Mode experiment</a><a href="../../online-backend.html">Private backend setup</a><a href="../../upstream-ideas.html">Upstream proposals</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="README.md">Markdown source ↗</a></div><h1>Attribution and local game inputs</h1><p class="subtitle">rg-gvs-fvzdx / Third-party notices</p><article class="article-body"><p>The pinned compiler, runtime and original browser shell are copyright 2026
+Samir Nuri, under the <a href="ps2-web-recomp-MIT.txt">MIT license</a>. The MPEG VLC tables
+retain the <a href="Play-BSD-2-Clause.txt">Play! BSD 2-clause notice</a>.</p>
+<p>Emscripten and its emdawnwebgpu port are external build dependencies. Their own
+licenses apply; they are not relicensed by this repository. Any additional
+native GPU dependency must retain its source/version and notices.</p>
+<p>The local web build uses Emscripten 6.0.11 and its pinned EmdawnWebGPU package
+<code>v20260423.175430</code>. Copies from the actual PC SDK/package are retained as
+<a href="Emscripten.txt">Emscripten</a>, <a href="EmdawnWebGPU.txt">EmdawnWebGPU</a> and
+<a href="EmdawnWebGPU-CPP.txt">EmdawnWebGPU C++ bindings</a>. The SDK source revision is
+recorded in <code>research.md</code>; the port&#39;s download integrity hash is pinned in the
+Emscripten source.</p>
+<p>The SDK&#39;s linked standard-library/runtime notices are also retained:
+<a href="musl-COPYRIGHT.txt">musl</a>, <a href="LLVM-libcxx.txt">libc++</a>,
+<a href="LLVM-libcxxabi.txt">libc++abi</a>, and <a href="LLVM-compiler-rt.txt">compiler-rt</a>.</p>
+<p>The opt-in Online Mode backend in <code>apps/server/</code> builds
+<a href="https://github.com/inada-s/gdxsv">gdxsv</a> (commit
+<code>46ee80b715f76ac0c7c254f6f983e5dcd9940306</code>) under the GNU Affero General Public
+License version 3; <code>apps/server/patches/gdxsv-loopback.diff</code> modifies it and is
+under the same license. Each backend build keeps the upstream archive, applied
+patch, license and notice. The gateway uses
+<a href="https://github.com/gorilla/websocket">gorilla/websocket</a> v1.5.3 (BSD-2-Clause).
+The client hook table follows the call sites of gdxsv&#39;s retired PCSX2 patch
+(<code>inada-s/pcsx2</code>, branch <code>gdxsv-dev</code>); no gdxsv or PCSX2 code is linked into the
+game package. See <a href="../../online-mode.html"><code>docs/online-mode.md</code></a>.</p>
+<p>The research reader bundles Manrope under its <a href="../../apps/wiki/fonts/OFL.txt">SIL Open Font License</a>.
+Its Markdown build dependency, Marked 17.0.5, is MIT-licensed; it is used at
+build time and is not loaded by the reader in the browser.</p>
+<p>The original disc, executable, game assets, derived game translation and built
+game package are separate from these third-party source licenses. The retained
+translation and matched prebuilt package are now included in the local Git
+repository. The prebuilt <code>.data</code> contains the original boot executable; it is
+game-derived content, not a complete ISO or independently authored game source.
+The disc, archives, private saves and raw captures remain excluded. The repository and research wiki are published separately; no game release
+is created by the wiki deployment. This project is not affiliated with
+or endorsed by the game publisher or PlayStation.</p>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>

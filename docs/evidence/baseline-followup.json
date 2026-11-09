@@ -1,0 +1,498 @@
+{
+  "schema": 1,
+  "baseline_version": "0.1.0",
+  "status": "Additional bounded gameplay and same-profile memory-card persistence checks passed; limitations retained.",
+  "recorded_at": "2026-10-28T18:58:24.773872+00:00",
+  "repository_head_at_evidence_assembly": "4556fdc90135996ef2ff498305afa800c0b00eae",
+  "historical_tag_unchanged": "v0.1.0",
+  "accepted_artifact_manifest": "docs/evidence/acceptance-0.1.0.json",
+  "accepted_manifest_sha256": "dc931876a10693c1703eb6395276e3eaa27ed3f1354fa362e00fb4cc237718fd",
+  "artifacts": {
+    "ps2web.data": {
+      "bytes": 6511266,
+      "sha256": "efc67275b871452f021038df43c008d52b32e7769ccd06f45600e01f501bc006"
+    },
+    "ps2web.html": {
+      "bytes": 24443,
+      "sha256": "e07ebc8ec8f88e94e461892a3a40ebc5b06988778cbd9e8d5034f16ad1333abd"
+    },
+    "ps2web.js": {
+      "bytes": 151840,
+      "sha256": "636a2e1344c6dd32881edd86881ffaec99e53d730392454b69133223b3649728"
+    },
+    "ps2web.wasm": {
+      "bytes": 17360658,
+      "sha256": "49bed2bc5fd253b752159779f4150e18d441143f13ddb38dd1f57638f58e8094"
+    }
+  },
+  "artifact_provenance": "Served the fresh retained-source rebuild already compared byte-for-byte with all four accepted files; SHA-256 was checked again on PC before launch.",
+  "compiler_runtime_patches": [],
+  "game_artifact_changes": [],
+  "execution_host": "Authorized Windows PC through SSH; Chrome WebGPU NVIDIA Ampere; game tests and Node syntax check ran on PC only.",
+  "commands": [
+    "python3 scripts/game/serve.py --build .local/rebuild/web --disc PRIVATE_ISO --record PRIVATE_RUN/vu1 --port 8641",
+    "launch.ps1 -Config PRIVATE_CONFIG -Node PRIVATE_NODE -Runner PRIVATE_RUNNER -TaskName UNIQUE_OWNED_TASK",
+    "node --check tests/pc/run.cjs"
+  ],
+  "helper_disclosure": [
+    "Playwright real keyboard presses and screenshots only for gameplay; no game-memory writes, injected gamepads, savestates, forced results, health/AI edits, or timing changes.",
+    "Win attempt deliberately used original in-game difficulty 1 and infinite timer; damage level stayed 3. This does not accept wins at default difficulty/timer.",
+    "Collector download and reload actions were added for run002. Downloads click the original Export card button and retain private bytes plus hashes; reload uses page.reload in the same browser context.",
+    "Screenshot labels are navigation aids, not acceptance. Earlier battle-first/pause-first labels in raw evidence actually show briefing; battle-active/battle-paused show launch cutscene. Selected captions below reflect inspected pixels."
+  ],
+  "runs": [
+    {
+      "id": "fvzdx-followup-001",
+      "browser": "Chrome/156.0.8078.48",
+      "gpu": "GPU nvidia ampere",
+      "normal_boot": true,
+      "new_isolated_profile": true,
+      "mute_audio_command_line_verified": true,
+      "audio_checks": [
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/audio-check-264.json",
+          "sha256": "9fb13ea1cbbe0edbf0a29806e0f36b46a995111348a5994ad0db92a1a0d311ec",
+          "running": true,
+          "consumed": true,
+          "before_frame": 12227,
+          "after_frame": 12299,
+          "before_audio_read": 9536640,
+          "after_audio_read": 9594240
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/audio-check-30.json",
+          "sha256": "a2ec3037e91dcb20d3cda4e1fc0f36eaf334b3429be522505cb176ce8808bd54",
+          "running": true,
+          "consumed": true,
+          "before_frame": 1619,
+          "after_frame": 1691,
+          "before_audio_read": 1049728,
+          "after_audio_read": 1108224
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/audio-check-759.json",
+          "sha256": "c5a5ed7f47fccd4961e80d836b067124b29de57e62f8b5b886b335590038bae8",
+          "running": true,
+          "consumed": true,
+          "before_frame": 23448,
+          "after_frame": 23521,
+          "before_audio_read": 18514048,
+          "after_audio_read": 18572160
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/audio-check-896.json",
+          "sha256": "f2dbd34bf84322a6b37cc97a72b92f9d99f4762a52338d047419669d57bf557a",
+          "running": true,
+          "consumed": true,
+          "before_frame": 26110,
+          "after_frame": 26183,
+          "before_audio_read": 20643328,
+          "after_audio_read": 20701440
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/audio-check-931.json",
+          "sha256": "02df476fb835cd2dadae30f39d114f1319fcab68bc133e7ea89c6230b06a3c74",
+          "running": true,
+          "consumed": true,
+          "before_frame": 27894,
+          "after_frame": 27966,
+          "before_audio_read": 22070784,
+          "after_audio_read": 22128384
+        }
+      ],
+      "page_errors": 0,
+      "console_errors": 9237,
+      "http_errors": 0,
+      "request_failures": {
+        "net::ERR_ABORTED": 1,
+        "net::ERR_CONNECTION_REFUSED": 9235,
+        "net::ERR_NO_BUFFER_SPACE": 2
+      },
+      "sampling_errors": 0,
+      "final_frame": 27967,
+      "final_status": "Running, GPU nvidia ampere",
+      "closed": {
+        "at": "2026-10-28T18:50:27.098Z"
+      },
+      "dropped_log_rows": {},
+      "raw_archive": {
+        "file": ".local/followup/browser001.tgz",
+        "sha256": "c70141914b550b2f6d0ef553f6fc644ea1f7774e8f52d08ade2b550dee03c734"
+      },
+      "raw_logs": [
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/progress.jsonl",
+          "sha256": "4da81092c4b1fa4fea4172cdd43a132f65986596ded86de2599f4d98845fe30c"
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/samples.jsonl",
+          "sha256": "9ec62ae67d03424258a31fe2f5fa6e5181a8b8028b7bf9747b3cec2262930bcb"
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/console.jsonl",
+          "sha256": "8b9192055b468a4672260a35aa33b4026a22ca98a06d1d2fca41a768385da301"
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-001/requests-failed.jsonl",
+          "sha256": "3ed0cd2bbc4d14d1d23dda2af688ff3055e90d0460b18dfbe0019ad060c522b8"
+        }
+      ],
+      "collector_sha256": "ff03a7aa0d77594058523c5dc1c71462401b4397175968bb252a018ff94c1d61",
+      "infrastructure_incident": {
+        "description": "The initial detached WSL server stopped after its SSH invocation ended. Disc requests failed until the server was restarted in a retained foreground SSH session; the same normally booted game then resumed. This is a recovered session, not an error-free run.",
+        "first_console_error_utc": "2026-10-28T18:43:12.957000+00:00",
+        "last_console_error_utc": "2026-10-28T18:44:39.571000+00:00",
+        "game_memory_writes": false,
+        "save_state_restore": false
+      }
+    },
+    {
+      "id": "fvzdx-followup-save-002",
+      "browser": "Chrome/156.0.8078.48",
+      "gpu": "GPU nvidia ampere",
+      "normal_boot": true,
+      "new_isolated_profile": true,
+      "mute_audio_command_line_verified": true,
+      "audio_checks": [
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/audio-check-172.json",
+          "sha256": "b4a6018ac5b94a12ab908864fe3db368ab4a957eb584d398701d16ddfe87cd29",
+          "running": true,
+          "consumed": true,
+          "before_frame": 1436,
+          "after_frame": 1508,
+          "before_audio_read": 903296,
+          "after_audio_read": 961408
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/audio-check-231.json",
+          "sha256": "45fae5b7081f61cb45f87823af0b1d8da6d5ca1547add7a85241d2a2e3974780",
+          "running": true,
+          "consumed": true,
+          "before_frame": 4338,
+          "after_frame": 4411,
+          "before_audio_read": 3225600,
+          "after_audio_read": 3284096
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/audio-check-30.json",
+          "sha256": "f1a6d2acf7cc260fcf3d3472a086b6538014f9038cf6e376903754b0bab42a2c",
+          "running": true,
+          "consumed": true,
+          "before_frame": 1622,
+          "after_frame": 1694,
+          "before_audio_read": 1052672,
+          "after_audio_read": 1110272
+        }
+      ],
+      "page_errors": 0,
+      "console_errors": 0,
+      "http_errors": 0,
+      "request_failures": {
+        "net::ERR_ABORTED": 2
+      },
+      "sampling_errors": 0,
+      "final_frame": 4412,
+      "final_status": "Running, GPU nvidia ampere",
+      "closed": {
+        "at": "2026-10-28T18:53:57.357Z"
+      },
+      "dropped_log_rows": {},
+      "raw_archive": {
+        "file": ".local/followup/browser002.tgz",
+        "sha256": "af6ebbdeda11b98297036d1777949804ddb14bb34b6f2f902a0d91daa3f8bb04"
+      },
+      "raw_logs": [
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/progress.jsonl",
+          "sha256": "7347aaf47967b23abe423346628e25262c6bbab1465622ee9c98e4e64ff4ac58"
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/samples.jsonl",
+          "sha256": "f552f0863cc2800213e48652bb7db35d3dd120996e1936fec4d6d9bdd68b99c0"
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/console.jsonl",
+          "sha256": "e41767d296366f32fd92c7f6dfbb135060c1ac43bdaf7475b1abd2b39a08bea3"
+        },
+        {
+          "file": ".local/followup/raw/fvzdx-followup-save-002/requests-failed.jsonl",
+          "sha256": "952bb30b667ee3de28fd476921fb76a0afb64a89e628a7b062c692e9fec40f60"
+        }
+      ],
+      "collector_sha256": "bc9dc36a106584f93508487efe8c792e819f55cf9f1143234701e4afd783936f",
+      "request_failure_limit": "Two disc requests logged net::ERR_ABORTED. The collector did not timestamp requestfailed events, so their precise relation to reload or closure is not established; zero request failures is not claimed.",
+      "reload_scope": "One page reload in the same Chrome context, isolated profile, and loopback origin. Frame counters restart with a new performance.timeOrigin."
+    }
+  ],
+  "acceptance": {
+    "arcade_win_to_next_stage": {
+      "outcome": "passed on recovered run001 with disclosed game options",
+      "path": [
+        "normal boot",
+        "main menu",
+        "Game Option: difficulty 1, infinite timer",
+        "Arcade",
+        "Federation",
+        "Side 7",
+        "Start accepts Amuro Ray default name",
+        "Gundam / beam rifle for ground and space",
+        "Side 7 active battle",
+        "operation success report",
+        "operation #02 Satellite Orbit 1 briefing",
+        "active space battle",
+        "usable pause"
+      ],
+      "controls": "Enter=Start; X=Circle/confirmation/melee, A=Square/fire, Z=Cross/boost, arrows=movement. Original keyboard mappings were unchanged.",
+      "combat_sequences": [
+        {
+          "sequence": 1,
+          "repetitions": 40,
+          "input": "120 ms presses: A every fifth iteration, X otherwise; 300 ms gaps; pause/resume between reviewed batches"
+        },
+        {
+          "sequence": 2,
+          "repetitions": 50,
+          "input": "Up+Z 1800 ms, then Up+A every third iteration or Up+X otherwise for 160 ms with 300 ms gaps"
+        },
+        {
+          "sequence": 3,
+          "repetitions": 48,
+          "input": "Up+Z 2000 ms, then Up+A every fourth iteration or Up+X otherwise for 160 ms with 300 ms gaps; screenshots every six iterations"
+        },
+        {
+          "sequence": 4,
+          "repetitions": 40,
+          "input": "Up+Z 1800 ms, then A+Left/Right for 120 ms with 500 ms gaps, direction changes every six iterations; screenshots every four iterations; operation success and next-stage transition occur during this batch"
+        }
+      ],
+      "exact_control_log": {
+        "file": ".local/followup/controls.jsonl",
+        "sha256": "0351560386200bfe095df09673f5c66e4a5ed84f4e48214b0ca07e6608a22c71"
+      }
+    },
+    "save_reload": {
+      "outcome": "passed in clean run002 with two disclosed aborted requests",
+      "scope": "System/options data on test memory card slot 1 across a page reload in the same origin/profile; no card import.",
+      "steps": [
+        "Normal boot in a separate fresh isolated profile; settings show difficulty 4",
+        "Game Option: two Left presses change difficulty 4 to 2",
+        "Back to options, LOAD/SAVE, SAVE, memory card slot 1",
+        "Choose Yes to format the new blank card; original game reports save complete",
+        "Export card through the existing web button",
+        "Reload page, click Start, normal startup, Enter to main menu",
+        "Open Game Option; difficulty is still 2 without another change",
+        "Export card again and compare hashes; verify running AudioContext and advancing ring consumption"
+      ],
+      "exported_cards": [
+        {
+          "name": "saved-card-before.ps2",
+          "suggestedFilename": "Mcd001.ps2",
+          "bytes": 8650752,
+          "sha256": "2e76d0d02b83d9be926e9022b65886a93a908039756812ec9358c583a229ecff"
+        },
+        {
+          "name": "saved-card-after-reload.ps2",
+          "suggestedFilename": "Mcd001.ps2",
+          "bytes": 8650752,
+          "sha256": "2e76d0d02b83d9be926e9022b65886a93a908039756812ec9358c583a229ecff"
+        }
+      ],
+      "private_card_bytes_tracked": false,
+      "exact_control_log": {
+        "file": ".local/followup/save002/controls.jsonl",
+        "sha256": "100f6a2f260f757fad6e7f0c3e2e8d4ec33dbf36cff90b8f8349c272026ce9e1"
+      }
+    }
+  },
+  "timing": "No new timing/performance acceptance or cross-outage measurement. Original runtime timing retained; all eight explicit audio checks passed with browser-output mute and active ring consumption.",
+  "screenshots": [
+    {
+      "file": ".local/followup/raw/fvzdx-followup-001/easy-infinite-settings.png",
+      "sha256": "cef54962eaf18ffa2c6f49d5edc2e8533b0fb6b9343bb1d2e8089de488867ada",
+      "bytes": 149795,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 3758,
+      "sample_utc_after_capture": "2026-10-28T18:43:42.868Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Original game options: difficulty 1, damage level 3, infinite timer."
+    },
+    {
+      "file": ".local/followup/raw/fvzdx-followup-001/stage-select.png",
+      "sha256": "cabe500851f614b3f11e64b4368df220ab179a99d6d4ade57835b209e6b6e0c2",
+      "bytes": 258844,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 8080,
+      "sample_utc_after_capture": "2026-10-28T18:44:54.903Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Arcade Federation Side 7 selection through original menus."
+    },
+    {
+      "file": ".local/followup/raw/fvzdx-followup-001/side7-live.png",
+      "sha256": "b57dfe95b2a41f7029d48870e852b01953124862bf0c6b7982a2ac921ad6dbeb",
+      "bytes": 538956,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 14784,
+      "sample_utc_after_capture": "2026-10-28T18:46:46.646Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Active Side 7 battle with infinite timer, Amuro Ray, Gundam and beam rifle."
+    },
+    {
+      "file": "docs/evidence/followup/arcade-success.png",
+      "sha256": "30638eca895627df302380208a9e9a64a3dca6fd629275f9df428499a601b660",
+      "bytes": 501374,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 24822,
+      "sample_utc_after_capture": "2026-10-28T18:49:33.954Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Original 作戦成功 (operation success) results after Side 7 combat.",
+      "raw_file": ".local/followup/raw/fvzdx-followup-001/combat-04-07.png"
+    },
+    {
+      "file": "docs/evidence/followup/stage02-briefing.png",
+      "sha256": "5dde99d6bdb792798aa0c9181e3492c1abf0fd0783a86837d3d21e0a8502ae37",
+      "bytes": 370497,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 25305,
+      "sample_utc_after_capture": "2026-10-28T18:49:41.995Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Automatic progression to operation #02, 衛星軌道1 (Satellite Orbit 1), with the space-suit transition message.",
+      "raw_file": ".local/followup/raw/fvzdx-followup-001/combat-04-19.png"
+    },
+    {
+      "file": "docs/evidence/followup/stage02-active.png",
+      "sha256": "23e210c81a7f2b667e11587144620434b7bc035142535cae8d229e5810dac1fb",
+      "bytes": 478331,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 26190,
+      "sample_utc_after_capture": "2026-10-28T18:49:56.740Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Active second-stage space battle renders Gundam, enemy Zaku, ship, Earth, HUD and replenished team bars.",
+      "raw_file": ".local/followup/raw/fvzdx-followup-001/combat-04-end.png"
+    },
+    {
+      "file": ".local/followup/raw/fvzdx-followup-001/stage02-pause.png",
+      "sha256": "814e962733e078b8d16629ff6309c8bd069d451a7c9998d08dca74032d0b493b",
+      "bytes": 353141,
+      "run": "fvzdx-followup-001",
+      "sample_frame_after_capture": 27894,
+      "sample_utc_after_capture": "2026-10-28T18:50:25.147Z",
+      "time_origin_ms": 1793212963276.09,
+      "caption": "Pause menu remains usable during second-stage space battle."
+    },
+    {
+      "file": ".local/followup/raw/fvzdx-followup-save-002/settings-default.png",
+      "sha256": "b5d51f42f9ef2978dc0aa08923ab4ebbef1607a04b86b9446b82c2cab73b682e",
+      "bytes": 153998,
+      "run": "fvzdx-followup-save-002",
+      "sample_frame_after_capture": 2082,
+      "sample_utc_after_capture": "2026-10-28T18:51:24.822Z",
+      "time_origin_ms": 1793213453398.32,
+      "caption": "New profile starts with original difficulty 4."
+    },
+    {
+      "file": "docs/evidence/followup/settings-before-save.png",
+      "sha256": "69a4d7366dfc70c241dc226bd8dafe90a1283282936d6ddcb72b5d036f245d49",
+      "bytes": 153917,
+      "run": "fvzdx-followup-save-002",
+      "sample_frame_after_capture": 2663,
+      "sample_utc_after_capture": "2026-10-28T18:51:34.504Z",
+      "time_origin_ms": 1793213453398.32,
+      "caption": "Original settings menu changed to difficulty 2 before saving.",
+      "raw_file": ".local/followup/raw/fvzdx-followup-save-002/settings-to-save.png"
+    },
+    {
+      "file": ".local/followup/raw/fvzdx-followup-save-002/save-card1-prompt.png",
+      "sha256": "f12bece86c98d4baf61348329c690d9324d5859115187b392605e34f41c5ad0b",
+      "bytes": 168392,
+      "run": "fvzdx-followup-save-002",
+      "sample_frame_after_capture": 4761,
+      "sample_utc_after_capture": "2026-10-28T18:52:09.487Z",
+      "time_origin_ms": 1793213453398.32,
+      "caption": "Original menu identifies the test card in slot 1 as unformatted and asks to format it."
+    },
+    {
+      "file": "docs/evidence/followup/save-complete.png",
+      "sha256": "b531d3779720276038828faf73832235088f390a6ca5293e39a2cb2775070a38",
+      "bytes": 132966,
+      "run": "fvzdx-followup-save-002",
+      "sample_frame_after_capture": 5725,
+      "sample_utc_after_capture": "2026-10-28T18:52:25.538Z",
+      "time_origin_ms": 1793213453398.32,
+      "caption": "Original game confirms that saving is complete after formatting the dedicated blank test card.",
+      "raw_file": ".local/followup/raw/fvzdx-followup-save-002/formatted-card-prompt.png"
+    },
+    {
+      "file": ".local/followup/raw/fvzdx-followup-save-002/reload-menu.png",
+      "sha256": "c85e79633987826b26941f522cde70345679359788e6ab4f54f759e0c1308323",
+      "bytes": 196417,
+      "run": "fvzdx-followup-save-002",
+      "sample_frame_after_capture": 2373,
+      "sample_utc_after_capture": "2026-10-28T18:53:22.597Z",
+      "time_origin_ms": 1793213566292.095,
+      "caption": "After a same-profile page reload and normal startup, Start reaches the original main menu."
+    },
+    {
+      "file": "docs/evidence/followup/settings-after-reload.png",
+      "sha256": "93968c7b7c3e910b4cee488f3f221e9cc5f00c63c6585b02efc847803f5d3556",
+      "bytes": 154618,
+      "run": "fvzdx-followup-save-002",
+      "sample_frame_after_capture": 2763,
+      "sample_utc_after_capture": "2026-10-28T18:53:29.087Z",
+      "time_origin_ms": 1793213566292.095,
+      "caption": "Game options show saved difficulty 2 after reload, without changing it again or importing a card.",
+      "raw_file": ".local/followup/raw/fvzdx-followup-save-002/settings-after-reload.png"
+    }
+  ],
+  "cleanup": {
+    "both_browser_contexts_closed": true,
+    "owned_tasks_removed": [
+      "Fvzdx-followup-20261029-001",
+      "Fvzdx-followup-save-20261029-002"
+    ],
+    "owned_server_stopped": true,
+    "pc_slot_released": true,
+    "release_notification_message_id": "msg_193150d0f8f9",
+    "system_volume_changed": false,
+    "unrelated_resources_stopped": false
+  },
+  "limits": [
+    "Stage02 active rendering/control availability was observed; stage02 victory and campaign completion remain unverified.",
+    "Other modes and stages, other browsers/GPUs, mobile, gamepads, audible fidelity and hardware pixel/cycle comparisons remain unverified.",
+    "Persistence acceptance is limited to system/options data in the same browser profile/origin across page reload; browser-process restart, fresh-profile import/export round-trip and mission/Arcade-progress saves were not tested.",
+    "Run001 contains the documented server outage and thousands of disc-fetch failures. Win/progression screenshots are after server recovery; the run is not claimed error-free.",
+    "Full raw captures and card images remain ignored under .local/followup. Six inspected screenshots are retained under docs/evidence/followup; no private card payload is committed.",
+    "No 0.2 optimization, runtime fix, new release/tag, remote push, PR, publication or remote authentication occurred."
+  ],
+  "rebuild_evidence": {
+    "file": "docs/evidence/retained-source-rebuild.json",
+    "sha256": "fdb6adf2ca8c859ca64af9bc33ffccc8c477b34d8bf79e35269e9c717ccb1c46",
+    "inputs": {
+      "src/generated/manifest.json": {
+        "bytes": 23588,
+        "sha256": "19425660a79cb18f8e6ee2a1d7174fa437505409864cae8a79f40dc26eab8ef6"
+      },
+      "scripts/game/build.py": {
+        "bytes": 3497,
+        "sha256": "9735337b1603c091c4efda58bafce1fd85b43a7ffe952dc139276fd6c36a96e2"
+      },
+      "scripts/game/common.py": {
+        "bytes": 2394,
+        "sha256": "569b677061519623e10c6cd499021afaeb72a709a56f76f7aacde82bd2891550"
+      },
+      "scripts/game/extract.py": {
+        "bytes": 3023,
+        "sha256": "842a40c03e58d202ceb20e1d13986ca00fe35d30f627fcaf2316711d7c5474aa"
+      },
+      "upstream.lock": {
+        "bytes": 1184,
+        "sha256": "2ca39704a19e0bfce7df8e7d8af3b4dd224b2a178a6bb6de88439ca63ede2084"
+      },
+      "vendor/manifest.json": {
+        "bytes": 8916,
+        "sha256": "78c77d52a782015cb98080e25e6c1b36a73b509f151962674101a006b5e2f60c"
+      }
+    },
+    "scope": "These measured input hashes identify the tested fresh build, including build-support changes that were uncommitted at export; the evidence-assembly Git revision is not a claim about historical setup HEAD."
+  }
+}

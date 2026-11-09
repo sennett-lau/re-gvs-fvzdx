@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ps2-web-recomp improvement candidates · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#build-input-guard-reject-transferred-metadata-as-generated-c">Build input guard: reject transferred metadata as generated C++</a><a href="#feature-candidate-host-handlers-for-selected-guest-calls">Feature candidate: host handlers for selected guest calls</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="ps2-web-re-pr.md">Markdown source ↗</a></div><h1>ps2-web-recomp improvement candidates</h1><p class="subtitle">rg-gvs-fvzdx / Upstream proposals</p><article class="article-body"><p>This file records findings for later review; it does not authorize a push or
+pull request. No new EE compiler or runtime correctness defect has been
+reproduced in the tested boot/menu/Side 7 battle path so far. No reference-game
+compatibility patch has been applied.</p>
+<h2 id="build-input-guard-reject-transferred-metadata-as-generated-c">Build input guard: reject transferred metadata as generated C++</h2>
+<ul>
+<li><strong>Source revision:</strong> <code>6526f4803d98e10de50bea3af104a4d26e9df033</code>,
+<code>CMakeLists.txt</code> generated-source <code>file(GLOB ... &quot;*.cpp&quot;)</code>.</li>
+<li><strong>Observed trigger:</strong> transferring generated units from macOS using default
+<code>tar -czf</code> created AppleDouble <code>._unit_*.cpp</code> and <code>._table.cpp</code> files in WSL.
+CMake accepted them in the source glob. Clang then reported binary/null-byte
+errors while compiling <code>._table.cpp</code>; the build stopped. The corrected
+transfer removed only those task-owned sidecars and used
+<code>COPYFILE_DISABLE=1 tar --no-xattrs</code>. The same real game translation then
+compiled successfully (200 steps instead of 368).</li>
+<li><strong>General explanation:</strong> a filename suffix is insufficient evidence that a
+transferred file belongs to a generated source set. This is a packaging/build
+guard candidate, not an R5900 translation defect.</li>
+<li><strong>Proposed upstream improvement:</strong> emit a generated-file manifest and verify
+it before CMake configuration, or at minimum reject AppleDouble source
+filenames with an actionable error. Do not silently accept altered source.</li>
+<li><strong>Local change:</strong> the builder verifies names, lengths and SHA-256 values
+against <code>translation.json</code> before configuration. The pristine vendor stays
+unchanged.</li>
+<li><strong>Portable regression:</strong> <code>tests/test_translation.py</code> creates synthetic C++,
+verifies a matching set, then separately adds an AppleDouble file, alters the
+source, and removes it. Each mismatch must fail; restoring it must pass.</li>
+<li><strong>Observed result:</strong> the corrected real transfer compiled and reached normal
+boot and battle on the PC. The synthetic regression passes without game data.</li>
+</ul>
+<h2 id="feature-candidate-host-handlers-for-selected-guest-calls">Feature candidate: host handlers for selected guest calls</h2>
+<ul>
+<li><strong>Source revision:</strong> <code>6526f4803d98e10de50bea3af104a4d26e9df033</code>, generated
+call statements in <code>recomp/codegen.cpp</code>.</li>
+<li><strong>Observed need:</strong> Online Mode replaces 20 original <code>jal</code> statements with host
+handlers (<code>docs/online-mode.md</code>). Without a compiler option this is done by
+rewriting a copy of the generated C++ with exact-match checks
+(<code>scripts/game/online.py</code>). Each call statement already has a stable shape:
+return address, delay slot, depth-checked unit call, return check.</li>
+<li><strong>Proposed upstream improvement:</strong> accept a list of <code>site=handler</code> pairs and
+emit <code>handler(c)</code> in place of the unit call at those sites, verifying that
+the original word is a <code>jal</code>. Guest code and memory stay unchanged, and
+diagnostics can name the hooked sites.</li>
+<li><strong>Regression test:</strong> <code>tests/test_online.py</code> checks exact single replacement,
+duplicate and wrong-callee rejection on synthetic C++.</li>
+<li><strong>Observed result:</strong> the hooked build reached the original lobby and a
+four-client battle; the default build is unchanged. This is a feature
+candidate, not a defect.</li>
+</ul>
+<p>See <a href="research.html">research.md</a> for the complete experiment and remaining
+acceptance limits. No upstream contact or submission has occurred.</p>
+<p>For each candidate, record the problem, pinned upstream revision, reproducible trigger, game-independent explanation, proposed change, regression test and observed result. Separate shared compiler/runtime defects from this game&#39;s configuration or patches. Link to research.md rather than duplicating the narrative.</p>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>

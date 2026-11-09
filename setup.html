@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>re-gvs-fvzdx · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#research-reader">Research reader</a><a href="#online-mode-experimental">Online Mode (experimental)</a><a href="#local-workflow">Local workflow</a><a href="#validation-and-scope">Validation and scope</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="README.md">Markdown source ↗</a></div><h1>re-gvs-fvzdx</h1><p class="subtitle">rg-gvs-fvzdx / Build &amp; setup</p><article class="article-body"><p>Reverse-engineering and browser recompilation of <strong>Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)</strong>. The supplied disc identity is verified in <code>upstream.lock</code>.</p>
+<p><strong>Status: <code>0.1.0</code> baseline verified on the declared PC Chrome path.</strong>
+Normal boot, menus, selection, active battle, controls, pause/resume, Continue,
+Game Over and return to the menu passed. This is a bounded first baseline;
+later checks also passed Side 7 victory into active stage 2 and system/options
+save persistence across a page reload in the same browser profile. Other modes,
+campaign completion, browsers and cross-profile saves remain untested.</p>
+<p>The baseline uses the original upstream NTSC timing, measured at approximately
+60 Hz during active gameplay. Correctness fixes use <code>0.1.x</code>. Optimization,
+higher refresh rates and multiplayer are outside this stage.</p>
+<ul>
+<li><a href="https://sennett-lau.github.io/re-gvs-fvzdx/">Research wiki URL</a>: deployment pending; see the publishing status below.</li>
+<li><a href="index.html">Research reader source</a>: a Cantonese comparison with GVZG, reusable methods, new findings and further work.</li>
+<li><a href="research.html">Research record</a>: the English technical log, extraction, compilation and test evidence.</li>
+<li><a href="upstream-ideas.html">Upstream improvement candidates</a>: findings to review before any future contribution.</li>
+<li><a href="docs/evidence/acceptance-0.1.0.json">0.1.0 acceptance manifest</a>: exact builds,
+tests, selected screenshots and limitations.</li>
+<li><a href="research.html#2026-10-29-win-progression-and-savereload">Follow-up checks</a>:
+the added win and save paths, with test settings and selected evidence.</li>
+</ul>
+<p>The structure follows <code>re-gvs-gvzg</code>, with a separate static research reader. The accepted C++
+translation is tracked in <code>generated/federation-vs-zeon-dx/</code>; its matched web
+package is tracked in <code>apps/game/prebuilt/</code>. Private disc inputs, new build
+workspaces and raw captures stay under ignored <code>.local/</code>.
+The supplied image is ISO 9660, <code>SLPM-65076</code>, <code>VER = 2.00</code>, NTSC.
+<code>upstream.lock</code> fixes its full disc and executable hashes.</p>
+<h2 id="research-reader">Research reader</h2>
+<pre><code class="language-sh">npm ci --ignore-scripts
+npm run wiki:build
+npm run wiki:serve
+</code></pre>
+<p>Open <strong><a href="http://127.0.0.1:8777/">http://127.0.0.1:8777/</a></strong>. The reader covers replication of the baseline,
+comparison with GVZG, the later Online Mode experiment and selected evidence. It contains no game runtime or disc
+assets. The Cantonese article has one Markdown source; the English technical
+record and upstream proposals remain secondary references. Output is ignored in
+<code>.local/wiki/</code>. No public deployment is performed by these commands.</p>
+<h3 id="publishing-status-2026-11-09">Publishing status (2026-11-09)</h3>
+<p>The first Pages workflow attempt stopped before its build steps because GitHub
+reported an account billing lock. Self-hosted compute has not been shown to
+resolve that restriction. A separate, owner-only manual diagnostic workflow is
+prepared to observe one disposable runner assignment; its reviewed runner must
+reject every workflow step. Offline preparation and independent review do not
+establish real registration, service compatibility or a deployed wiki. See the
+<a href="research.html#2026-11-09-isolated-runner-diagnostic-preparation">research record</a>.</p>
+<h2 id="online-mode-experimental">Online Mode (experimental)</h2>
+<p>An opt-in Online build connects original clients to a private compatible
+server (<a href="https://github.com/inada-s/gdxsv">gdxsv</a>) through a token-protected
+gateway. Four browser clients on a PC and a MacBook Pro completed one original
+2v2 lobby battle with three consecutive matches and returned to the lobby. The tested server remains private;
+see <a href="online-mode.html">docs/online-mode.md</a> and
+<a href="online-backend.html">apps/server/README.md</a>.</p>
+<h2 id="local-workflow">Local workflow</h2>
+<p>Run the retained <code>0.1.0</code> package without compiling it again:</p>
+<pre><code class="language-sh">python3 scripts/game/verify.py
+python3 scripts/game/serve.py --build apps/game/prebuilt --disc /private/path/disc.iso
+</code></pre>
+<p>Open <strong><a href="http://127.0.0.1:8642/">http://127.0.0.1:8642/</a></strong>. The matched package includes HTML, JavaScript,
+WASM, <code>.data</code> and its original build manifest. The <code>.data</code> contains the boot
+executable, not the complete disc assets; the supported private ISO remains a
+separate runtime input.</p>
+<h3 id="compile-the-retained-c">Compile the retained C++</h3>
+<p>Use Python 3.9+, CMake 3.20+, Ninja, <code>patch</code>, and a Clang C++20 toolchain with
+<code>std::format</code>. The web build uses Emscripten 6.0.11 and its emdawnwebgpu port.
+The <code>--disc</code> path compiles tracked C++ directly and extracts the verified boot
+input into the new workspace. It does not invoke the recompiler or consume
+historical object files. Use a new <code>--work</code> directory for each build:</p>
+<pre><code class="language-sh">python3 scripts/game/build.py --disc /private/path/disc.iso --target web \
+  --emsdk /path/to/emsdk --work .local/rebuild-001 --jobs 2
+</code></pre>
+<p>For a native build, use <code>--target native</code> and another work directory.</p>
+<p>A fresh PC WSL build from these retained sources produced all four accepted
+web files byte for byte. See the <a href="docs/evidence/retained-source-rebuild.json">rebuild record</a>
+for the exact toolchain, input hashes and comparison scope.</p>
+<h3 id="regenerate-a-separate-translation-candidate">Regenerate a separate translation candidate</h3>
+<p>Regeneration is distinct from compiling the retained source. These commands
+write fresh ignored workspaces, preserving the accepted source and prebuilt:</p>
+<pre><code class="language-sh">python3 scripts/game/tools.py --jobs 2
+python3 scripts/game/regenerate.py --disc /private/path/disc.iso
+python3 scripts/game/build.py --translation .local/translation --target native --work .local/native-build --jobs 2
+# Activate the existing SDK before the browser build.
+python3 scripts/game/build.py --translation .local/translation --target web --emsdk /path/to/emsdk --jobs 2
+python3 scripts/game/serve.py --build .local/game-build/web --disc /private/path/disc.iso
+</code></pre>
+<p>The server uses <code>http://127.0.0.1:8642/</code>, HTTP byte ranges and cross-origin
+isolation. The original ELF is included in the generated <code>.data</code> file; the full
+disc remains a separate private runtime input. Keep HTML, JS, WASM, data and the
+build manifest together. Compilation alone does not establish acceptance; the
+dated <code>0.1.0</code> record identifies the tested artifacts. A new build needs its own
+comparison and runtime checks.</p>
+<p>For private archive extraction use <code>7zz x -o.local/disc ARCHIVE &#39;*.iso&#39;</code>.
+<code>scripts/game/extract.py --disc DISC --output NEW_DIRECTORY --full-hash</code> verifies
+the complete image. Normal regeneration checks disc size, actual boot settings
+and the boot executable hash. Discovery inputs (<code>--entries</code>, <code>--overlays</code>,
+<code>--vu-records</code>) must come from this game&#39;s measured execution.</p>
+<p>Keyboard mappings inherited from the runtime are Enter (Start), X (Circle), Z
+(Cross), A (Square), S (Triangle), arrows (D-pad), and I/J/K/L (left stick).
+The verified path is Arcade → Federation → Side 7 → Gundam/beam rifle,
+through a completed loss and return to the menu. At pilot-name entry, Start
+accepts a default name. Wait for menu transitions before confirming again.</p>
+<p>Create a standalone local directory from the tracked matched package, including
+the server, notices and evidence:</p>
+<pre><code class="language-sh">python3 scripts/game/package.py --output .local/package-export-001
+</code></pre>
+<p>The resulting <code>.local/package-export-001</code> excludes the disc and private saves. It is
+a local artifact, not a downloadable or published release.</p>
+<h3 id="tracked-source-and-package">Tracked source and package</h3>
+<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Contents</th>
+<th align="right">File bytes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>generated/federation-vs-zeon-dx/</code></td>
+<td>168 C++ files and one header</td>
+<td align="right">45,855,118</td>
+</tr>
+<tr>
+<td><code>src/generated/manifest.json</code></td>
+<td>Original generator/input fingerprints</td>
+<td align="right">23,588</td>
+</tr>
+<tr>
+<td><code>apps/game/prebuilt/</code></td>
+<td>Four accepted web files and build manifest</td>
+<td align="right">24,072,200</td>
+</tr>
+</tbody></table></div>
+<p>The largest generated file is 407,872 bytes; the WASM is 17,360,658 bytes. These
+files use ordinary Git without LFS or split archives. Only this accepted web set
+is tracked; experimental builds remain ignored. Original ISO/ROM archives and
+raw diagnostic captures are excluded.</p>
+<h2 id="validation-and-scope">Validation and scope</h2>
+<pre><code class="language-sh">python3 -m unittest discover -s tests -p &#39;test_*.py&#39;
+python3 scripts/game/verify.py
+node --check tests/pc/run.cjs
+</code></pre>
+<p>The <a href="tests/pc/README.md">silent PC harness</a> records real Chrome input,
+screenshots, errors, build identity and audio-ring consumption over an isolated
+profile. Test execution is through the user&#39;s authorized SSH PC, using
+project-owned resources. Timing tests use <code>--mute-audio</code>, preserving the audio
+engine; they do not change system volume.</p>
+<p>The repository is published at <a href="https://github.com/sennett-lau/re-gvs-fvzdx">sennett-lau/re-gvs-fvzdx</a>.
+The research wiki uses GitHub Pages; <code>.github/workflows/wiki-pages.yml</code> deploys
+only <code>.local/wiki/</code> when deliberately dispatched on <code>main</code>. No public game
+server, release or PR is created by that workflow. <a href="docs/license/index.html">Third-party notices</a>
+describe the pinned source and external dependencies.</p>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>

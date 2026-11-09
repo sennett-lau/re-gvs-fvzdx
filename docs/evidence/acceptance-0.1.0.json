@@ -1,0 +1,195 @@
+{
+  "schema": 1,
+  "version": "0.1.0",
+  "status": "accepted for the bounded baseline below",
+  "recorded_at": "2026-10-28T08:37:56.068551+00:00",
+  "disc_lock_sha256": "2ca39704a19e0bfce7df8e7d8af3b4dd224b2a178a6bb6de88439ca63ede2084",
+  "upstream_revision": "6526f4803d98e10de50bea3af104a4d26e9df033",
+  "compiler_runtime_patches": [],
+  "generated_manifest_sha256": "19425660a79cb18f8e6ee2a1d7174fa437505409864cae8a79f40dc26eab8ef6",
+  "artifacts": {
+    "ps2web.data": {
+      "bytes": 6511266,
+      "sha256": "efc67275b871452f021038df43c008d52b32e7769ccd06f45600e01f501bc006"
+    },
+    "ps2web.html": {
+      "bytes": 24443,
+      "sha256": "e07ebc8ec8f88e94e461892a3a40ebc5b06988778cbd9e8d5034f16ad1333abd"
+    },
+    "ps2web.js": {
+      "bytes": 151840,
+      "sha256": "636a2e1344c6dd32881edd86881ffaec99e53d730392454b69133223b3649728"
+    },
+    "ps2web.wasm": {
+      "bytes": 17360658,
+      "sha256": "49bed2bc5fd253b752159779f4150e18d441143f13ddb38dd1f57638f58e8094"
+    }
+  },
+  "native": {
+    "requested_frames": [
+      900,
+      3600
+    ],
+    "actual_frames": [
+      900,
+      3600
+    ],
+    "outcome": "Requested frame limits reached; startup and pilot-name screen inspected; no missing-code halt",
+    "sha256": "adf01cbb1c461421041ea0c9922da77781d048fe85ef244fa69c981b35d3f84c",
+    "audio": {
+      "sample_rate": 48000,
+      "channels": 2,
+      "frames": 430336,
+      "peak": 9613,
+      "nonzero_samples": 61156
+    }
+  },
+  "browser": {
+    "os": "Windows 11 10.0.26200",
+    "browser": "Chrome 156.0.8078.48",
+    "cpu": "Intel Core i9-12900K",
+    "gpu": "NVIDIA RTX 3080 Ti / WebGPU nvidia ampere",
+    "ram_gib": 64,
+    "resolution": "Runtime scale 1, 4:3",
+    "runs": [
+      {
+        "id": "rvzdx-boot-001",
+        "frames_at_end": 50745,
+        "page_errors": 0,
+        "console_error_count": 2,
+        "resource_errors": "Only optional favicon 404s; corrected server verified by third run",
+        "audio_checks_passed": 5,
+        "silence": "Actual Chrome --mute-audio verified; AudioContext and ring consumption active",
+        "normal_boot": true,
+        "save_state": false
+      },
+      {
+        "id": "rvzdx-acceptance-002",
+        "frames_at_end": 44888,
+        "page_errors": 0,
+        "console_error_count": 2,
+        "resource_errors": "Only optional favicon 404s; corrected server verified by third run",
+        "audio_checks_passed": 4,
+        "silence": "Actual Chrome --mute-audio verified; AudioContext and ring consumption active",
+        "normal_boot": true,
+        "save_state": false
+      },
+      {
+        "id": "rvzdx-host-check-003",
+        "frames_at_end": 1621,
+        "page_errors": 0,
+        "console_error_count": 0,
+        "resource_errors": "none",
+        "audio_checks_passed": 1,
+        "silence": "Actual Chrome --mute-audio verified; AudioContext and ring consumption active",
+        "normal_boot": true,
+        "save_state": false
+      }
+    ]
+  },
+  "timing": {
+    "scope": "Run 001 active battle, periodic samples 144 to 155 before pause",
+    "start_frame": 28373,
+    "end_frame": 31678,
+    "elapsed_seconds": 55.07207999992371,
+    "runtime_hz": 60.01226029604435,
+    "audio_active": true,
+    "clock_modifications": false,
+    "interpretation": "Approximately 60 Hz in the original upstream NTSC model, not a claim of exact hardware cycle equivalence"
+  },
+  "acceptance": [
+    "Normal boot from the verified disc",
+    "Directional menu input and Circle confirmation",
+    "Arcade, Federation, Side 7, pilot, ground/space suit and weapon selection",
+    "Active 3D battle with movement, fire and boost",
+    "Pause and resume with frozen game timer",
+    "Continue countdown, Game Over, faction results and return to menu"
+  ],
+  "vu": {
+    "vu1_recordings": 0,
+    "interpreted_counter_max": 0,
+    "scope": "Observed boot/menu/Side 7 path only; VU0 macros present in the EE translation"
+  },
+  "limits": [
+    "Only the declared Arcade Side 7 loss/return path is accepted; campaign completion and other maps/modes untested",
+    "Only this PC Chrome/WebGPU setup is accepted; other browsers, GPUs, mobile and gamepads untested",
+    "Memory-card persistence and audible audio fidelity untested; tests deliberately silent",
+    "No pixel-perfect or exact-cycle comparison with original hardware",
+    "No VU1 recording observed on tested paths; undiscovered programs/modes remain possible",
+    "Run 002 short scripted waits initially missed menu fades; acceptance uses corrected observed-screen interaction, not screenshot labels"
+  ],
+  "screenshots": [
+    {
+      "file": "normal-boot-menu.png",
+      "sha256": "ad9db867a9e5cfe750bed9f450d09a00749b728c1dbad4579eb3e46d77cb0fa6",
+      "run": "rvzdx-host-check-003",
+      "sample_frame": 1548,
+      "utc": "2026-10-28T08:33:59.490Z",
+      "caption": "Fresh profile normal boot and Start reaches Arcade menu."
+    },
+    {
+      "file": "mobile-suit-selection.png",
+      "sha256": "2cce8a40e982b940ff0b3766fc1a268e40c04bc93fa13f315553ed25c9909d1c",
+      "run": "rvzdx-boot-001",
+      "sample_frame": 18664,
+      "utc": "2026-10-28T08:07:19.943Z",
+      "caption": "Gundam selected through the original menu."
+    },
+    {
+      "file": "movement-and-fire.png",
+      "sha256": "5f3e697b72202339838e62a4c929adffcfc952cbb668ebfbc35469e3023ada6e",
+      "run": "rvzdx-boot-001",
+      "sample_frame": 32316,
+      "utc": "2026-10-28T08:11:07.495Z",
+      "caption": "Movement changes position and shooting reduces ammunition to 9."
+    },
+    {
+      "file": "boost-and-fire.png",
+      "sha256": "9d23d0093b5e0ddf75df2fbee4ecd6434d326e51496d1594e9a597455fc40c3e",
+      "run": "rvzdx-boot-001",
+      "sample_frame": 32431,
+      "utc": "2026-10-28T08:11:09.412Z",
+      "caption": "Cross plus movement produces visible boost; ammunition is 8."
+    },
+    {
+      "file": "pause.png",
+      "sha256": "14ea0608cb17c5d2ff04812c9e2cf1fe9a5728af47457c57233182840145fbfa",
+      "run": "rvzdx-boot-001",
+      "sample_frame": 32036,
+      "utc": "2026-10-28T08:11:02.820Z",
+      "caption": "Pause freezes the game timer at 106.00."
+    },
+    {
+      "file": "continue.png",
+      "sha256": "2d3c794dfef578ce3ced5f8863e263398994bd367b9c8e1ac824256957ea80e0",
+      "run": "rvzdx-acceptance-002",
+      "sample_frame": 33987,
+      "utc": "2026-10-28T08:28:45.516Z",
+      "caption": "Completed defeat path reaches CONTINUE countdown."
+    },
+    {
+      "file": "game-over.png",
+      "sha256": "e29b12f1fa7c7d705bcd999a4c981c30194f4532db67a30f03d39d7b5ccd8886",
+      "run": "rvzdx-acceptance-002",
+      "sample_frame": 34490,
+      "utc": "2026-10-28T08:28:53.878Z",
+      "caption": "The unaccepted Continue expires to GAME OVER."
+    },
+    {
+      "file": "faction-result.png",
+      "sha256": "d2fc3f1d352e69bb3b3c9fcb9e980983c070469c142f41086f1f31120582bac0",
+      "run": "rvzdx-acceptance-002",
+      "sample_frame": 35116,
+      "utc": "2026-10-28T08:29:04.319Z",
+      "caption": "Post-game faction result summary."
+    },
+    {
+      "file": "return-to-menu.png",
+      "sha256": "61a20c89a4c8e3fd8268431e836b1442bf2ce60fb977eead6ee50a8eaa3e051b",
+      "run": "rvzdx-acceptance-002",
+      "sample_frame": 44888,
+      "utc": "2026-10-28T08:31:47.176Z",
+      "caption": "Start returns from attract/title flow to the original main menu."
+    }
+  ]
+}

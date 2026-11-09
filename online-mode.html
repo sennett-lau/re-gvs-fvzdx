@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Online Mode (experimental, private) · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#approach">Approach</a><a href="#build-and-run">Build and run</a><a href="#findings">Findings</a><a href="#test-record">Test record</a><a href="#limits">Limits</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="docs/online-mode.md">Markdown source ↗</a></div><h1>Online Mode (experimental, private)</h1><p class="subtitle">rg-gvs-fvzdx / Online Mode experiment</p><article class="article-body"><p>This is the technical record of the opt-in Online Mode work for
+SLPM-65076 v2.00. It is separate from the accepted <code>0.1.0</code> baseline: the
+default build, the tracked C++ translation and <code>apps/game/prebuilt/</code> are
+unchanged. Online Mode needs a private backend and a separately built
+<code>--online</code> web package.</p>
+<p><strong>Status (2026-11-09): a private, multi-device proof of concept.</strong> Original
+clients in browsers on two machines (a Windows PC and a MacBook Pro) connected
+through a private compatible server, registered accounts, logged in, used the
+original lobby and were matched into one original 2v2 battle. The result and its
+limits are in <a href="#test-record">Test record</a>. The source and research wiki are published separately; no public game or backend service is hosted.</p>
+<h2 id="approach">Approach</h2>
+<p>The reference project <a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG</a> reached
+original Online Mode by running the original IOP network modules and adapting
+<code>NETMOD_AVETCP.IRX</code> underneath them. That method does not transfer directly:
+this disc ships a different, older KDDI stack (<code>AVETCP.IRX</code>, <code>AVEPPP.IRX</code>,
+<code>AVEDHCP.IRX</code>, <code>AVE_WRAP.IRX</code>, <code>MCS_WRAP.IRX</code> and modem drivers, no DNAS and
+no separate network-settings program), and the GVZG server
+(<a href="https://github.com/inada-s/zdxsv">zdxsv</a>) targets the other game.</p>
+<p>Instead, this port follows the server project for this game,
+<a href="https://github.com/inada-s/gdxsv">gdxsv</a> (AGPL-3.0). gdxsv already speaks this
+disc&#39;s PS2 lobby protocol (<code>GameDiskPS2</code>, game code <code>0x02</code>) and battle relay.
+Its retired PCSX2 fork (<code>inada-s/pcsx2</code>, branch <code>gdxsv-dev</code>, commit
+<code>84263d2787bcd28a36e5175bf675f71d4164cbde</code>, <code>gdxsv_patch/src/main.c</code>) did not
+emulate the network hardware either: it replaced the game&#39;s calls into the
+AVE network library with emulator socket calls. This port applies the same
+call-site replacement, but to the generated C++ instead of guest memory.</p>
+<pre><code>browser (one per player)                               private backend host
+  original game (WASM)
+    hooked EE calls  ── MAIN_THREAD_EM_ASM ─▶ bridge.js
+                                              one WebSocket per TCP stream ──▶ gateway ──▶ gdxsv lobby (TCP)
+                                                ws://…/tcp/lobby                       └─▶ gdxsv MCS battle relay (TCP)
+                                                ws://…/tcp/battle
+</code></pre>
+<h3 id="client-hooks">Client hooks</h3>
+<p><code>scripts/game/online.py</code> copies the generated C++ and replaces 20 original
+<code>jal</code> call statements and one function entry. Each site is checked against the
+supplied ELF before the copy is written: the original word must be the expected
+<code>jal</code>, the callee and enclosing function symbols must match, and the generated
+statement must be unique. A mismatch stops the build. The tracked translation is
+never edited.</p>
+<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<thead>
+<tr>
+<th>Original call (enclosing function)</th>
+<th>Handler</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ave_TcpOpen</code> (<code>TcpOpen</code>)</td>
+<td><code>tcp_open</code></td>
+<td>Opens <code>/tcp/lobby</code> for the resolved lobby address, else <code>/tcp/battle</code>; waits up to 5 s like the reference</td>
+</tr>
+<tr>
+<td><code>Ave_TcpClose</code> (<code>TcpClose</code>)</td>
+<td><code>tcp_close</code></td>
+<td>Closes the stream</td>
+</tr>
+<tr>
+<td><code>Ave_TcpSend</code> (<code>TcpWrite</code>)</td>
+<td><code>tcp_send</code></td>
+<td>Sends guest bytes</td>
+</tr>
+<tr>
+<td><code>Ave_TcpRecv</code> (<code>TcpRead</code>), <code>McsReceive</code> (<code>GetMsgMCS</code>)</td>
+<td><code>tcp_recv</code>, <code>mcs_receive</code></td>
+<td>Copies available bytes into guest memory</td>
+</tr>
+<tr>
+<td><code>TcpGetStatus</code> (<code>select_ps2</code>)</td>
+<td><code>tcp_get_status</code></td>
+<td>Readable byte count, as in the reference</td>
+</tr>
+<tr>
+<td><code>gethostbyname_ps2_0/1/release</code> (<code>tcp_init</code>)</td>
+<td><code>resolve_*</code></td>
+<td>Resolves the lobby name (originally <code>ca1202.mmcp6</code>) to a marker address</td>
+</tr>
+<tr>
+<td><code>connect_ps2_check</code> (<code>tcp_init</code>)</td>
+<td><code>connect_check</code></td>
+<td>Reports the stream state</td>
+</tr>
+<tr>
+<td><code>AvepppGetStatus</code> (<code>dialing_20</code>, <code>internet_lobby_act</code>)</td>
+<td><code>ppp_status</code></td>
+<td>Reports the PPP link as up (<code>5</code>)</td>
+</tr>
+<tr>
+<td><code>Ave_PppGetUsbDeviceId</code>, <code>ADNS_Finalize</code>, <code>McsDispose</code></td>
+<td><code>return_zero</code></td>
+<td>Not needed without a modem</td>
+</tr>
+<tr>
+<td><code>LobbyToMcsInitSocket</code> (<code>game_start_to_mcs</code>), <code>Check_NecessaryInput</code> (<code>entry_move</code>)</td>
+<td><code>skip_call</code></td>
+<td>Removed by the reference</td>
+</tr>
+<tr>
+<td>entry <code>dummy_00</code> (<code>matching_connect_jmp$219[0]</code>)</td>
+<td><code>dial_start</code></td>
+<td>Skips dialing (<code>COM_R_No_0 = 2</code>)</td>
+</tr>
+</tbody></table></div>
+<p>One data word is written through the runtime&#39;s existing patch list (place 2:
+boot and every vblank): <code>connect_jmp_tbl$175[2]</code> from <code>modem_recognition</code> to
+<code>network_battle</code>, so the menu entry 「モデムの認識」 starts the network battle.</p>
+<p><code>src/online/bridge.js</code> (linked with <code>--pre-js</code>) runs on the main thread. After
+the lobby stream opens it sends gdxsv&#39;s <code>lbsPlatformInfo</code> (<code>0x9950</code>) with a
+per-client login key, as gdxsv&#39;s patched clients do; gdxsv then creates or
+finds the account for 「ネットワーク接続」. The key comes from the private client
+configuration or is generated once per browser profile. The bridge records
+connection counters and lobby command ids, never payload bytes.</p>
+<h3 id="backend">Backend</h3>
+<p><a href="online-backend.html"><code>apps/server/</code></a> builds gdxsv at commit
+<code>46ee80b715f76ac0c7c254f6f983e5dcd9940306</code> with a small patch set, runs it with
+a token-protected WebSocket-to-TCP gateway and supervises both. Listeners are
+loopback-only; other devices reach the gateway through a tailnet listener that
+admits only listed peers. The patch set binds gdxsv to the configured loopback
+host and makes the battle relay&#39;s 30 s silent-peer limit configurable (see
+<a href="#findings">Findings</a>).</p>
+<h2 id="build-and-run">Build and run</h2>
+<pre><code class="language-sh"># Backend (once): build, initialise, start; see apps/server/README.md.
+python3 apps/server/backendctl.py --config .local/online/backend/config.json build --activate
+python3 apps/server/backendctl.py --config .local/online/backend/config.json init
+python3 apps/server/backendctl.py --config .local/online/backend/config.json start
+
+# Client: the --online profile hooks a copy of the tracked C++.
+python3 scripts/game/build.py --disc /private/disc.iso --online --target web \
+  --emsdk /path/to/emsdk --work .local/online-web-NNN --jobs 16
+python3 scripts/game/serve.py --build .local/online-web-NNN/web --disc /private/disc.iso \
+  --port 8642 --online-config /private/client.json
+</code></pre>
+<p><code>client.json</code> is <code>{&quot;gatewayURL&quot;: &quot;ws://HOST:PORT/&quot;, &quot;token&quot;: &quot;…&quot;}</code> with an
+optional <code>loginKey</code>. <code>backendctl init</code> writes one for each listener. The page
+origin must be in the backend&#39;s <code>origins</code>.</p>
+<p>In the game: main menu 「通信対戦」 → create or load the network file on the
+memory card → enter a pilot name → 「モデムの認識」 (this starts the network
+battle) → save → 「ネットワーク接続」 → accept the terms and the connection →
+enter a handle name and 「登録」 on first use, or choose the ID → lobby map.
+「新規登録」 is not supported by gdxsv for PS2 and is refused.</p>
+<h2 id="findings">Findings</h2>
+<ol>
+<li><strong>Call-site replacement transfers without IOP network emulation.</strong> All 20
+reference call sites and the dial entry matched this ELF exactly, so the
+lobby protocol reached gdxsv unchanged on the first build.</li>
+<li><strong>The original online battle is always 2v2.</strong> <code>internet_to_modem</code> (after
+<code>LobbyToMcsInit</code>) writes a fixed participant mask <code>0x0F</code> and count <code>4</code> into
+the system work area. During the pre-battle ping exchange (<code>wr_wait_1</code>) each
+client waits for a pong from every masked position. With gdxsv&#39;s two-player
+force start (<code>／ｆ</code> or 「あ」 in the lobby chat) the clients exchanged
+intro, ping and pong messages correctly but waited for positions 2 and 3
+until the battle relay dropped them. This was established with guest memory
+reads and a runtime store watch (<code>PS2_WATCH</code>), not by assumption. No
+gameplay patch was added; tests use four players.</li>
+<li><strong>Slow clients need a longer silent-peer limit.</strong> gdxsv&#39;s battle relay drops
+a TCP peer that sends nothing for 30 s. Clients are silent while they load
+the stage. A browser reading the disc image over a slow link exceeded that.
+The patch keeps 30 s by default and reads <code>GDXSV_BATTLE_READ_TIMEOUT</code>;
+the private backend uses <code>120s</code>. The game&#39;s own loading wait is 3,600 frames
+(about 60 s), so a slow disc source still matters.</li>
+<li><strong>The game disconnects idle lobby users</strong> (「一定時間入力が無かったため回線を切断しました」)
+and returns to the network menu; reconnecting works without a backend
+restart.</li>
+</ol>
+<h2 id="test-record">Test record</h2>
+<p>Selected evidence: <a href="docs/evidence/online-mode-2026-11-09.json">online-mode-2026-11-09.json</a>
+and the screenshots in <a href="docs/evidence/online">evidence/online/</a>. Raw captures,
+cards, tokens and login keys stay in ignored <code>.local/online/</code>.</p>
+<p><strong>Setup.</strong> The backend ran on this Mac (loopback services; the gateway&#39;s tailnet
+listener admitted only the PC and the MacBook Pro). The <code>--online</code> package was
+built on the PC (WSL, Emscripten 6.0.11) from the working tree; the source,
+bridge and hook manifest fingerprints match the files described here. Every
+client used the silent collector (<code>tests/pc/run.cjs</code>): an isolated Chrome
+profile, <code>--mute-audio</code>, and AudioContext/audio-ring checks.</p>
+<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Machine</th>
+<th>Page</th>
+<th>Account</th>
+<th>Team</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PC-A</td>
+<td>Windows PC, Chrome 156</td>
+<td>PC loopback, served from WSL</td>
+<td><code>WHSCAC</code></td>
+<td>連邦</td>
+</tr>
+<tr>
+<td>PC-B</td>
+<td>same PC, second profile</td>
+<td>PC loopback</td>
+<td><code>4YJDON</code></td>
+<td>ジオン</td>
+</tr>
+<tr>
+<td>PC-C</td>
+<td>same PC, third profile</td>
+<td>PC loopback</td>
+<td><code>FRLIJT</code></td>
+<td>ジオン</td>
+</tr>
+<tr>
+<td>MacBook Pro</td>
+<td>MacBook Pro (M2 Pro), Chrome 156</td>
+<td>MacBook loopback via an SSH reverse tunnel to this Mac</td>
+<td><code>ZS8JIP</code></td>
+<td>連邦</td>
+</tr>
+</tbody></table></div>
+<p><strong>Observed path (2026-11-09).</strong></p>
+<ol>
+<li>Each client created its network file on a fresh card, entered a pilot name,
+started the network battle, accepted the terms and connected. gdxsv received
+<code>lbsPlatformInfo</code> and the original lobby exchange (connection ID, login type,
+user list, handle registration or ID selection, lobby join).</li>
+<li>All four chose シアトル (lobby 7) and 「パートナー自動選抜」. gdxsv started
+the lobby battle when two players per side were waiting, without force start.</li>
+<li>Each client asked for the battle address (<code>0x6916</code>), closed the lobby
+stream and opened <code>/tcp/battle</code>. gdxsv placed all four in one MCS room
+(battle code <code>1794153391031</code>).</li>
+<li>The clients completed machine selection, the briefing, stage loading and
+three consecutive matches (the original rematch panel). Timers matched across
+all four screens; a kill by the MacBook Pro client appeared in the PC
+clients&#39; kill feed.</li>
+<li>After the third match each client showed the results, posted them (gdxsv
+recorded <code>WHSCAC</code> 3 battles/2 wins/4 kills, <code>ZS8JIP</code> 3/2/7, <code>4YJDON</code> 3/0 wins,
+2 losses) and returned to the lobby map.</li>
+</ol>
+<p>The MCS room lasted 709 s. Each battle stream carried about 346 KB up and
+1.04 MB down and closed normally. All four collectors reported running, consuming
+audio, no page errors and an average of 60 fps while the battle stream was open.</p>
+<p><strong>Failed and partial attempts, retained.</strong></p>
+<ul>
+<li>Two-player force start (PC + MacBook Pro): lobby, login, matching and the
+MCS room worked; the pre-battle ping stage stalled (finding 2).</li>
+<li>First four-player attempt (two clients on each machine): matching, machine
+selection and the briefing worked on all four; both MacBook Pro clients then
+loaded the stage over the slow reverse tunnel for more than 30 s, the battle
+relay dropped them, and the PC clients ended the battle (finding 3). The
+successful run used one client on the MacBook Pro and the 120 s limit.</li>
+<li>Several navigation attempts were repeated after automated key presses landed
+during loading; these are harness timing errors, not game failures.</li>
+</ul>
+<h2 id="limits">Limits</h2>
+<ul>
+<li>Private only: loopback and allow-listed tailnet peers, one shared token, no
+TLS, no public hosting.</li>
+<li>Four players are required for a battle; the original 2v2 mask is not patched.</li>
+<li>gdxsv code patches (<code>lbsGamePatch</code>) cannot apply to a statically recompiled
+client; the backend&#39;s patch tables stay empty.</li>
+<li>The game page needs a loopback origin for cross-origin isolation; another
+device needs a local copy of the package or a loopback tunnel, and a disc
+source fast enough for stage loading.</li>
+<li>Only SLPM-65076 v2.00 is supported; the hook table is checked against its ELF.</li>
+</ul>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>

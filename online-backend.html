@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private Online Mode backend · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#architecture">Architecture</a><a href="#ports">Ports</a><a href="#commands">Commands</a><a href="#security-limits">Security limits</a><a href="#third-party-provenance-and-licenses">Third-party provenance and licenses</a><a href="#known-limits">Known limits</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="apps/server/README.md">Markdown source ↗</a></div><h1>Private Online Mode backend</h1><p class="subtitle">rg-gvs-fvzdx / Private backend setup</p><article class="article-body"><p>This directory is the private backend for Online Mode of the SLPM-65076 v2.00
+port: a pinned, patched build of the compatible server
+<a href="https://github.com/inada-s/gdxsv">inada-s/gdxsv</a>, a token-protected
+WebSocket-to-TCP byte gateway, and a supervisor that runs both. gdxsv speaks the
+PS2 lobby protocol of this disc natively (<code>GameDiskPS2</code>); nothing here parses or
+rewrites game bytes.</p>
+<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>prepare_backend.py</code></td>
+<td>Archives the pinned gdxsv commit, applies the patch set, builds and tests gdxsv and the gateway, writes <code>build-info.json</code></td>
+</tr>
+<tr>
+<td><code>backendctl.py</code></td>
+<td><code>build</code>, <code>init</code>, <code>start</code>, <code>status</code>, <code>stop</code> for the persistent private service</td>
+</tr>
+<tr>
+<td><code>backend.example.json</code></td>
+<td>Config fields for <code>backendctl.py</code></td>
+</tr>
+<tr>
+<td><code>patches/gdxsv-loopback.diff</code></td>
+<td>The gdxsv patch set (with its regression test)</td>
+</tr>
+<tr>
+<td><code>gateway/</code></td>
+<td>Gateway source (<code>main.go</code>), unit tests (<code>main_test.go</code>), <code>go.mod</code>, <code>go.sum</code></td>
+</tr>
+<tr>
+<td><code>../../tests/server/lobby_probe.mjs</code></td>
+<td>Synthetic probe through the running gateway</td>
+</tr>
+</tbody></table></div>
+<h2 id="architecture">Architecture</h2>
+<pre><code>browser page (http://127.0.0.1:8642)          this machine, loopback only
+  game EE network hooks                        ┌──────────────────────────────────────────┐
+  one TCP stream = one WebSocket  ── ws ──▶    │ gateway 127.0.0.1:base+20                │
+    /tcp/lobby                                 │   (+ optional tailnet listener)          │
+    /tcp/battle                                │      │ TCP            │ TCP              │
+                                               │      ▼                ▼                  │
+                                               │ gdxsv lbs         gdxsv MCS (in process) │
+                                               │ 127.0.0.1:base+0  127.0.0.1:base+1       │
+                                               └──────────────────────────────────────────┘
+</code></pre>
+<p>The game opens TCP to the lobby; gdxsv later answers <code>lbsAskMcsAddress</code> (0x6916)
+with <code>GDXSV_BATTLE_PUBLIC_ADDR</code> (<code>127.0.0.1:base+1</code>), and the game closes the
+lobby connection and opens TCP to that address. In the browser each TCP stream
+is one WebSocket to the gateway:</p>
+<ul>
+<li><code>ws://HOST:PORT/tcp/lobby</code> dials the gdxsv lobby listener.</li>
+<li><code>ws://HOST:PORT/tcp/battle</code> dials the gdxsv battle (MCS) listener.</li>
+<li><code>Sec-WebSocket-Protocol</code> must be exactly one value equal to the token
+(constant-time comparison); the gateway echoes it.</li>
+<li><code>Origin</code> must be one of the configured origins. A request without <code>Origin</code>
+is refused as well.</li>
+<li>The <code>Host</code> header must equal the listener address (<code>127.0.0.1:PORT</code> on the
+loopback listener, <code>100.x.y.z:PORT</code> on a tailnet listener). This blocks DNS
+rebinding. A query string is refused.</li>
+<li>Binary messages are raw TCP bytes in both directions, in order, with no added
+framing. Text messages close the WebSocket with 1003.</li>
+<li>TCP EOF closes the WebSocket with 1000; a TCP error or a failed dial closes it
+with 1011; a gateway stop closes it with 1001. WebSocket close or error closes
+the TCP connection. Each connection waits for both copy loops before it ends.</li>
+<li>Each connection writes one log line with listener, peer, path, the
+gateway-side service address (to join with the gdxsv log), duration, close
+reason, and byte/frame counts per direction. No payload and no token is logged.
+Refused requests log one <code>reject</code> line with the reason.</li>
+</ul>
+<h2 id="ports">Ports</h2>
+<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Listener</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>base+0 TCP</td>
+<td>gdxsv lobby (<code>GDXSV_LOBBY_ADDR</code>)</td>
+</tr>
+<tr>
+<td>base+0 UDP</td>
+<td>gdxsv lobby UDP responder (same host as the lobby)</td>
+</tr>
+<tr>
+<td>base+1 TCP+UDP</td>
+<td>gdxsv battle server MCS (<code>GDXSV_BATTLE_ADDR</code>, <code>GDXSV_BATTLE_PUBLIC_ADDR</code>)</td>
+</tr>
+<tr>
+<td>base+3 TCP</td>
+<td>gdxsv HTTP API (<code>GDXSV_LOBBY_HTTP_ADDR</code>), loopback only</td>
+</tr>
+<tr>
+<td>base+20 TCP</td>
+<td>gateway loopback listener</td>
+</tr>
+<tr>
+<td>configured</td>
+<td>gateway tailnet listeners, for example base+30</td>
+</tr>
+</tbody></table></div>
+<p>The default base is 19800. <code>backendctl.py</code> refuses ports 18800-18853, 8860 and
+8767, which other local projects use. The rollback relay (<code>GDXSV_RELAY_ADDR</code>) is
+empty, so it does not start; pprof and the cloud profiler are off (<code>-pprof=0 -cprof=0</code>). Webhook, GCE on-demand servers and the replay bucket are disabled by
+empty settings.</p>
+<h2 id="commands">Commands</h2>
+<pre><code class="language-sh">C=&quot;python3 apps/server/backendctl.py --config .local/online/backend/config.json&quot;
+$C build --activate   # builds/&lt;utc&gt;/ from the pinned commit; &#39;build&#39; links the active one
+$C init               # state/: token, gdxsv.db (initdb), gateway.json, client.json
+$C start              # supervisor; returns after every listener is verified
+$C status             # liveness, listener inventory, TCP probes; exit 0 only when healthy
+$C stop
+node tests/server/lobby_probe.mjs --client .local/online/backend/state/client.json --out .local/online/evidence
+</code></pre>
+<p>The config is private (<code>.local/</code> is ignored by Git); <code>backend.example.json</code>
+shows the fields. Relative paths resolve against the config file&#39;s directory.</p>
+<ul>
+<li><code>build</code> runs <code>prepare_backend.py</code>: <code>git archive</code> of revision
+<code>46ee80b715f76ac0c7c254f6f983e5dcd9940306</code> from the local clone (<code>gdxsv_clone</code>),
+SHA-256 of the archive, safe extraction, <code>patch -p1 -N -t -F0</code> with
+<code>patches/gdxsv-loopback.diff</code> (no fuzz; a stale patch fails), then
+<code>go build</code>, <code>go vet</code> and the full <code>go test ./gdxsv/...</code> suite of gdxsv, and
+<code>go vet</code>, <code>go test -race</code> and <code>go build</code> of the gateway. Builds use
+<code>GOTOOLCHAIN=go1.26.0</code> (gdxsv requires Go 1.26), <code>-trimpath</code>,
+<code>-mod=readonly</code> and <code>CGO_ENABLED=1</code> (the SQLite driver needs cgo). The build
+fails if <code>TestLoopbackBinding</code> or <code>TestLbs_TCPLoginIntegration</code> does not pass.
+<code>build-info.json</code> records the commit, tree, archive hash, patch hash and
+per-file before/after hashes, integration source hashes, commands, test
+results, Go version and environment, C compiler, module lists and output
+hashes. An existing build directory is never reused.</li>
+<li><code>init</code> keeps an existing token and database. gdxsv <code>initdb</code> deletes an
+existing database, so it runs only when <code>state/gdxsv.db</code> is absent. It
+writes <code>state/gateway.json</code> and <code>state/client.json</code>
+(<code>{&quot;gatewayURL&quot;: &quot;ws://127.0.0.1:19820/&quot;, &quot;token&quot;: &quot;...&quot;, &quot;tailnetGatewayURLs&quot;: {...}}</code>)
+plus <code>state/client-&lt;label&gt;.json</code> per tailnet listener, all mode 0600.</li>
+<li><code>start</code> checks the active build hashes and that no configured port is held,
+then starts a detached supervisor (<code>state/run/supervisor.pid</code>,
+<code>state/run/status.json</code>). It runs <code>gdxsv -pprof=0 -cprof=0 -cpu=2 lbs</code> and the
+gateway with logs in <code>state/logs/</code>. The supervisor reads the processes&#39;
+actual sockets with <code>lsof</code> and reports ready only when they exactly equal the
+expected set; any listener on another address is an error. If a service
+exits, the supervisor stops the other and records the error.</li>
+<li><code>stop</code> stops the gateway first (browsers see 1001), then gdxsv.</li>
+</ul>
+<h2 id="security-limits">Security limits</h2>
+<ul>
+<li>Loopback by default. Every gdxsv listener binds 127.0.0.1. Upstream
+<code>stripHost()</code> bound the lobby and battle servers to all interfaces and the
+lobby UDP responder always bound all interfaces; the patch fixes both.</li>
+<li>A tailnet listener exists only when configured, binds only this machine&#39;s
+tailnet address, and closes any connection whose source is not a listed
+tailnet peer (all addresses must be in 100.64.0.0/10). The token, Origin and
+Host checks also apply there.</li>
+<li>One shared token for all clients. It is a capability, not a user account;
+anyone who has <code>client.json</code> can use the backend. Rotate it by deleting
+<code>state/token</code> and running <code>init</code> again.</li>
+<li>No TLS. Traffic is plain <code>ws://</code> on loopback or inside the tailnet (which
+WireGuard encrypts). Do not expose any port to a LAN or the internet, and do
+not host this publicly. Native clients can forge <code>Origin</code>; the Origin check
+only stops other web pages in a browser.</li>
+<li>The gdxsv HTTP API on base+3 is unauthenticated and also serves Go&#39;s pprof
+handlers on the default mux. It is reachable only on loopback.</li>
+</ul>
+<h2 id="third-party-provenance-and-licenses">Third-party provenance and licenses</h2>
+<ul>
+<li>gdxsv: <a href="https://github.com/inada-s/gdxsv">https://github.com/inada-s/gdxsv</a>, commit
+<code>46ee80b715f76ac0c7c254f6f983e5dcd9940306</code>, GNU Affero General Public License
+version 3. Each build directory has <code>source/</code> with the exact upstream archive,
+<code>patches.diff</code> as applied, the upstream <code>LICENSE</code>, a deterministic patched
+source archive and a <code>NOTICE</code>. AGPL-3.0 section 13: if anyone other than the
+operator interacts with this server over a network, offer them that
+corresponding source. <code>patches/gdxsv-loopback.diff</code> is a modification of
+gdxsv and is under the same license.</li>
+<li>Gateway: this project&#39;s source (<code>gateway/</code>), using
+<a href="https://github.com/gorilla/websocket">gorilla/websocket</a> v1.5.3
+(BSD-2-Clause; the build copies its license into <code>source/</code>). Go module
+versions are fixed by <code>gateway/go.sum</code> and gdxsv&#39;s <code>go.sum</code>.</li>
+<li>The design follows the GVZG reference backend (<code>../re-gvs-gvzg/apps/server</code>)
+for loopback binding, token as subprotocol, Origin allowlist, peer-restricted
+tailnet listeners and payload-free connection logs. GVZG-specific services
+(zdxsv, DNAS, UDP DNS, login) do not apply to this disc.</li>
+</ul>
+<h2 id="known-limits">Known limits</h2>
+<ul>
+<li>Game-verified on 2026-11-09 with four original clients on a PC and a
+MacBook Pro (registration, login, lobby, one 2v2 battle of three matches,
+results and lobby return); see
+<a href="online-mode.html#test-record"><code>docs/online-mode.md</code></a>. The synthetic
+probe still covers only the first lobby message and the battle greeting.</li>
+<li>A fresh database has no <code>m_lobby_setting</code>, <code>m_patch</code> or <code>m_rule</code> rows; the PS2
+client reached the lobby and battled with gdxsv&#39;s built-in defaults. The
+original online battle is 2v2: a two-player force start stalls in the client
+(finding 2 in <code>docs/online-mode.md</code>). gdxsv can send <code>lbsGamePatch</code> (0x9960) code patches when a lobby setting
+names patches; a statically recompiled client cannot apply injected code, so
+keep those settings empty.</li>
+<li><code>battle_read_timeout</code> (config, Go duration, passed as the patched
+<code>GDXSV_BATTLE_READ_TIMEOUT</code>) sets how long a silent battle peer is kept;
+unset keeps upstream&#39;s 30 s. Clients are silent while loading a stage, and a
+slow disc source exceeded 30 s; the tested backend used <code>120s</code>.</li>
+<li>The battle server also listens on UDP (base+1). The gateway carries only TCP
+streams; the hooked client path for this port is TCP to the lobby, then TCP
+to the battle server.</li>
+</ul>
+</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>2a3310790820</code></span></footer></main></div></body></html>

@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "experiment": "Fresh PC build from retained C++",
+  "accepted_baseline_tag": "v0.1.0",
+  "accepted_baseline_commit": "abb4465bc79a40719bd627a1ec6c9888a7082dcf",
+  "export_commit_before_build_support": "dd2672f",
+  "acceptance_record": "docs/evidence/acceptance-0.1.0.json",
+  "environment": {
+    "host": "Authorized Windows PC / Ubuntu WSL",
+    "cmake": "3.31.6",
+    "emscripten": "6.0.11",
+    "generator": "Ninja",
+    "jobs": 6
+  },
+  "method": {
+    "source": "Current tracked files exported into a new directory; exact script hashes below identify uncommitted build-support changes used for the test.",
+    "translation": "169 retained generated files verified against src/generated/manifest.json; no recompiler execution.",
+    "boot_input": "Extracted from the private supported disc; verified executable identity.",
+    "build": "New CMake and object directories; SDK and its dependency cache reused. No historical game objects or prebuilt outputs used as link inputs.",
+    "command": "python3 scripts/game/build.py --disc <private-disc.iso> --work .local/rebuild --target web --emsdk <emsdk-6.0.11> --jobs 6"
+  },
+  "build_exit_code": 0,
+  "inputs": {
+    "src/generated/manifest.json": {
+      "bytes": 23588,
+      "sha256": "19425660a79cb18f8e6ee2a1d7174fa437505409864cae8a79f40dc26eab8ef6"
+    },
+    "scripts/game/build.py": {
+      "bytes": 3497,
+      "sha256": "9735337b1603c091c4efda58bafce1fd85b43a7ffe952dc139276fd6c36a96e2"
+    },
+    "scripts/game/common.py": {
+      "bytes": 2394,
+      "sha256": "569b677061519623e10c6cd499021afaeb72a709a56f76f7aacde82bd2891550"
+    },
+    "scripts/game/extract.py": {
+      "bytes": 3023,
+      "sha256": "842a40c03e58d202ceb20e1d13986ca00fe35d30f627fcaf2316711d7c5474aa"
+    },
+    "upstream.lock": {
+      "bytes": 1184,
+      "sha256": "2ca39704a19e0bfce7df8e7d8af3b4dd224b2a178a6bb6de88439ca63ede2084"
+    },
+    "vendor/manifest.json": {
+      "bytes": 8916,
+      "sha256": "78c77d52a782015cb98080e25e6c1b36a73b509f151962674101a006b5e2f60c"
+    }
+  },
+  "private_records": {
+    "build_log": {
+      "bytes": 26761,
+      "sha256": "4858e296055a49d8a7b69244e2baa37760384041ab513f7d701c85deac15da08"
+    },
+    "build_manifest": {
+      "bytes": 23993,
+      "sha256": "aa4d12c25523ca862c5d5ff95995a5d7703ff5b737b89bd78c94c6e83e365adf"
+    }
+  },
+  "outputs": {
+    "ps2web.data": {
+      "actual": {
+        "bytes": 6511266,
+        "sha256": "efc67275b871452f021038df43c008d52b32e7769ccd06f45600e01f501bc006"
+      },
+      "matches_accepted": true
+    },
+    "ps2web.html": {
+      "actual": {
+        "bytes": 24443,
+        "sha256": "e07ebc8ec8f88e94e461892a3a40ebc5b06988778cbd9e8d5034f16ad1333abd"
+      },
+      "matches_accepted": true
+    },
+    "ps2web.js": {
+      "actual": {
+        "bytes": 151840,
+        "sha256": "636a2e1344c6dd32881edd86881ffaec99e53d730392454b69133223b3649728"
+      },
+      "matches_accepted": true
+    },
+    "ps2web.wasm": {
+      "actual": {
+        "bytes": 17360658,
+        "sha256": "49bed2bc5fd253b752159779f4150e18d441143f13ddb38dd1f57638f58e8094"
+      },
+      "matches_accepted": true
+    }
+  },
+  "result": "All four output files match the accepted baseline byte for byte.",
+  "limits": [
+    "One WSL toolchain/environment; not a cross-platform bit-reproducibility claim.",
+    "No new gameplay run was needed for this byte-identity comparison; historical gameplay acceptance remains separately recorded.",
+    "A private supported disc remains required for runtime assets."
+  ]
+}

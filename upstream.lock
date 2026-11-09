@@ -1,0 +1,45 @@
+{
+  "game": "Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)",
+  "version_target": "0.1.0",
+  "upstream": {
+    "repository": "https://github.com/snuri00/ps2-web-recomp",
+    "revision": "6526f4803d98e10de50bea3af104a4d26e9df033"
+  },
+  "toolchain": {
+    "emscripten": "6.0.11"
+  },
+  "disc": {
+    "format": "ISO 9660",
+    "bytes": 4282515456,
+    "sha256": "11023ffb0987c2ad1ec19b21e0cc335613c1b97ffd01b4e3c44abc91737fd579",
+    "volume": "",
+    "sectors": 2091072,
+    "serial": "SLPM-65076",
+    "system_cnf": {
+      "BOOT2": "cdrom0:\\SLPM_650.76;1",
+      "VER": "2.00",
+      "VMODE": "NTSC",
+      "HDDUNITPOWER": "NICHDD"
+    }
+  },
+  "elf": {
+    "name": "SLPM_650.76",
+    "bytes": 6511244,
+    "sha256": "222e5a12e9dbb7e5be674327b9e2f53abbaf75fd19fc9136c7a11879c2f3d092",
+    "entry": "0x00100008",
+    "load_segments": [
+      {
+        "address": "0x00100000",
+        "file_offset": 128,
+        "file_bytes": 4717184,
+        "memory_bytes": 10145280,
+        "flags": 7
+      }
+    ],
+    "symbols": "present; not stripped"
+  },
+  "archive": {
+    "bytes": 253898693,
+    "sha256": "8964d5b6ddbe440aa60738328fbd095a69dc9c2295f1e398a23257a8083df4e1"
+  }
+}

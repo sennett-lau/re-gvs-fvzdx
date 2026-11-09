@@ -16,6 +16,9 @@ rewrites game bytes.
 | `gateway/` | Gateway source (`main.go`), unit tests (`main_test.go`), `go.mod`, `go.sum` |
 | `../../tests/server/lobby_probe.mjs` | Synthetic probe through the running gateway |
 
+For a step-by-step setup, including what each generated private file is, see
+[Run your own Online Mode server](../../docs/online-server-setup.md).
+
 ## Architecture
 
 ```
@@ -74,12 +77,12 @@ empty settings.
 ## Commands
 
 ```sh
-C="python3 apps/server/backendctl.py --config .local/online/backend/config.json"
-$C build --activate   # builds/<utc>/ from the pinned commit; 'build' links the active one
-$C init               # state/: token, gdxsv.db (initdb), gateway.json, client.json
-$C start              # supervisor; returns after every listener is verified
-$C status             # liveness, listener inventory, TCP probes; exit 0 only when healthy
-$C stop
+alias C='python3 apps/server/backendctl.py --config .local/online/backend/config.json'  # works in bash and zsh
+C build --activate   # builds/<utc>/ from the pinned commit; 'build' links the active one
+C init               # state/: token, gdxsv.db (initdb), gateway.json, client.json
+C start              # supervisor; returns after every listener is verified
+C status             # liveness, listener inventory, TCP probes; exit 0 only when healthy
+C stop
 node tests/server/lobby_probe.mjs --client .local/online/backend/state/client.json --out .local/online/evidence
 ```
 

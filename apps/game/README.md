@@ -5,6 +5,10 @@ title. It retains the original runtime timing and controller mappings. Since
 2026-11-10 it shows a loading panel: bytes received for each runtime file, the
 transfer rate, the current start-up stage and any start-up error. The panel is
 not in the accepted `prebuilt/` HTML, which predates it; only new builds include it.
+On touch screens the settings bar is folded into a **Menu** button at the top
+centre, which opens a bottom sheet. The sheet holds the status, resolution,
+aspect, control visibility, memory card and fullscreen options. The fullscreen
+exit is in this sheet, so no fixed button overlaps the shoulder buttons.
 
 `prebuilt/` contains the exact four accepted `0.1.0` HTML/JS/WASM/data files and
 their original build manifest. The historical manifest still calls its build a

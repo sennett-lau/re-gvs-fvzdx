@@ -1,5 +1,9 @@
 # Attribution and local game inputs
 
+The project's independently written code and documentation use the
+[MIT License](LICENSE). The [content notice](CONTENT_NOTICE.md) describes the
+game-derived material, which that license does not cover.
+
 The pinned compiler, runtime and original browser shell are copyright 2026
 Samir Nuri, under the [MIT license](ps2-web-recomp-MIT.txt). The MPEG VLC tables
 retain the [Play! BSD 2-clause notice](Play-BSD-2-Clause.txt).
@@ -22,10 +26,14 @@ The SDK's linked standard-library/runtime notices are also retained:
 The opt-in Online Mode backend in `apps/server/` builds
 [gdxsv](https://github.com/inada-s/gdxsv) (commit
 `46ee80b715f76ac0c7c254f6f983e5dcd9940306`) under the GNU Affero General Public
-License version 3; `apps/server/patches/gdxsv-loopback.diff` modifies it and is
-under the same license. Each backend build keeps the upstream archive, applied
-patch, license and notice. The gateway uses
-[gorilla/websocket](https://github.com/gorilla/websocket) v1.5.3 (BSD-2-Clause).
+License version 3. Its complete, unmodified text from that commit is retained
+in [GDXSV_AGPL-3.0.txt](GDXSV_AGPL-3.0.txt).
+`apps/server/patches/gdxsv-loopback.diff` modifies gdxsv and is under the same
+license, separate from the project's MIT grant. The gdxsv source snapshot and
+binaries are not bundled; each private backend build keeps the upstream archive,
+applied patch, license and notice. The gateway uses
+[gorilla/websocket](https://github.com/gorilla/websocket) v1.5.3
+([BSD-2-Clause](gorilla-websocket-BSD-2-Clause.txt)).
 The client hook table follows the call sites of gdxsv's retired PCSX2 patch
 (`inada-s/pcsx2`, branch `gdxsv-dev`); no gdxsv or PCSX2 code is linked into the
 game package. See [`docs/online-mode.md`](../online-mode.md).

@@ -11,7 +11,8 @@ clients in browsers on two machines (a Windows PC and a MacBook Pro) connected
 through a private compatible server, registered accounts, logged in, used the
 original lobby and were matched into one original 2v2 battle. The result and its
 limits are in [Test record](#test-record). The source and research wiki are published separately. The tested client build is attached to the
-[`v0.2.0` pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0); no public game or backend service is hosted.
+[`v0.2.0` pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0); no public game or backend service is hosted. To run your own backend and
+connect players, follow [Run your own Online Mode server](online-server-setup.md).
 
 ## Approach
 
@@ -66,12 +67,12 @@ never edited.
 
 One data word is written through the runtime's existing patch list (place 2:
 boot and every vblank): `connect_jmp_tbl$175[2]` from `modem_recognition` to
-`network_battle`, so the menu entry 「モデムの認識」 starts the network battle.
+`network_battle`, so the menu entry 「モデムの認識」 (modem recognition) starts the network battle.
 
 `src/online/bridge.js` (linked with `--pre-js`) runs on the main thread. After
 the lobby stream opens it sends gdxsv's `lbsPlatformInfo` (`0x9950`) with a
 per-client login key, as gdxsv's patched clients do; gdxsv then creates or
-finds the account for 「ネットワーク接続」. The key comes from the private client
+finds the account for 「ネットワーク接続」 (network connection). The key comes from the private client
 configuration or is generated once per browser profile. The bridge records
 connection counters and lobby command ids, never payload bytes.
 
@@ -104,11 +105,11 @@ python3 scripts/game/serve.py --build .local/online-web-NNN/web --disc /private/
 optional `loginKey`. `backendctl init` writes one for each listener. The page
 origin must be in the backend's `origins`.
 
-In the game: main menu 「通信対戦」 → create or load the network file on the
-memory card → enter a pilot name → 「モデムの認識」 (this starts the network
-battle) → save → 「ネットワーク接続」 → accept the terms and the connection →
-enter a handle name and 「登録」 on first use, or choose the ID → lobby map.
-「新規登録」 is not supported by gdxsv for PS2 and is refused.
+In the game: main menu 「通信対戦」 (network battle) → create or load the network file on the
+memory card → enter a pilot name → 「モデムの認識」 (modem recognition; this starts the network
+battle) → save → 「ネットワーク接続」 (network connection) → accept the terms and the connection →
+enter a handle name and 「登録」 (register) on first use, or choose the ID → lobby map.
+「新規登録」 (new registration) is not supported by gdxsv for PS2 and is refused.
 
 ## Findings
 
@@ -130,7 +131,7 @@ enter a handle name and 「登録」 on first use, or choose the ID → lobby ma
    The patch keeps 30 s by default and reads `GDXSV_BATTLE_READ_TIMEOUT`;
    the private backend uses `120s`. The game's own loading wait is 3,600 frames
    (about 60 s), so a slow disc source still matters.
-4. **The game disconnects idle lobby users** (「一定時間入力が無かったため回線を切断しました」)
+4. **The game disconnects idle lobby users** (「一定時間入力が無かったため回線を切断しました」, “the line was disconnected because there was no input for a certain time”)
    and returns to the network menu; reconnecting works without a backend
    restart.
 
@@ -149,10 +150,10 @@ profile, `--mute-audio`, and AudioContext/audio-ring checks.
 
 | Client | Machine | Page | Account | Team |
 | --- | --- | --- | --- | --- |
-| PC-A | Windows PC, Chrome 156 | PC loopback, served from WSL | `WHSCAC` | 連邦 |
-| PC-B | same PC, second profile | PC loopback | `4YJDON` | ジオン |
-| PC-C | same PC, third profile | PC loopback | `FRLIJT` | ジオン |
-| MacBook Pro | MacBook Pro (M2 Pro), Chrome 156 | MacBook loopback via an SSH reverse tunnel to this Mac | `ZS8JIP` | 連邦 |
+| PC-A | Windows PC, Chrome 156 | PC loopback, served from WSL | `WHSCAC` | 連邦 (Federation) |
+| PC-B | same PC, second profile | PC loopback | `4YJDON` | ジオン (Zeon) |
+| PC-C | same PC, third profile | PC loopback | `FRLIJT` | ジオン (Zeon) |
+| MacBook Pro | MacBook Pro (M2 Pro), Chrome 156 | MacBook loopback via an SSH reverse tunnel to this Mac | `ZS8JIP` | 連邦 (Federation) |
 
 **Observed path (2026-11-09).**
 
@@ -160,7 +161,7 @@ profile, `--mute-audio`, and AudioContext/audio-ring checks.
    started the network battle, accepted the terms and connected. gdxsv received
    `lbsPlatformInfo` and the original lobby exchange (connection ID, login type,
    user list, handle registration or ID selection, lobby join).
-2. All four chose シアトル (lobby 7) and 「パートナー自動選抜」. gdxsv started
+2. All four chose シアトル (Seattle, lobby 7) and 「パートナー自動選抜」 (automatic partner selection). gdxsv started
    the lobby battle when two players per side were waiting, without force start.
 3. Each client asked for the battle address (`0x6916`), closed the lobby
    stream and opened `/tcp/battle`. gdxsv placed all four in one MCS room

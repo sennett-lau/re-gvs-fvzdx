@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private Online Mode backend · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
-<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#architecture">Architecture</a><a href="#ports">Ports</a><a href="#commands">Commands</a><a href="#security-limits">Security limits</a><a href="#third-party-provenance-and-licenses">Third-party provenance and licenses</a><a href="#known-limits">Known limits</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Private Online Mode backend · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections"><a href="#architecture">Architecture</a><a href="#ports">Ports</a><a href="#commands">Commands</a><a href="#security-limits">Security limits</a><a href="#third-party-provenance-and-licenses">Third-party provenance and licenses</a><a href="#known-limits">Known limits</a></nav></details><details class="references"><summary>Technical record and references</summary><nav><a href="index.html">Research reader</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-server-setup.html">Run your own server</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
 <main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="apps/server/README.md">Markdown source ↗</a></div><h1>Private Online Mode backend</h1><p class="subtitle">rg-gvs-fvzdx / Private backend setup</p><article class="article-body"><p>This directory is the private backend for Online Mode of the SLPM-65076 v2.00
 port: a pinned, patched build of the compatible server
 <a href="https://github.com/inada-s/gdxsv">inada-s/gdxsv</a>, a token-protected
 WebSocket-to-TCP byte gateway, and a supervisor that runs both. gdxsv speaks the
 PS2 lobby protocol of this disc natively (<code>GameDiskPS2</code>); nothing here parses or
 rewrites game bytes.</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>File</th>
@@ -40,6 +40,8 @@ rewrites game bytes.</p>
 <td>Synthetic probe through the running gateway</td>
 </tr>
 </tbody></table></div>
+<p>For a step-by-step setup, including what each generated private file is, see
+<a href="online-server-setup.html">Run your own Online Mode server</a>.</p>
 <h2 id="architecture">Architecture</h2>
 <pre><code>browser page (http://127.0.0.1:8642)          this machine, loopback only
   game EE network hooks                        ┌──────────────────────────────────────────┐
@@ -76,7 +78,7 @@ reason, and byte/frame counts per direction. No payload and no token is logged.
 Refused requests log one <code>reject</code> line with the reason.</li>
 </ul>
 <h2 id="ports">Ports</h2>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>Port</th>
@@ -113,12 +115,12 @@ Refused requests log one <code>reject</code> line with the reason.</li>
 empty, so it does not start; pprof and the cloud profiler are off (<code>-pprof=0 -cprof=0</code>). Webhook, GCE on-demand servers and the replay bucket are disabled by
 empty settings.</p>
 <h2 id="commands">Commands</h2>
-<pre><code class="language-sh">C=&quot;python3 apps/server/backendctl.py --config .local/online/backend/config.json&quot;
-$C build --activate   # builds/&lt;utc&gt;/ from the pinned commit; &#39;build&#39; links the active one
-$C init               # state/: token, gdxsv.db (initdb), gateway.json, client.json
-$C start              # supervisor; returns after every listener is verified
-$C status             # liveness, listener inventory, TCP probes; exit 0 only when healthy
-$C stop
+<pre><code class="language-sh">alias C=&#39;python3 apps/server/backendctl.py --config .local/online/backend/config.json&#39;  # works in bash and zsh
+C build --activate   # builds/&lt;utc&gt;/ from the pinned commit; &#39;build&#39; links the active one
+C init               # state/: token, gdxsv.db (initdb), gateway.json, client.json
+C start              # supervisor; returns after every listener is verified
+C status             # liveness, listener inventory, TCP probes; exit 0 only when healthy
+C stop
 node tests/server/lobby_probe.mjs --client .local/online/backend/state/client.json --out .local/online/evidence
 </code></pre>
 <p>The config is private (<code>.local/</code> is ignored by Git); <code>backend.example.json</code>
@@ -210,4 +212,4 @@ slow disc source exceeded 30 s; the tested backend used <code>120s</code>.</li>
 streams; the hooked client path for this port is TCP to the lobby, then TCP
 to the battle server.</li>
 </ul>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>
+</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>cc5f9109d9b3</code></span></footer></main></div></body></html>

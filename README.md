@@ -16,7 +16,7 @@ higher refresh rates and multiplayer are outside this stage.
 - [Research wiki](https://sennett-lau.github.io/re-gvs-fvzdx/): the hosted research reader.
 - [v0.1.0 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0): the matched browser package and a wiki archive. No disc is included.
 - [v0.2.0 pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0): the tested Online Mode client package. It needs a private backend.
-- [Research reader source](docs/research.zh-HK.md): a Cantonese comparison with GVZG, reusable methods, new findings and further work.
+- [Research reader source](docs/research-reader.md): the comparison with GVZG, reusable methods, new findings and further work.
 - [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
 - [0.1.0 acceptance manifest](docs/evidence/acceptance-0.1.0.json): exact builds,
@@ -41,7 +41,7 @@ npm run wiki:serve
 
 Open **http://127.0.0.1:8777/**. The reader covers replication of the baseline,
 comparison with GVZG, the later Online Mode experiment and selected evidence. It contains no game runtime or disc
-assets. The Cantonese article has one Markdown source; the English technical
+assets. The reader article has one Markdown source; the English technical
 record and upstream proposals remain secondary references. Output is ignored in
 `.local/wiki/`. No public deployment is performed by these commands.
 
@@ -65,7 +65,8 @@ server ([gdxsv](https://github.com/inada-s/gdxsv)) through a token-protected
 gateway. Four browser clients on a PC and a MacBook Pro completed one original
 2v2 lobby battle with three consecutive matches and returned to the lobby. The tested server remains private;
 see [docs/online-mode.md](docs/online-mode.md) and
-[apps/server/README.md](apps/server/README.md).
+[apps/server/README.md](apps/server/README.md). To start your own backend step
+by step, see [Run your own Online Mode server](docs/online-server-setup.md).
 
 The `v0.2.0` pre-release attaches that exact tested client build. It differs
 from the `0.1.0` package: its WASM and JavaScript contain the network hooks and
@@ -179,5 +180,6 @@ The repository is published at [sennett-lau/re-gvs-fvzdx](https://github.com/sen
 The research wiki is served by GitHub Pages from the `gh-pages` branch. The
 manual `.github/workflows/wiki-pages.yml` deploys only `.local/wiki/` once
 Actions jobs can run again; the Pages source must then be switched back to
-GitHub Actions. No public game server is hosted. [Third-party notices](docs/license/README.md)
+GitHub Actions. No public game server is hosted. Original code and documentation use the [MIT License](docs/license/LICENSE);
+game-derived material is described in the [content notice](docs/license/CONTENT_NOTICE.md). [Third-party notices](docs/license/README.md)
 describe the pinned source and external dependencies.

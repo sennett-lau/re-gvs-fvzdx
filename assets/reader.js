@@ -5,9 +5,9 @@
     root.dataset.theme = value === 'light' ? 'light' : 'dark';
     const button = document.querySelector('[data-theme-toggle]');
     if (button) {
-      const text = root.dataset.theme === 'dark' ? '淺色模式' : '深色模式';
+      const text = root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode';
       button.textContent = text;
-      button.setAttribute('aria-label', '切換至' + text);
+      button.setAttribute('aria-label', 'Switch to ' + text.toLowerCase());
     }
   };
   try { apply(localStorage.getItem(key)); } catch { apply('dark'); }

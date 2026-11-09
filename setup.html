@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>re-gvs-fvzdx · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
-<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#research-reader">Research reader</a><a href="#online-mode-experimental">Online Mode (experimental)</a><a href="#local-workflow">Local workflow</a><a href="#validation-and-scope">Validation and scope</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>re-gvs-fvzdx · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections"><a href="#research-reader">Research reader</a><a href="#online-mode-experimental">Online Mode (experimental)</a><a href="#local-workflow">Local workflow</a><a href="#validation-and-scope">Validation and scope</a></nav></details><details class="references"><summary>Technical record and references</summary><nav><a href="index.html">Research reader</a><a href="research.html">Technical record</a><a href="online-mode.html">Online Mode experiment</a><a href="online-server-setup.html">Run your own server</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
 <main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="README.md">Markdown source ↗</a></div><h1>re-gvs-fvzdx</h1><p class="subtitle">rg-gvs-fvzdx / Build &amp; setup</p><article class="article-body"><p>Reverse-engineering and browser recompilation of <strong>Kidou Senshi Gundam - Renpou vs. Zeon DX (Japan, v2.00)</strong>. The supplied disc identity is verified in <code>upstream.lock</code>.</p>
 <p><strong>Status: <code>0.1.0</code> baseline verified on the declared PC Chrome path.</strong>
 Normal boot, menus, selection, active battle, controls, pause/resume, Continue,
@@ -16,7 +16,7 @@ higher refresh rates and multiplayer are outside this stage.</p>
 <li><a href="https://sennett-lau.github.io/re-gvs-fvzdx/">Research wiki</a>: the hosted research reader.</li>
 <li><a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0">v0.1.0 release</a>: the matched browser package and a wiki archive. No disc is included.</li>
 <li><a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0">v0.2.0 pre-release</a>: the tested Online Mode client package. It needs a private backend.</li>
-<li><a href="index.html">Research reader source</a>: a Cantonese comparison with GVZG, reusable methods, new findings and further work.</li>
+<li><a href="index.html">Research reader source</a>: the comparison with GVZG, reusable methods, new findings and further work.</li>
 <li><a href="research.html">Research record</a>: the English technical log, extraction, compilation and test evidence.</li>
 <li><a href="upstream-ideas.html">Upstream improvement candidates</a>: findings to review before any future contribution.</li>
 <li><a href="docs/evidence/acceptance-0.1.0.json">0.1.0 acceptance manifest</a>: exact builds,
@@ -37,7 +37,7 @@ npm run wiki:serve
 </code></pre>
 <p>Open <strong><a href="http://127.0.0.1:8777/">http://127.0.0.1:8777/</a></strong>. The reader covers replication of the baseline,
 comparison with GVZG, the later Online Mode experiment and selected evidence. It contains no game runtime or disc
-assets. The Cantonese article has one Markdown source; the English technical
+assets. The reader article has one Markdown source; the English technical
 record and upstream proposals remain secondary references. Output is ignored in
 <code>.local/wiki/</code>. No public deployment is performed by these commands.</p>
 <h3 id="publishing-status-2026-11-10">Publishing status (2026-11-10)</h3>
@@ -56,7 +56,8 @@ server (<a href="https://github.com/inada-s/gdxsv">gdxsv</a>) through a token-pr
 gateway. Four browser clients on a PC and a MacBook Pro completed one original
 2v2 lobby battle with three consecutive matches and returned to the lobby. The tested server remains private;
 see <a href="online-mode.html">docs/online-mode.md</a> and
-<a href="online-backend.html">apps/server/README.md</a>.</p>
+<a href="online-backend.html">apps/server/README.md</a>. To start your own backend step
+by step, see <a href="online-server-setup.html">Run your own Online Mode server</a>.</p>
 <p>The <code>v0.2.0</code> pre-release attaches that exact tested client build. It differs
 from the <code>0.1.0</code> package: its WASM and JavaScript contain the network hooks and
 the WebSocket bridge. It also needs a private gdxsv backend and gateway, built
@@ -116,7 +117,7 @@ the server, notices and evidence:</p>
 <p>The resulting <code>.local/package-export-001</code> excludes the disc and private saves. It is
 a local artifact. The <code>v0.1.0</code> release attaches the same export as a ZIP file.</p>
 <h3 id="tracked-source-and-package">Tracked source and package</h3>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>Path</th>
@@ -158,6 +159,7 @@ engine; they do not change system volume.</p>
 The research wiki is served by GitHub Pages from the <code>gh-pages</code> branch. The
 manual <code>.github/workflows/wiki-pages.yml</code> deploys only <code>.local/wiki/</code> once
 Actions jobs can run again; the Pages source must then be switched back to
-GitHub Actions. No public game server is hosted. <a href="docs/license/index.html">Third-party notices</a>
+GitHub Actions. No public game server is hosted. Original code and documentation use the <a href="docs/license/LICENSE">MIT License</a>;
+game-derived material is described in the <a href="docs/license/CONTENT_NOTICE.md">content notice</a>. <a href="docs/license/index.html">Third-party notices</a>
 describe the pinned source and external dependencies.</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>
+</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>cc5f9109d9b3</code></span></footer></main></div></body></html>

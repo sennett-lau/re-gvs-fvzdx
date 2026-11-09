@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research record · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
-<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#scope">Scope</a><a href="#current-status">Current status</a><a href="#2026-10-28-independent-input-and-toolchain-bring-up">2026-10-28: independent input and toolchain bring-up</a><a href="#record-as-work-proceeds">Record as work proceeds</a><a href="#010-acceptance-and-retained-evidence">0.1.0 acceptance and retained evidence</a><a href="#repository-naming-update">Repository naming update</a><a href="#retained-source-and-prebuilt-export">Retained source and prebuilt export</a><a href="#2026-10-29-win-progression-and-savereload">2026-10-29: win progression and save/reload</a><a href="#2026-11-08-to-2026-11-09-opt-in-online-mode-proof-of-concept">2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept</a><a href="#2026-11-09-research-reader-update">2026-11-09: research reader update</a><a href="#2026-11-09-authorized-repository-and-wiki-publication">2026-11-09: authorized repository and wiki publication</a><a href="#2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</a><a href="#2026-11-10-manual-wiki-and-release-publishing">2026-11-10: manual wiki and release publishing</a><a href="#2026-11-10-loading-progress-and-the-v020-online-client-release">2026-11-10: loading progress and the v0.2.0 Online client release</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
-<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="research.md">Markdown source ↗</a></div><h1>Research record</h1><p class="subtitle">rg-gvs-fvzdx / Technical record</p><article class="article-body"><p>For a question-led Cantonese reading experience, see the
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Research record · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections"><a href="#scope">Scope</a><a href="#current-status">Current status</a><a href="#2026-10-28-independent-input-and-toolchain-bring-up">2026-10-28: independent input and toolchain bring-up</a><a href="#record-as-work-proceeds">Record as work proceeds</a><a href="#010-acceptance-and-retained-evidence">0.1.0 acceptance and retained evidence</a><a href="#repository-naming-update">Repository naming update</a><a href="#retained-source-and-prebuilt-export">Retained source and prebuilt export</a><a href="#2026-10-29-win-progression-and-savereload">2026-10-29: win progression and save/reload</a><a href="#2026-11-08-to-2026-11-09-opt-in-online-mode-proof-of-concept">2026-11-08 to 2026-11-09: opt-in Online Mode proof of concept</a><a href="#2026-11-09-research-reader-update">2026-11-09: research reader update</a><a href="#2026-11-09-authorized-repository-and-wiki-publication">2026-11-09: authorized repository and wiki publication</a><a href="#2026-11-09-isolated-runner-diagnostic-preparation">2026-11-09: isolated runner diagnostic preparation</a><a href="#2026-11-10-manual-wiki-and-release-publishing">2026-11-10: manual wiki and release publishing</a><a href="#2026-11-10-loading-progress-and-the-v020-online-client-release">2026-11-10: loading progress and the v0.2.0 Online client release</a><a href="#2026-11-10-server-setup-guide-touch-menu-and-licences">2026-11-10: server setup guide, touch menu and licences</a></nav></details><details class="references"><summary>Technical record and references</summary><nav><a href="index.html">Research reader</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-server-setup.html">Run your own server</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="research.md">Markdown source ↗</a></div><h1>Research record</h1><p class="subtitle">rg-gvs-fvzdx / Technical record</p><article class="article-body"><p>For a question-led reading experience, see the
 <a href="index.html">research reader source</a>. This English record retains
 the detailed commands, chronological experiments and evidence limits.</p>
 <h2 id="scope">Scope</h2>
@@ -128,7 +128,7 @@ compiled and ran before the game build. No global SDK/account settings changed.<
 environment flags were cleared first. WASM, JavaScript and data were
 byte-identical across both builds. Only the page title changed from the initial
 candidate label to the game name. Artifacts:</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>File</th>
@@ -219,7 +219,7 @@ measurement, not a hardware-cycle equivalence or cross-device performance claim.
 <p><a href="docs/evidence/acceptance-0.1.0.json">The acceptance manifest</a> fixes the input
 lock, generated-file manifest, exact four web artifacts, hardware/browser,
 checks, measurement and screenshot hashes. Selected screenshots:</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>Observation</th>
@@ -325,7 +325,7 @@ the remaining runtime checks are tracked separately.</p>
 accepted package. No game code, guest memory or clock was changed. The
 <a href="docs/evidence/baseline-followup.json">follow-up record</a> retains exact artifact
 and capture hashes, inputs, audio checks, selected screenshots and cleanup.</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>Check</th>
@@ -532,7 +532,7 @@ wiki build and <code>python3 scripts/check-wiki.py</code>. <code>SHA256SUMS</cod
 ZIP files. No hosted CI ran for this release, and no new game test was added.</p>
 <h2 id="2026-11-10-loading-progress-and-the-v020-online-client-release">2026-11-10: loading progress and the v0.2.0 Online client release</h2>
 <p>A phone on the tailnet (Android Chrome) opened the <code>0.1.0</code> package through
-<code>tailscale serve</code> HTTPS on this Mac. The page only showed 「Loading…」. Plain
+<code>tailscale serve</code> HTTPS on this Mac. The page only showed &quot;Loading…&quot;. Plain
 <code>http://100.x</code> was not used because the page needs cross-origin isolation and
 WebGPU, which need a secure context. On a narrow screen, the status text in the
 bottom bar has no room, so download progress was invisible. The cause of the
@@ -557,4 +557,56 @@ package was made with
 The tag marks <code>e562edd</code>, the commit that completed the Online Mode record. No
 backend binary, token, client configuration or login key is included. Unit
 tests passed (24) before upload.</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>
+<h2 id="2026-11-10-server-setup-guide-touch-menu-and-licences">2026-11-10: server setup guide, touch menu and licences</h2>
+<p><strong>Server setup guide.</strong> <code>docs/online-server-setup.md</code> explains how to build,
+initialise and start a private backend. It also explains what each generated
+private file is (token, client files, gateway settings, database, login key)
+and why none of them is published. Steps 1 to 6 were repeated on this Mac from
+a fresh <code>git clone</code> of gdxsv in <code>.local/guide-test/</code>, with base port 19900 and
+one origin, <code>http://127.0.0.1:8652</code>:</p>
+<ul>
+<li><code>build --activate</code> succeeded with Go 1.26.0, which Go 1.22.5 fetched. The
+gateway hash <code>f1af1747…</code> equals the 2026-11-09 evidence.</li>
+<li><code>init</code> created <code>token</code>, <code>gdxsv.db</code>, <code>gateway.json</code> and <code>client.json</code>.</li>
+<li><code>start</code> and <code>status</code> reported <code>ready: true</code>.</li>
+<li><code>lobby_probe.mjs</code> passed with <code>--origin http://127.0.0.1:8652</code>. Without that
+flag it uses <code>http://127.0.0.1:8642</code>, which this config does not allow, and
+failed as intended.</li>
+</ul>
+<p>The <code>v0.2.0</code> release ZIP was then downloaded and served with that
+<code>client.json</code>. In headless Chrome, its bridge opened a lobby stream through the
+gateway, sent <code>lbsPlatformInfo</code> (<code>0x9950</code>) and received the lobby&#39;s first
+message (<code>0x6102</code>). The game menus were not driven, so no new gameplay or
+battle is claimed. The test backend was stopped; the existing backend
+(base 19800) was not touched.</p>
+<p>The <code>C=&quot;python3 …&quot;; $C start</code> form in <code>apps/server/README.md</code> fails in zsh,
+because zsh does not split the variable into words. The README now uses an
+alias.</p>
+<p><strong>Touch menu.</strong> On phones the settings bar did not fit, and in landscape
+fullscreen the fixed exit button covered R1 and R2. In touch mode the bar is now
+a bottom sheet opened by a small Menu button at the top centre. The fullscreen
+exit is inside the sheet. Checked in headless Chrome with touch emulation at
+393×851 and 851×393. No touch control overlapped the Menu button in either
+orientation. The exit button stayed hidden in fullscreen, and frames kept
+advancing. A real phone has not yet confirmed the new layout.</p>
+<p><strong>Licences, following GVZG.</strong> Added the project&#39;s MIT licence
+(<code>docs/license/LICENSE</code>) for independently written code and documentation. Also
+added a content notice for game-derived material, the complete unmodified
+gdxsv AGPL-3.0 text from commit <code>46ee80b</code>, and the gorilla/websocket v1.5.3
+BSD-2-Clause licence. The gdxsv source and binaries remain unbundled.</p>
+<p><strong>English wiki.</strong> At the user&#39;s request, the reader article was translated into
+English as <code>docs/research-reader.md</code>, replacing <code>docs/research.zh-HK.md</code>. The
+wiki interface strings were translated too. A separate reviewing agent checked
+the article against this record, <code>docs/online-mode.md</code>, <code>README.md</code> and the
+evidence JSON before translating. It narrowed six claims:</p>
+<ul>
+<li>publication status and the two releases</li>
+<li>the scope of the 60 Hz measurement</li>
+<li>the AFS header scan coverage</li>
+<li>the upstream test&#39;s independence from game data</li>
+<li>the dropped runner experiment</li>
+<li>the date and scope of the Online result</li>
+</ul>
+<p>Japanese in-game text in <code>docs/online-mode.md</code> keeps English glosses. The wiki
+build now accepts the extensionless <code>docs/license/LICENSE</code>.</p>
+</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>cc5f9109d9b3</code></span></footer></main></div></body></html>

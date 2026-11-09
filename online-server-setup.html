@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Run your own Online Mode server · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections"><a href="#what-you-need">What you need</a><a href="#private-files">Private files</a><a href="#1-get-the-sources">1. Get the sources</a><a href="#2-write-the-backend-config">2. Write the backend config</a><a href="#3-build-the-backend">3. Build the backend</a><a href="#4-generate-the-private-files">4. Generate the private files</a><a href="#5-start-the-backend-and-check-it">5. Start the backend and check it</a><a href="#6-probe-the-gateway">6. Probe the gateway</a><a href="#7-start-each-players-game-page">7. Start each player&#39;s game page</a><a href="#8-in-the-game">8. In the game</a><a href="#stop-rotate-and-reset">Stop, rotate and reset</a><a href="#troubleshooting">Troubleshooting</a></nav></details><details class="references"><summary>Technical record and references</summary><nav><a href="index.html">Research reader</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="docs/online-server-setup.md">Markdown source ↗</a></div><h1>Run your own Online Mode server</h1><p class="subtitle">rg-gvs-fvzdx / Run your own server</p><article class="article-body"><p>This guide starts a private Online Mode backend from this repository and
+connects the <code>v0.2.0</code> Online client to it. No public server exists. Each group
+of players runs its own.</p>
+<p>Steps 1 to 6 were repeated from a fresh gdxsv clone on 2026-11-10 (macOS on
+Apple silicon, Go 1.22.5 fetching Go 1.26.0, Python 3.9). That run built the
+backend, generated its private files, started it and passed the lobby probe. A
+full battle needs four players. That was tested on 2026-11-09; see the
+<a href="online-mode.html#test-record">test record</a>.</p>
+<h2 id="what-you-need">What you need</h2>
+<ul>
+<li><strong>Server machine</strong>: macOS or Linux. You need <code>git</code>, Python 3.9 or later, <code>lsof</code>
+and a C compiler (Xcode Command Line Tools or <code>build-essential</code>; the SQLite
+driver uses cgo). You also need Go 1.21 or later, which downloads the pinned
+Go 1.26.0 toolchain by itself, and Node.js 20 or later for the probe.</li>
+<li><strong>Each player</strong>: the <code>v0.2.0</code> Online browser package from the
+<a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0">release page</a>,
+Python 3, a current Chrome or Edge, and their own copy of the Japanese v2.00 disc
+(<code>SLPM-65076</code>).</li>
+<li><strong>Four players.</strong> The original lobby starts a battle only with two players on
+each side. One machine can run several players, each in its own Chrome profile.</li>
+<li><strong>Remote players</strong>: <a href="https://tailscale.com/">Tailscale</a> on every machine. The
+backend never listens on a LAN or public address.</li>
+</ul>
+<h2 id="private-files">Private files</h2>
+<p><code>backendctl.py init</code> generates these files. They live in the ignored <code>state/</code>
+directory, mostly with mode <code>0600</code>. They are not in Git or in any release,
+because anyone who has them can use your server or impersonate a player.
+Generate your own; do not copy someone else&#39;s.</p>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+<th>Who needs it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>state/token</code></td>
+<td>A random shared secret (<code>fvzdx-</code> plus 43 characters). The gateway accepts a browser only if it presents this token.</td>
+<td>Only the server; it is copied into every client file</td>
+</tr>
+<tr>
+<td><code>state/client.json</code></td>
+<td><code>{&quot;gatewayURL&quot;: &quot;ws://127.0.0.1:&lt;port&gt;/&quot;, &quot;token&quot;: &quot;…&quot;}</code>, the client settings for a page on the server machine itself</td>
+<td>Players on the server machine</td>
+</tr>
+<tr>
+<td><code>state/client-&lt;label&gt;.json</code></td>
+<td>The same for a Tailscale listener, with the server&#39;s <code>100.x</code> address</td>
+<td>Remote players allowed on that listener</td>
+</tr>
+<tr>
+<td><code>state/gateway.json</code></td>
+<td>The gateway&#39;s own settings: listeners, token, allowed origins and peers</td>
+<td>Only the server</td>
+</tr>
+<tr>
+<td><code>state/gdxsv.db</code></td>
+<td>The gdxsv database of accounts and battle results</td>
+<td>Only the server</td>
+</tr>
+<tr>
+<td><code>state/logs/</code></td>
+<td>Service logs (no game payloads and no token)</td>
+<td>Only the server</td>
+</tr>
+</tbody></table></div>
+<p>A <strong>login key</strong> is the player&#39;s identity on the server. gdxsv maps it to one
+game account, such as <code>WHSCAC</code>. The Online client creates a random 8-digit key
+the first time it connects. It stores the key in the browser profile&#39;s
+<code>localStorage</code> as <code>fvzdx-online-login-key</code>, so each Chrome profile is a
+separate player. To keep an account on another profile or machine, add
+<code>&quot;loginKey&quot;: &quot;&lt;4-16 letters or digits&gt;&quot;</code> to that player&#39;s client file. Anyone
+who knows a login key can sign in as that player.</p>
+<h2 id="1-get-the-sources">1. Get the sources</h2>
+<pre><code class="language-sh">git clone https://github.com/sennett-lau/re-gvs-fvzdx.git
+cd re-gvs-fvzdx
+mkdir -p .local/online
+git clone https://github.com/inada-s/gdxsv.git .local/online/gdxsv
+</code></pre>
+<p>The build archives the pinned gdxsv commit
+<code>46ee80b715f76ac0c7c254f6f983e5dcd9940306</code> from this clone. It does not need a
+checkout of that commit.</p>
+<h2 id="2-write-the-backend-config">2. Write the backend config</h2>
+<p>Create <code>.local/online/backend/config.json</code>. Relative paths resolve from this
+file&#39;s directory:</p>
+<pre><code class="language-json">{
+  &quot;root&quot;: &quot;.&quot;,
+  &quot;gdxsv_clone&quot;: &quot;../gdxsv&quot;,
+  &quot;base_port&quot;: 19800,
+  &quot;toolchain&quot;: &quot;go1.26.0&quot;,
+  &quot;origins&quot;: [&quot;http://127.0.0.1:8642&quot;],
+  &quot;battle_read_timeout&quot;: &quot;120s&quot;
+}
+</code></pre>
+<ul>
+<li><code>base_port</code>: gdxsv uses base+0, base+1 and base+3. The loopback gateway uses
+base+20, so with the default it is <code>ws://127.0.0.1:19820/</code>.</li>
+<li><code>origins</code>: the exact address of every game page that may connect. Add one
+entry per local player port, for example <code>http://127.0.0.1:8643</code> for a second
+player on the same machine.</li>
+<li><code>battle_read_timeout</code>: keep <code>120s</code>. Clients are silent while a stage loads,
+and the upstream default of 30 s dropped slow loaders in testing.</li>
+</ul>
+<p>For remote players over Tailscale, also add a peer-restricted listener. Use
+<code>tailscale ip -4</code> on each machine to find its address:</p>
+<pre><code class="language-json">  &quot;tailnet_listeners&quot;: {
+    &quot;friends&quot;: {&quot;port&quot;: 19830, &quot;peers&quot;: [&quot;100.a.b.c&quot;, &quot;100.d.e.f&quot;]}
+  }
+</code></pre>
+<p>Every remote page must still use a loopback origin from <code>origins</code>. Each remote
+player runs <code>serve.py</code> on their own machine, on the port listed there.</p>
+<h2 id="3-build-the-backend">3. Build the backend</h2>
+<pre><code class="language-sh">python3 apps/server/backendctl.py --config .local/online/backend/config.json build --activate
+</code></pre>
+<p>This takes several minutes. It applies <code>apps/server/patches/gdxsv-loopback.diff</code>
+without fuzz, builds gdxsv and the gateway, and runs both test suites. The
+results go to <code>builds/&lt;utc&gt;/build-info.json</code>. A failing test stops the build.</p>
+<h2 id="4-generate-the-private-files">4. Generate the private files</h2>
+<pre><code class="language-sh">python3 apps/server/backendctl.py --config .local/online/backend/config.json init
+</code></pre>
+<p>This step creates <code>state/token</code>, <code>state/gdxsv.db</code>, <code>state/gateway.json</code>,
+<code>state/client.json</code> and one <code>state/client-&lt;label&gt;.json</code> for each Tailscale
+listener. Running it again keeps the token and the database, and rewrites the
+client files.</p>
+<h2 id="5-start-the-backend-and-check-it">5. Start the backend and check it</h2>
+<pre><code class="language-sh">python3 apps/server/backendctl.py --config .local/online/backend/config.json start
+python3 apps/server/backendctl.py --config .local/online/backend/config.json status
+</code></pre>
+<p><code>start</code> returns once every listener is up. <code>status</code> exits with 0 and
+<code>&quot;ready&quot;: true</code> when the backend is healthy.</p>
+<p>On zsh (the macOS default), a variable such as <code>C=&quot;python3 …&quot;</code> followed by <code>$C start</code>
+fails, because zsh does not split the variable into words. Type the full
+command, or use <code>alias C=&#39;python3 apps/server/backendctl.py --config .local/online/backend/config.json&#39;</code>.</p>
+<h2 id="6-probe-the-gateway">6. Probe the gateway</h2>
+<pre><code class="language-sh">node tests/server/lobby_probe.mjs --client .local/online/backend/state/client.json \
+  --out .local/online/evidence --origin http://127.0.0.1:8642
+</code></pre>
+<p><code>--origin</code> must be one of the configured <code>origins</code>. A passing probe refuses a
+wrong token and a wrong origin, receives the first lobby message, and reaches the
+battle server. It does not test a game client.</p>
+<h2 id="7-start-each-players-game-page">7. Start each player&#39;s game page</h2>
+<p>Each player extracts <code>re-gvs-fvzdx-v0.2.0-online-browser.zip</code>, puts their
+client file next to it, and starts the page on their own allowed port:</p>
+<pre><code class="language-sh">cd re-gvs-fvzdx-v0.2.0-online-browser
+python3 serve.py --build web --disc /path/to/disc.iso --port 8642 --online-config /path/to/client.json
+</code></pre>
+<p>Open <code>http://127.0.0.1:8642/</code> in Chrome. Use <code>client.json</code> on the server
+machine and <code>client-&lt;label&gt;.json</code> on a remote machine. Give a second player on
+the same machine a separate Chrome profile and its own port, such as <code>8643</code>.</p>
+<h2 id="8-in-the-game">8. In the game</h2>
+<ol>
+<li>From the main menu choose 「通信対戦」 (network battle). Create or load the
+network file on the memory card, then enter a pilot name.</li>
+<li>Choose 「モデムの認識」 (modem recognition). In this build it starts the
+network battle. Save, then choose 「ネットワーク接続」 (network connection).</li>
+<li>Accept the terms and the connection. On first use enter a handle name and
+choose 「登録」 (register); later choose your ID. 「新規登録」 (new
+registration) is not supported and is refused.</li>
+<li>In the lobby map, all four players pick the same lobby and
+「パートナー自動選抜」 (automatic partner selection). The battle starts when
+each side has two players.</li>
+</ol>
+<h2 id="stop-rotate-and-reset">Stop, rotate and reset</h2>
+<pre><code class="language-sh">python3 apps/server/backendctl.py --config .local/online/backend/config.json stop
+</code></pre>
+<ul>
+<li><strong>New token</strong>: stop the backend, delete <code>state/token</code> and run <code>init</code>. Then give
+every player their new client file.</li>
+<li><strong>Clear all accounts</strong>: stop the backend, delete <code>state/gdxsv.db</code> and run
+<code>init</code>.</li>
+<li><strong>New player identity</strong>: clear <code>fvzdx-online-login-key</code> from the browser&#39;s
+site data, or use a new Chrome profile.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li><strong><code>configured ports are in use</code></strong> or <strong><code>configured ports overlap ports held by other projects</code></strong>: choose a different <code>base_port</code>.</li>
+<li><strong><code>backend did not report ready</code></strong>: read <code>state/logs/supervisor.log</code>.</li>
+<li><strong>The probe fails only on the battle step</strong>, or <strong>the page never connects</strong>:
+check that the page address is listed exactly in <code>origins</code>. <code>127.0.0.1</code> and
+<code>localhost</code> count as different origins.</li>
+<li><strong>A two-player battle stalls before it starts</strong>: the original battle is 2v2.
+Use four players.</li>
+<li><strong>Players drop during stage loading</strong>: keep <code>battle_read_timeout</code> at <code>120s</code>.
+Serve the disc from a local disk on each player&#39;s machine.</li>
+<li><strong>Security</strong>: there is no TLS and only one shared token. Do not forward any
+port to a LAN or the internet. If anyone other than you uses the server over a
+network, gdxsv&#39;s AGPL-3.0 licence requires that you offer them its source. Each
+build keeps that source in <code>builds/&lt;utc&gt;/source/</code>.</li>
+</ul>
+</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>cc5f9109d9b3</code></span></footer></main></div></body></html>

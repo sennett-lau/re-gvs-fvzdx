@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Online Mode (experimental, private) · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
-<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#approach">Approach</a><a href="#build-and-run">Build and run</a><a href="#findings">Findings</a><a href="#test-record">Test record</a><a href="#limits">Limits</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="index.html">研究閱讀版</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Online Mode (experimental, private) · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections"><a href="#approach">Approach</a><a href="#build-and-run">Build and run</a><a href="#findings">Findings</a><a href="#test-record">Test record</a><a href="#limits">Limits</a></nav></details><details class="references"><summary>Technical record and references</summary><nav><a href="index.html">Research reader</a><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-server-setup.html">Run your own server</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
 <main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="docs/online-mode.md">Markdown source ↗</a></div><h1>Online Mode (experimental, private)</h1><p class="subtitle">rg-gvs-fvzdx / Online Mode experiment</p><article class="article-body"><p>This is the technical record of the opt-in Online Mode work for
 SLPM-65076 v2.00. It is separate from the accepted <code>0.1.0</code> baseline: the
 default build, the tracked C++ translation and <code>apps/game/prebuilt/</code> are
@@ -12,7 +12,8 @@ clients in browsers on two machines (a Windows PC and a MacBook Pro) connected
 through a private compatible server, registered accounts, logged in, used the
 original lobby and were matched into one original 2v2 battle. The result and its
 limits are in <a href="#test-record">Test record</a>. The source and research wiki are published separately. The tested client build is attached to the
-<a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0"><code>v0.2.0</code> pre-release</a>; no public game or backend service is hosted.</p>
+<a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0"><code>v0.2.0</code> pre-release</a>; no public game or backend service is hosted. To run your own backend and
+connect players, follow <a href="online-server-setup.html">Run your own Online Mode server</a>.</p>
 <h2 id="approach">Approach</h2>
 <p>The reference project <a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG</a> reached
 original Online Mode by running the original IOP network modules and adapting
@@ -43,7 +44,7 @@ supplied ELF before the copy is written: the original word must be the expected
 <code>jal</code>, the callee and enclosing function symbols must match, and the generated
 statement must be unique. A mismatch stops the build. The tracked translation is
 never edited.</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>Original call (enclosing function)</th>
@@ -109,11 +110,11 @@ never edited.</p>
 </tbody></table></div>
 <p>One data word is written through the runtime&#39;s existing patch list (place 2:
 boot and every vblank): <code>connect_jmp_tbl$175[2]</code> from <code>modem_recognition</code> to
-<code>network_battle</code>, so the menu entry 「モデムの認識」 starts the network battle.</p>
+<code>network_battle</code>, so the menu entry 「モデムの認識」 (modem recognition) starts the network battle.</p>
 <p><code>src/online/bridge.js</code> (linked with <code>--pre-js</code>) runs on the main thread. After
 the lobby stream opens it sends gdxsv&#39;s <code>lbsPlatformInfo</code> (<code>0x9950</code>) with a
 per-client login key, as gdxsv&#39;s patched clients do; gdxsv then creates or
-finds the account for 「ネットワーク接続」. The key comes from the private client
+finds the account for 「ネットワーク接続」 (network connection). The key comes from the private client
 configuration or is generated once per browser profile. The bridge records
 connection counters and lobby command ids, never payload bytes.</p>
 <h3 id="backend">Backend</h3>
@@ -139,11 +140,11 @@ python3 scripts/game/serve.py --build .local/online-web-NNN/web --disc /private/
 <p><code>client.json</code> is <code>{&quot;gatewayURL&quot;: &quot;ws://HOST:PORT/&quot;, &quot;token&quot;: &quot;…&quot;}</code> with an
 optional <code>loginKey</code>. <code>backendctl init</code> writes one for each listener. The page
 origin must be in the backend&#39;s <code>origins</code>.</p>
-<p>In the game: main menu 「通信対戦」 → create or load the network file on the
-memory card → enter a pilot name → 「モデムの認識」 (this starts the network
-battle) → save → 「ネットワーク接続」 → accept the terms and the connection →
-enter a handle name and 「登録」 on first use, or choose the ID → lobby map.
-「新規登録」 is not supported by gdxsv for PS2 and is refused.</p>
+<p>In the game: main menu 「通信対戦」 (network battle) → create or load the network file on the
+memory card → enter a pilot name → 「モデムの認識」 (modem recognition; this starts the network
+battle) → save → 「ネットワーク接続」 (network connection) → accept the terms and the connection →
+enter a handle name and 「登録」 (register) on first use, or choose the ID → lobby map.
+「新規登録」 (new registration) is not supported by gdxsv for PS2 and is refused.</p>
 <h2 id="findings">Findings</h2>
 <ol>
 <li><strong>Call-site replacement transfers without IOP network emulation.</strong> All 20
@@ -164,7 +165,7 @@ the stage. A browser reading the disc image over a slow link exceeded that.
 The patch keeps 30 s by default and reads <code>GDXSV_BATTLE_READ_TIMEOUT</code>;
 the private backend uses <code>120s</code>. The game&#39;s own loading wait is 3,600 frames
 (about 60 s), so a slow disc source still matters.</li>
-<li><strong>The game disconnects idle lobby users</strong> (「一定時間入力が無かったため回線を切断しました」)
+<li><strong>The game disconnects idle lobby users</strong> (「一定時間入力が無かったため回線を切断しました」, “the line was disconnected because there was no input for a certain time”)
 and returns to the network menu; reconnecting works without a backend
 restart.</li>
 </ol>
@@ -178,7 +179,7 @@ built on the PC (WSL, Emscripten 6.0.11) from the working tree; the source,
 bridge and hook manifest fingerprints match the files described here. Every
 client used the silent collector (<code>tests/pc/run.cjs</code>): an isolated Chrome
 profile, <code>--mute-audio</code>, and AudioContext/audio-ring checks.</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
 <th>Client</th>
@@ -193,28 +194,28 @@ profile, <code>--mute-audio</code>, and AudioContext/audio-ring checks.</p>
 <td>Windows PC, Chrome 156</td>
 <td>PC loopback, served from WSL</td>
 <td><code>WHSCAC</code></td>
-<td>連邦</td>
+<td>連邦 (Federation)</td>
 </tr>
 <tr>
 <td>PC-B</td>
 <td>same PC, second profile</td>
 <td>PC loopback</td>
 <td><code>4YJDON</code></td>
-<td>ジオン</td>
+<td>ジオン (Zeon)</td>
 </tr>
 <tr>
 <td>PC-C</td>
 <td>same PC, third profile</td>
 <td>PC loopback</td>
 <td><code>FRLIJT</code></td>
-<td>ジオン</td>
+<td>ジオン (Zeon)</td>
 </tr>
 <tr>
 <td>MacBook Pro</td>
 <td>MacBook Pro (M2 Pro), Chrome 156</td>
 <td>MacBook loopback via an SSH reverse tunnel to this Mac</td>
 <td><code>ZS8JIP</code></td>
-<td>連邦</td>
+<td>連邦 (Federation)</td>
 </tr>
 </tbody></table></div>
 <p><strong>Observed path (2026-11-09).</strong></p>
@@ -223,7 +224,7 @@ profile, <code>--mute-audio</code>, and AudioContext/audio-ring checks.</p>
 started the network battle, accepted the terms and connected. gdxsv received
 <code>lbsPlatformInfo</code> and the original lobby exchange (connection ID, login type,
 user list, handle registration or ID selection, lobby join).</li>
-<li>All four chose シアトル (lobby 7) and 「パートナー自動選抜」. gdxsv started
+<li>All four chose シアトル (Seattle, lobby 7) and 「パートナー自動選抜」 (automatic partner selection). gdxsv started
 the lobby battle when two players per side were waiting, without force start.</li>
 <li>Each client asked for the battle address (<code>0x6916</code>), closed the lobby
 stream and opened <code>/tcp/battle</code>. gdxsv placed all four in one MCS room
@@ -263,4 +264,4 @@ device needs a local copy of the package or a loopback tunnel, and a disc
 source fast enough for stage loading.</li>
 <li>Only SLPM-65076 v2.00 is supported; the hook table is checked against its ELF.</li>
 </ul>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>
+</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>cc5f9109d9b3</code></span></footer></main></div></body></html>

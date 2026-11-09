@@ -1,193 +1,193 @@
 <!doctype html>
-<html lang="zh-HK" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>同一套方法，換一隻遊戲再驗證 · rg-gvs-fvzdx</title><meta name="description" content="沿用 GVZG 嘅方法，驗證另一隻 PS2 遊戲嘅 browser recompilation，記錄新發現同實測。"><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
-<body><a class="skip" href="#article">跳到內容</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>淺色模式</button></header>
-<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>本頁內容</summary><nav class="outline" aria-label="本頁章節"><a href="#01-由-gvzg-帶過嚟嘅方法">01 · 由 GVZG 帶過嚟嘅方法</a><a href="#02-邊啲-findings-用得返">02 · 邊啲 findings 用得返？</a><a href="#03-今次多咗咩新-finding">03 · 今次多咗咩新 finding？</a><a href="#04-真正驗證到邊一步">04 · 真正驗證到邊一步？</a><a href="#05-保留咗咩其他人點重做">05 · 保留咗咩，其他人點重做？</a><a href="#06-further-workonline-mode-嘅後續實測">06 · Further work：Online Mode 嘅後續實測</a></nav></details><details class="references"><summary>技術紀錄與參考</summary><nav><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">由方法到另一個可驗證結果。<br>原裝時間模型 · 本機研究版</p></div></aside>
-<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="docs/research.zh-HK.md">Markdown source ↗</a></div><h1>同一套方法，換一隻遊戲再驗證</h1><p class="subtitle">rg-gvs-fvzdx / 研究閱讀版</p><article class="article-body"><p class="lead">由 <a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG 嘅研究</a>出發，將 <strong>Kidou Senshi Gundam — Renpou vs. Zeon DX</strong> 重新編譯到瀏覽器。今次要回答嘅係：前一次建立嘅流程，有幾多可以重用？</p>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The same method, verified on a different game · rg-gvs-fvzdx</title><meta name="description" content="Reusing the GVZG method to verify browser recompilation of another PS2 game, with new findings and measured results."><script src="assets/reader.js"></script><link rel="stylesheet" href="assets/wiki.css"></head>
+<body><a class="skip" href="#article">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html">Gundam VS. Series — Federation vs. Zeon DX<small>rg-gvs-fvzdx · RESEARCH / REPLICATION</small></a><button class="theme-toggle" data-theme-toggle hidden>Light mode</button></header>
+<div class="layout"><aside class="sidebar"><div class="sidebar-inner"><details class="contents" open><summary>On this page</summary><nav class="outline" aria-label="Page sections"><a href="#01-the-method-carried-over-from-gvzg">01 · The method carried over from GVZG</a><a href="#02-which-findings-carried-over">02 · Which findings carried over?</a><a href="#03-what-new-findings-came-out-of-this-run">03 · What new findings came out of this run?</a><a href="#04-which-steps-were-actually-verified">04 · Which steps were actually verified?</a><a href="#05-what-is-kept-and-how-can-others-redo-it">05 · What is kept, and how can others redo it?</a><a href="#06-further-work-online-mode-follow-up-tests">06 · Further work: Online Mode follow-up tests</a></nav></details><details class="references"><summary>Technical record and references</summary><nav><a href="research.html">Technical record</a><a href="setup.html">Build &amp; setup</a><a href="online-mode.html">Online Mode experiment</a><a href="online-server-setup.html">Run your own server</a><a href="online-backend.html">Private backend setup</a><a href="upstream-ideas.html">Upstream proposals</a><a href="docs/license/index.html">Third-party notices</a><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG research ↗</a></nav></details><p class="side-note">From method to a second verifiable result.<br>Original timing model · local research build</p></div></aside>
+<main id="article" tabindex="-1"><div class="article-meta"><span class="kicker">REPLICATION STUDY / 01</span><a href="docs/research-reader.md">Markdown source ↗</a></div><h1>The same method, verified on a different game</h1><p class="subtitle">rg-gvs-fvzdx / Research reader</p><article class="article-body"><p class="lead">Starting from <a href="https://sennett-lau.github.io/re-gvs-gvzg/">the GVZG research</a>, this project recompiles <strong>Kidou Senshi Gundam — Renpou vs. Zeon DX</strong> to run in a browser. The question: how much of the workflow built for the first game can be reused?</p>
 
-<aside class="callout important"><p class="callout-label">研究重點</p><p><strong><code>0.1.0</code> baseline 停喺可驗證嘅基本移植。</strong> 範圍係原裝啟動、操作、Arcade 戰鬥、返回流程同必要修正，保留原裝時間模型。2026-11-09 嘅後續 Online Mode 實驗已完成兩部機、四個獨立 client 嘅 2v2 驗證；詳見下方 Further work。呢個 opt-in build 同私有 server 並未改動 baseline，亦未公開部署。</p>
+<aside class="callout important"><p class="callout-label">Key finding</p><p><strong>The <code>0.1.0</code> baseline stops at a verifiable basic port.</strong> Its scope is original boot, input, Arcade battle, the return flow and the necessary fixes, keeping the original timing model. A later Online Mode experiment (2026-11-09) completed a 2v2 run with four independent clients on two machines; see Further work below. That opt-in build and its private server do not change the baseline. No public game or backend service is hosted.</p>
 </aside><figure class="hero-evidence">
-<img src="docs/evidence/followup/stage02-active.png" alt="FVZDX 喺瀏覽器運行第二關太空戰，畫面包括機體、雷達同原裝 HUD" width="1264" height="749">
-<figcaption>實際 PC browser 截圖：Side 7 勝利後進入第二關。呢次流程測試使用原裝 difficulty 1 同 infinite timer；下方速度量測來自另一段獨立戰鬥紀錄。</figcaption>
+<img src="docs/evidence/followup/stage02-active.png" alt="FVZDX running the second-stage space battle in a browser, showing the mobile suit, the radar and the original HUD" width="1264" height="749">
+<figcaption>Real PC browser screenshot: stage 2 after the Side 7 victory. This flow test used the original difficulty 1 and an infinite timer. The speed figure below comes from a separate battle recording.</figcaption>
 </figure>
 
 <div class="result-strip">
-<div><strong>約 60 Hz</strong><span>已量測嘅 PC 戰鬥區間</span></div>
-<div><strong>0 個</strong><span>baseline compiler／runtime 專用修正</span></div>
-<div><strong>4 / 4</strong><span>乾淨重建輸出逐 byte 相同</span></div>
+<div><strong>≈ 60 Hz</strong><span>measured in one PC battle interval</span></div>
+<div><strong>0</strong><span>baseline compiler/runtime-specific patches</span></div>
+<div><strong>4 / 4</strong><span>clean-rebuild web outputs byte-identical</span></div>
 </div>
 
-<h2 id="01-由-gvzg-帶過嚟嘅方法">01 · 由 GVZG 帶過嚟嘅方法</h2>
-<p><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG</a> 建立咗由 disc、R5900 指令、generated C++，再到 WebAssembly 同 browser runtime 嘅研究流程，之後先研究效能、畫面更新率同 multiplayer。FVZDX 嘅 baseline 重做嘅係<strong>前面嘅基本移植流程</strong>；後續連線實驗另外記錄喺第 06 節。</p>
-<p>方法可以沿用，但每隻遊戲嘅 ELF、地址、callback、overlay 同 VU 程式都要重新確認。GVZG 嘅測試結果亦唔會自動變成 FVZDX 嘅證據。</p>
+<h2 id="01-the-method-carried-over-from-gvzg">01 · The method carried over from GVZG</h2>
+<p><a href="https://sennett-lau.github.io/re-gvs-gvzg/">GVZG</a> built a research workflow from the disc through R5900 instructions and generated C++ to WebAssembly and a browser runtime, and only then looked at performance, frame rate and multiplayer. The FVZDX baseline redoes <strong>the basic port workflow</strong>; the later connection experiment is recorded separately in section 06.</p>
+<p>The method can be reused, but each game&#39;s ELF, addresses, callbacks, overlays and VU programs must be confirmed again. GVZG test results do not automatically become FVZDX evidence.</p>
 <ol class="method-flow">
-<li><b>確認輸入</b><span>Disc identity → ELF → pinned tools</span></li>
-<li><b>重新編譯</b><span>R5900 → C++ → WebAssembly</span></li>
-<li><b>實際驗證</b><span>Normal boot → 操作 → 戰鬥 → 返回</span></li>
+<li><b>Confirm the input</b><span>Disc identity → ELF → pinned tools</span></li>
+<li><b>Recompile</b><span>R5900 → C++ → WebAssembly</span></li>
+<li><b>Verify in practice</b><span>Normal boot → input → battle → return</span></li>
 </ol>
 
-<p>今次驗證嘅日本版 disc 係 <code>SLPM-65076</code>、<code>VER = 2.00</code>、NTSC。Compiler／runtime 固定喺 <code>6526f480…</code>；完整 identity 喺 <a href="upstream.lock">upstream.lock</a>。測試由正常開機開始，用真實鍵盤輸入，冇用 save state 跳入戰鬥。</p>
-<h2 id="02-邊啲-findings-用得返">02 · 邊啲 findings 用得返？</h2>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p>The disc tested is the Japanese <code>SLPM-65076</code>, <code>VER = 2.00</code>, NTSC. The compiler and runtime are pinned at <code>6526f480…</code>; the full identity is in <a href="upstream.lock">upstream.lock</a>. Testing started from a normal boot with real keyboard input and did not use save states to skip into battle.</p>
+<h2 id="02-which-findings-carried-over">02 · Which findings carried over?</h2>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
-<th>GVZG 帶出嘅做法</th>
-<th>FVZDX 今次點驗證</th>
-<th>結果</th>
+<th>Practice from GVZG</th>
+<th>How FVZDX verified it this time</th>
+<th>Result</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>固定工具版本，分開原始輸入、generated source 同 runtime</td>
-<td>獨立核對新 disc／ELF，保留每份 source 同 build 嘅 hashes</td>
-<td><strong>用得返。</strong> 可以知道實測緊邊份產物</td>
+<td>Pin tool versions; keep original input, generated source and runtime separate</td>
+<td>Independently checked the new disc and ELF; kept hashes for every source and build</td>
+<td><strong>Carried over.</strong> It is clear which artifact was actually tested</td>
 </tr>
 <tr>
-<td>唔可以將 compile 成功當成遊戲成功</td>
-<td>由 normal boot 操作到選機、戰鬥、Continue 同返回主選單</td>
-<td><strong>用得返。</strong> 必須有 runtime 證據</td>
+<td>A successful compile is not a working game</td>
+<td>Played from normal boot through machine selection, battle, Continue and back to the main menu</td>
+<td><strong>Carried over.</strong> Runtime evidence is required</td>
 </tr>
 <tr>
-<td>分開畫面 FPS、遊戲速度同音訊運行</td>
-<td>用時間戳同 frame counter 計速；browser 靜音但 AudioContext 同 ring consumption 繼續</td>
-<td><strong>用得返。</strong> 呢次戰鬥約 60 Hz</td>
+<td>Separate display FPS, game speed and audio running</td>
+<td>Timestamps and a frame counter measured speed; the browser was muted while the AudioContext and ring consumption kept running</td>
+<td><strong>Carried over.</strong> One battle interval measured about 60 Hz</td>
 </tr>
 <tr>
-<td>保留 matched C++／WASM，同時做乾淨重建</td>
-<td>新 build directory、重新編譯 retained C++，唔用舊 game objects</td>
-<td><strong>用得返。</strong> 四份 web 輸出逐 byte 相同</td>
+<td>Keep the matched C++/WASM and also rebuild cleanly</td>
+<td>New build directory, retained C++ recompiled, no old game objects used</td>
+<td><strong>Carried over.</strong> All four web outputs were byte-identical</td>
 </tr>
 <tr>
-<td>遊戲專用修正要有該遊戲嘅證據</td>
-<td>冇移植 GVZG 嘅地址修正、overlay 或 adaptive hooks</td>
-<td><strong>今次未需要。</strong> 測過路線使用 pristine compiler／runtime</td>
+<td>Game-specific patches need evidence from that game</td>
+<td>No GVZG address fixes, overlays or adaptive hooks were ported</td>
+<td><strong>Not needed so far.</strong> The tested route uses the pristine compiler and runtime</td>
 </tr>
 <tr>
-<td>觀察 VU 使用情況，唔好估</td>
-<td>呢段 boot／menu／Side 7 路線冇錄到 VU1 程式；EE translation 有 VU0 macro operations</td>
-<td><strong>要逐遊戲量。</strong> 唔代表所有模式都冇 VU1</td>
+<td>Observe VU usage instead of guessing</td>
+<td>No VU1 program was recorded on the boot, menu and Side 7 route; the EE translation contains VU0 macro operations</td>
+<td><strong>Measure per game.</strong> This does not mean no mode uses VU1</td>
 </tr>
 </tbody></table></div>
-<aside class="callout important"><p class="callout-label">研究重點</p><p><strong>最有用嘅重用係流程同驗證方法。</strong> FVZDX 呢次可以用未修改嘅 compiler／runtime 跑通指定路線；呢個結果唔需要套用 GVZG 嘅修正先成立。</p>
-</aside><p>補充嘅 <a href="docs/evidence/compiler-provenance.json">compiler 來源核對</a> 由同一個固定上游版本重新編譯：7 個 object files 同 <code>eerecomp</code>／<code>vurecomp</code> 兩個 binaries，都同保留嗰份逐 byte 一致。呢個支持「使用 pristine compiler」嘅講法，而唔只係睇有冇額外 patch。</p>
-<h3 id="原本嘅缺陷有冇再出現">原本嘅缺陷有冇再出現？</h3>
-<p>GVZG 要另外抽出 <strong>325 個 MWo3 modules</strong>，亦要修正 zero-filled memory 被當成固定 code、external tail call 被拒絕等問題，先跑通當時嘅路線。詳情見 <a href="https://sennett-lau.github.io/re-gvs-gvzg/01-disc-to-code.html">GVZG 嘅 code discovery 研究</a>。</p>
-<p>FVZDX 今次掃描兩個 AFS archives 嘅 entry headers，冇見到 MWo3／SNR2；已測過嘅流程亦冇出現 missing-code halt，所以冇搬過嚟用嗰套 module extractor 或 compiler patches。<strong>呢個係「今次路線未需要」，唔係證明原本缺陷已經消失。</strong> Header 掃描亦唔會排除更深層、壓縮咗嘅 code。</p>
-<h2 id="03-今次多咗咩新-finding">03 · 今次多咗咩新 finding？</h2>
-<h3 id="macos-傳檔可以令-cmake-編譯錯檔">macOS 傳檔可以令 CMake 編譯錯檔</h3>
-<p>第一次將 generated C++ 傳到 PC 時，archive 帶咗 AppleDouble <code>._unit_*.cpp</code> 同 <code>._table.cpp</code>。上游 CMake 用 <code>*.cpp</code> 搜尋源碼，連呢啲 metadata 都揀埋；Clang 因而報 binary／null-byte 錯誤。</p>
-<p><strong>修正放喺輸入驗證層。</strong> 傳檔排除 sidecars，build 前再比對 generated manifest 嘅檔名、長度同 SHA-256。多咗、少咗或者內容改咗任何一份檔，都會停止。Vendor 保持原樣。</p>
-<p>呢個係<strong>具體嘅上游改善候選</strong>：由 recompiler 輸出 manifest，再由 build 驗證；最少亦應拒絕 AppleDouble 檔，顯示可操作嘅錯誤。已經有唔需要遊戲資料嘅 regression test。詳細 trigger 同提案喺 <a href="upstream-ideas.html">ps2-web-re-pr.md</a>，尚未提交 PR。</p>
-<h3 id="測試工具亦可以產生假象">測試工具亦可以產生假象</h3>
+<aside class="callout important"><p class="callout-label">Key finding</p><p><strong>The most useful reuse is the process and the verification method.</strong> For the specified route, FVZDX ran with an unmodified compiler and runtime. That result does not depend on applying GVZG&#39;s fixes.</p>
+</aside><p>The additional <a href="docs/evidence/compiler-provenance.json">compiler provenance check</a> rebuilt from the same pinned upstream revision: 7 object files and the <code>eerecomp</code> and <code>vurecomp</code> binaries were byte-identical to the retained ones. This supports the &quot;pristine compiler&quot; claim beyond merely checking for extra patches.</p>
+<h3 id="did-the-original-defects-reappear">Did the original defects reappear?</h3>
+<p>GVZG had to extract <strong>325 MWo3 modules</strong> separately, and had to fix problems such as zero-filled memory being treated as fixed code and external tail calls being rejected, before its route ran. See <a href="https://sennett-lau.github.io/re-gvs-gvzg/01-disc-to-code.html">GVZG&#39;s code discovery research</a>.</p>
+<p>For FVZDX, a bounded scan of the first 16 bytes of each entry in the two AFS archives (1,629 and 2,319 entries) found no MWo3 or SNR2 header, and the tested flows showed no missing-code halt, so neither the module extractor nor the compiler patches were brought over. <strong>This means &quot;not needed on this route&quot;, not that the original defects have gone away.</strong> A header scan also cannot rule out deeper, compressed code.</p>
+<h2 id="03-what-new-findings-came-out-of-this-run">03 · What new findings came out of this run?</h2>
+<h3 id="copying-files-from-macos-can-make-cmake-compile-the-wrong-files">Copying files from macOS can make CMake compile the wrong files</h3>
+<p>The first time the generated C++ was copied to the PC, the archive carried AppleDouble <code>._unit_*.cpp</code> and <code>._table.cpp</code> files. The upstream CMake collects sources with <code>*.cpp</code>, so it picked up this metadata as well, and Clang reported binary/null-byte errors.</p>
+<p><strong>The fix sits in the input-validation layer.</strong> The copy excludes sidecar files, and before building, the file names, lengths and SHA-256 values are compared against the generated manifest. Any extra, missing or modified file stops the build. The vendored code is untouched.</p>
+<p>This is a <strong>concrete upstream improvement candidate</strong>: have the recompiler emit a manifest and have the build verify it, or at least reject AppleDouble files with an actionable error. A regression test that needs no game data already exists in this repository. The trigger and the proposal are in <a href="upstream-ideas.html">ps2-web-re-pr.md</a>; no pull request has been submitted.</p>
+<h3 id="test-tooling-can-also-produce-false-results">Test tooling can also produce false results</h3>
 <ul>
-<li><strong>固定等待時間會錯過 menu fade。</strong> 一張叫 <code>battle-start</code> 嘅截圖，實際仍然係輸入 pilot 名稱。之後按真實畫面繼續操作，唔再用檔名判斷通過。</li>
-<li><strong>Optional favicon 404 唔係遊戲資料遺失。</strong> Server 改為缺少 icon 時回傳 204，再用 fresh browser run 驗證。</li>
-<li><strong>WSL server 要有清楚生命週期。</strong> 一次 SSH 呼叫結束後，背景 server 跟住退出。保留 serving session 後恢復；失敗紀錄仍然保留，唔會用中斷期間嘅數據計效能。</li>
-<li><strong>通用 RE 工具未必支援 PS2 MIPS。</strong> 今次可用 provider 未能提供呢個架構嘅分析；dedicated R5900 recompiler 同檔案解析仍然完成移植。冇將工具拒絕支援寫成 decompile 成功。</li>
+<li><strong>Fixed waits can miss a menu fade.</strong> A screenshot named <code>battle-start</code> actually still showed pilot-name entry. Later runs continued from what was really on screen instead of judging pass or fail by file name.</li>
+<li><strong>A missing optional favicon is not missing game data.</strong> The server now returns 204 when the icon is absent, and a fresh browser run confirmed it.</li>
+<li><strong>A WSL server needs a clear lifecycle.</strong> The background server exited when a single SSH call ended. The serving session was kept alive to recover; the failed record is retained, and data from the interrupted period is not used for performance numbers.</li>
+<li><strong>General reverse-engineering tools may not support PS2 MIPS.</strong> The providers available this time could not analyze this architecture; the dedicated R5900 recompiler and the file parsing still completed the port. A tool refusing the binary is not recorded as a successful decompile.</li>
 </ul>
-<p>呢啲發現改善咗重做流程嘅可靠性。測過嘅遊戲路線暫時冇重現新嘅 EE compiler／runtime correctness defect。</p>
-<h2 id="04-真正驗證到邊一步">04 · 真正驗證到邊一步？</h2>
-<p><strong>✅ 已驗證 · 指定 PC Chrome／WebGPU 路線</strong></p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p>These findings made the rebuild process more reliable. The tested game route has not so far reproduced any new EE compiler or runtime correctness defect.</p>
+<h2 id="04-which-steps-were-actually-verified">04 · Which steps were actually verified?</h2>
+<p><strong>✅ Verified · the specified PC Chrome/WebGPU route</strong></p>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
-<th>範圍</th>
-<th>實測結果</th>
-<th>證據</th>
+<th>Scope</th>
+<th>Measured result</th>
+<th>Evidence</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>開機同操作</td>
-<td>原裝 menu、陣營／pilot／機體／武器選擇；移動、射擊、boost、pause／resume</td>
+<td>Boot and input</td>
+<td>Original menu; faction, pilot, machine and weapon selection; move, shoot, boost, pause/resume</td>
 <td><a href="docs/evidence/acceptance-0.1.0.json">Baseline acceptance</a></td>
 </tr>
 <tr>
-<td>輸咗之後嘅流程</td>
-<td>Continue 倒數、Game Over、陣營結果、返回主選單</td>
+<td>Flow after losing</td>
+<td>Continue countdown, Game Over, faction result, return to the main menu</td>
 <td><a href="docs/evidence/acceptance-0.1.0.json">Baseline acceptance</a></td>
 </tr>
 <tr>
-<td>原裝速度</td>
-<td>3,305 frames ÷ 55.07208 秒 = <strong>60.01226 Hz</strong>；音訊處理持續運行</td>
+<td>Original speed</td>
+<td>One active-battle interval: 3,305 frames ÷ 55.07208 s = <strong>60.01226 Hz</strong>; audio processing kept running</td>
 <td><a href="docs/evidence/acceptance-0.1.0.json">Timing record</a></td>
 </tr>
 <tr>
-<td>勝利同下一關</td>
-<td>Side 7 success → stage 2 briefing → active space battle；difficulty 1、infinite timer</td>
+<td>Victory and next stage</td>
+<td>Side 7 success → stage 2 briefing → active space battle; difficulty 1, infinite timer</td>
 <td><a href="docs/evidence/baseline-followup.json">Follow-up</a></td>
 </tr>
 <tr>
-<td>儲存同 reload</td>
-<td>原裝遊戲儲存 difficulty 2；同 browser profile／origin reload 後恢復，card bytes 相同</td>
+<td>Save and reload</td>
+<td>The original game saved difficulty 2; after a reload in the same browser profile and origin it was restored, with identical card bytes</td>
 <td><a href="docs/evidence/baseline-followup.json">Follow-up</a></td>
 </tr>
 <tr>
-<td>重建</td>
-<td>新 WSL workspace 重新編譯 retained C++；HTML、JS、WASM、data 全部相同</td>
+<td>Rebuild</td>
+<td>Retained C++ recompiled in a new WSL workspace; HTML, JS, WASM and data were all identical</td>
 <td><a href="docs/evidence/retained-source-rebuild.json">Rebuild</a></td>
 </tr>
 </tbody></table></div>
-<p><img src="docs/evidence/followup/arcade-success.png" alt="原裝遊戲顯示 Side 7 operation success" loading="lazy"></p>
-<p><em>勝利流程係後加嘅驗證，使用同一份 accepted build；唔係新增遊戲功能或者另一個 release。</em></p>
-<aside class="callout note"><p class="callout-label">證據範圍</p><p><strong>證據範圍一次講清楚。</strong> 呢份 baseline 只涵蓋列出嘅 PC 路線；未驗證全 campaign、其他模式、mobile、其他 GPU／browser、gamepad、跨 profile 存檔或原裝硬件逐 pixel 比對。測試一直靜音，驗證咗音訊運行，未評估聽感。約 60 Hz 係遊戲 frame counter 量測，唔係 physical display scan-out 證明。</p>
-</aside><h2 id="05-保留咗咩其他人點重做">05 · 保留咗咩，其他人點重做？</h2>
-<p>Repository 跟返 GVZG 將 code、matched build 同 evidence 分開嘅做法：</p>
-<p class="table-hint">窄螢幕可以橫向滑動表格。</p><div class="table-wrap" tabindex="0" role="region" aria-label="可橫向捲動嘅資料表"><table>
+<p><img src="docs/evidence/followup/arcade-success.png" alt="The original game showing Side 7 operation success" loading="lazy"></p>
+<p><em>The victory flow was verification added later, using the same accepted build; it is not a new game feature or a separate release.</em></p>
+<aside class="callout note"><p class="callout-label">Evidence scope</p><p><strong>The scope of the evidence, stated once.</strong> This baseline covers only the listed PC route. It has not verified the full campaign, other modes, mobile, other GPUs or browsers, a gamepad, saves across profiles, or a pixel-by-pixel comparison with original hardware. Testing was always muted: audio running was verified, but how it sounds was not assessed. &quot;About 60 Hz&quot; is a game frame-counter measurement over one interval, not proof of physical display scan-out.</p>
+</aside><h2 id="05-what-is-kept-and-how-can-others-redo-it">05 · What is kept, and how can others redo it?</h2>
+<p>The repository follows GVZG in keeping code, the matched build and evidence separate:</p>
+<p class="table-hint">Scroll tables sideways on narrow screens.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable data table"><table>
 <thead>
 <tr>
-<th>路徑</th>
-<th>用途</th>
+<th>Path</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody><tr>
 <td><code>generated/federation-vs-zeon-dx/</code></td>
-<td>已驗證產物對應嘅 168 份 C++ 同一份 header，約 45.9 MB</td>
+<td>The C++ behind the verified artifacts: 168 files plus one header, about 45.9 MB</td>
 </tr>
 <tr>
 <td><code>apps/game/prebuilt/</code></td>
-<td>Matched HTML／JS／WASM／data 同 manifest；WASM 約 17.4 MB</td>
+<td>The matched HTML/JS/WASM/data and manifest; the WASM is about 17.4 MB</td>
 </tr>
 <tr>
 <td><code>scripts/game/</code></td>
-<td>Extract、regenerate、build、verify、serve 同 package</td>
+<td>Extract, regenerate, build, verify, serve and package</td>
 </tr>
 <tr>
 <td><code>docs/evidence/</code></td>
-<td>精選測量、screenshots、input／build fingerprints</td>
+<td>Selected measurements, screenshots, input and build fingerprints</td>
 </tr>
 <tr>
 <td><code>research.md</code></td>
-<td>英文技術紀錄、實際 commands、失敗同修正過程</td>
+<td>The technical record: actual commands, failures and how they were fixed</td>
 </tr>
 <tr>
 <td><code>ps2-web-re-pr.md</code></td>
-<td>尚未提交嘅上游改善候選</td>
+<td>Upstream improvement candidates, not yet submitted</td>
 </tr>
 <tr>
 <td><code>.local/</code></td>
-<td>忽略嘅 disc、private saves、完整 logs 同實驗 build</td>
+<td>Ignored: disc, private saves, full logs and experimental builds</td>
 </tr>
 </tbody></table></div>
-<p>C++ 同 matched web files 已經喺 Git。ISO／ROM、原裝 archive 同私人 card 唔會加入 repo。現有 game runtime 仍然需要另外提供受支援 disc 作資產來源；<strong>呢個 research reader 只載入文件同證據圖片</strong>。</p>
-<p>想重做可以睇 <a href="setup.html#local-workflow">README 嘅 build／verify 指令</a>。完整英文實驗次序見 <a href="research.html">research.md</a>；本頁係按研究問題整理嘅廣東話閱讀版，HTML 由 <a href="index.html">呢份 Markdown</a> 生成。</p>
-<h2 id="06-further-workonline-mode-嘅後續實測">06 · Further work：Online Mode 嘅後續實測</h2>
-<p><strong>2026-11-09 更新：私有跨裝置 proof of concept 已通過。</strong> PC 跑三個獨立 browser client，MacBook Pro 跑一個；四個 client 透過私有 server 完成原裝 lobby 配對、選機、三場連續 2v2 對戰、上報結果，再返回 lobby。呢個係 baseline 之後另外要求嘅研究，使用 <code>--online</code> build；原本 <code>0.1.0</code> package 同 tracked C++ 保持不變。</p>
-<h3 id="同-gvzg-有咩相同同唔同">同 GVZG 有咩相同同唔同？</h3>
-<p><a href="https://sennett-lau.github.io/re-gvs-gvzg/08-independent-clients.html">GVZG 嘅原裝連線研究</a> 提供咗獨立 client、原裝 lobby 同相容 server 嘅驗證方向。FVZDX 呢隻 disc 用較舊嘅 KDDI stack（<code>AVETCP.IRX</code>、<code>AVEPPP.IRX</code>、modem drivers），冇 DNAS 或獨立 network-settings program，所以冇直接搬 GVZG 嘅 network module adapter。</p>
-<p>今次採用支援呢隻遊戲 PS2 protocol 嘅 <strong>gdxsv</strong>，再參考佢舊 PCSX2 patch 嘅 call sites。Build 先對實際 ELF 核對原裝指令同 symbols，再喺 generated C++ 嘅副本替換 20 個 call sites 同一個 dial entry。每個 game TCP stream 經一條 WebSocket、token-protected gateway 接去 gdxsv lobby 或 battle relay；原裝 lobby／battle protocol 繼續由遊戲處理。Backend 綁 loopback，跨裝置 gateway 只容許指定 tailnet peers。</p>
-<p>詳細 hook table、固定版本同重做指令見 <a href="online-mode.html">Online Mode 技術紀錄</a> 同 <a href="online-backend.html">server 操作說明</a>。</p>
-<h3 id="測試途中發現咗咩">測試途中發現咗咩？</h3>
+<p>The C++ and the matched web files are already in Git. The ISO/ROM, the original archives and private memory cards are not added to the repository. The game runtime still needs a supported disc supplied separately for its assets; <strong>this research reader only loads documents and evidence images</strong>.</p>
+<p>To redo the work, see the <a href="setup.html#local-workflow">build and verify commands in the README</a>. The full experiment order is in <a href="research.html">research.md</a>; this page is the reader&#39;s version, organized by research question, and its HTML is generated from <a href="index.html">this Markdown file</a>.</p>
+<h2 id="06-further-work-online-mode-follow-up-tests">06 · Further work: Online Mode follow-up tests</h2>
+<p><strong>2026-11-09 update: a private multi-device proof of concept passed.</strong> Three independent browser clients ran on a PC and one on a MacBook Pro. The four clients, through a private server, completed original lobby matching and machine selection, played three consecutive 2v2 matches, reported the results and returned to the lobby. This research was requested after the baseline and uses the <code>--online</code> build; the original <code>0.1.0</code> package and the tracked C++ are unchanged.</p>
+<h3 id="how-does-this-compare-with-gvzg">How does this compare with GVZG?</h3>
+<p><a href="https://sennett-lau.github.io/re-gvs-gvzg/08-independent-clients.html">GVZG&#39;s original-connection research</a> provided a verification direction: independent clients, the original lobby and a compatible server. This FVZDX disc uses an older KDDI stack (<code>AVETCP.IRX</code>, <code>AVEPPP.IRX</code>, modem drivers) with no DNAS and no separate network-settings program, so GVZG&#39;s network-module adapter was not carried over directly.</p>
+<p>Instead, this work uses <strong>gdxsv</strong>, which supports this game&#39;s PS2 protocol, and follows the call sites in its retired PCSX2 patch. The build first checks the original instructions and symbols against the actual ELF, then, in a copy of the generated C++, replaces 20 call sites and one dial entry. Each game TCP stream goes over one WebSocket through a token-protected gateway to the gdxsv lobby or battle relay; the game itself still handles the original lobby and battle protocol. The backend binds to loopback, and the cross-device gateway admits only listed tailnet peers.</p>
+<p>The hook table, pinned versions and rebuild commands are in the <a href="online-mode.html">Online Mode technical record</a> and the <a href="online-backend.html">server instructions</a>.</p>
+<h3 id="what-turned-up-during-testing">What turned up during testing?</h3>
 <ul>
-<li><strong>原裝對戰固定要四人。</strong> 最初 PC 加 MacBook Pro 兩個 client 可以登入同入 MCS room，但停喺 pre-battle ping。Guest memory 同 runtime write watch 確認 <code>internet_to_modem</code> 寫死 participant mask <code>0x0F</code> 同人數 <code>4</code>，client 等緊其餘兩個位置。之後改用四個 client，冇修改遊戲人數邏輯。</li>
-<li><strong>讀 disc 太慢會觸發 relay timeout。</strong> 兩個 MacBook Pro client 同時經約 0.66 MB/s tunnel 讀取 stage，超過 server 預設 30 秒 silent-peer limit。Backend patch 加咗可設定 timeout，預設仍然係 30 秒；成功嗰次用 120 秒，同時只喺 MacBook Pro 跑一個 client。遊戲本身嘅 loading wait 仍然有限，timeout 並唔能夠取代夠快嘅 disc source。</li>
-<li><strong>必須驗證跨機遊戲狀態。</strong> 成功嗰次四個畫面 timer 一致；MacBook Pro client 嘅擊殺喺 PC kill feed 出現，server 收到三場結果，四個 client 都返回 lobby。MCS room 維持 709 秒；所有 collector 都冇 page error，battle stream 開啟期間平均約 60 fps。Browser 輸出全程靜音，AudioContext 同 audio ring consumption 持續運行。</li>
+<li><strong>The original battle needs exactly four players.</strong> At first, two clients (PC and MacBook Pro) could log in and enter the MCS room but stalled at the pre-battle ping. Guest memory and a runtime write watch confirmed that <code>internet_to_modem</code> hard-codes a participant mask of <code>0x0F</code> and a count of <code>4</code>, so the clients were waiting for the other two positions. The tests then used four clients, without changing the game&#39;s player-count logic.</li>
+<li><strong>Slow disc reads can trigger a relay timeout.</strong> Two MacBook Pro clients loading the stage at the same time over a tunnel of about 0.66 MB/s exceeded the server&#39;s default 30-second silent-peer limit. The backend patch added a configurable timeout, still defaulting to 30 seconds; the successful run used 120 seconds, with only one client on the MacBook Pro. The game&#39;s own loading wait is still finite, so a longer timeout does not replace a fast enough disc source.</li>
+<li><strong>Game state must be verified across machines.</strong> In the successful run the timers on all four screens agreed; a kill by the MacBook Pro client appeared in the PC kill feed, the server received results for three matches, and all four clients returned to the lobby. The MCS room lasted 709 seconds; no collector reported a page error, and the average was about 60 fps while the battle stream was open. Browser output was muted throughout, with the AudioContext and audio-ring consumption running.</li>
 </ul>
-<p><img src="docs/evidence/online/four-client-kill.png" alt="四個獨立 client 嘅對戰畫面，MacBook Pro 擊殺亦出現喺 PC kill feed" loading="lazy"></p>
-<p><em>三個 PC client 加一個 MacBook Pro client。完整 build fingerprints、結果同截圖 hashes 見 <a href="docs/evidence/online-mode-2026-11-09.json">2026-11-09 實測記錄</a>。</em></p>
-<p><img src="docs/evidence/online/four-client-lobby-return.png" alt="三場對戰之後四個 client 返回原裝 lobby map" loading="lazy"></p>
-<h3 id="仲有邊啲未驗證">仲有邊啲未驗證？</h3>
-<p>呢次只證明指定 PC 同 MacBook Pro、Chrome 156、私有 server 嘅原裝四人流程可行。未驗證公開 hosting、其他裝置／browser、長時間穩定性、對戰中斷線或 backend restart 後恢復，亦未評估 latency 同操作手感。Lobby 閒置斷線後可以重新登入，唔代表對戰中斷亦已經處理好。</p>
-<p>下一步應分開驗證對戰斷線／server restart、較長 session 同 disc loading 條件，再評估跨裝置延遲。Online Mode 仍然係獨立實驗。今次測試用嘅 client build 已經放喺 <code>v0.2.0</code> pre-release，但冇公開遊戲服務或者 backend；用嘅人要自己起 gdxsv 同 gateway。Repository 同呢份研究 wiki 會分開發布，唔會透過 Pages 運行遊戲或 backend。</p>
-<h3 id="研究網站同-ci-嘅狀態2026-11-10">研究網站同 CI 嘅狀態（2026-11-10）</h3>
-<p>呢個帳戶嘅 GitHub-hosted Actions job 因為 billing lock 未能執行，原本手動觸發嘅 Pages workflow 保留，等限制解除再用。</p>
-<p>自架 runner 嘅方向已經放棄。呢個 repo 係公開嘅，任何人開 PR 都可以改 workflow，令佢喺自架 runner 上面執行自己嘅程式碼；為咗避免呢個風險，唔再註冊任何 runner。</p>
-<p>現時研究網站喺本機 build 同檢查連結，再推送到 <code>gh-pages</code> branch，由 GitHub Pages 內置嘅部署發布；呢個部署冇被 billing lock 阻擋。<code>v0.1.0</code> release 嘅 browser package 同 wiki archive 亦係本機 build 同核對 SHA-256 之後上載。詳細步驟見 <a href="research.html#2026-11-10-manual-wiki-and-release-publishing">英文研究紀錄</a>。呢項發布工作冇新增遊戲測試。</p>
-</article><footer class="footer"><span>一份文章來源 · 文件與證據 reader</span><span>Source set <code>e5814f486537</code></span></footer></main></div></body></html>
+<p><img src="docs/evidence/online/four-client-kill.png" alt="Battle view of four independent clients, with the MacBook Pro kill also appearing in the PC kill feed" loading="lazy"></p>
+<p><em>Three PC clients plus one MacBook Pro client. The full build fingerprints, results and screenshot hashes are in the <a href="docs/evidence/online-mode-2026-11-09.json">2026-11-09 test record</a>.</em></p>
+<p><img src="docs/evidence/online/four-client-lobby-return.png" alt="The four clients back at the original lobby map after three matches" loading="lazy"></p>
+<h3 id="what-is-still-unverified">What is still unverified?</h3>
+<p>This run shows only that the original four-player flow works on the specified PC and MacBook Pro, in Chrome 156, against a private server. It did not verify public hosting, other devices or browsers, long-session stability, disconnection during a battle, or recovery after a backend restart, and it did not assess latency or how the controls feel. That a lobby client can log in again after an idle disconnect does not mean a mid-battle disconnect is handled.</p>
+<p>The next steps should separately cover mid-battle disconnects and server restarts, longer sessions and disc-loading conditions, and then cross-device latency. Online Mode remains a separate experiment. The client build used for the test is attached to the <a href="https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0"><code>v0.2.0</code> pre-release</a>, and the <code>v0.1.0</code> release carries the baseline browser package. No public game service or backend is hosted: anyone who tries it must run their own gdxsv and gateway, following <a href="online-server-setup.html">Run your own Online Mode server</a>. The repository and this research wiki are published separately, and the wiki does not run the game or a backend.</p>
+<h3 id="research-site-and-ci-status-2026-11-10">Research site and CI status (2026-11-10)</h3>
+<p>GitHub-hosted Actions jobs for this account cannot run because of a billing lock. The manually triggered Pages workflow is kept for use once the restriction is lifted.</p>
+<p>The self-hosted runner idea was dropped. The repository is public, so anyone opening a pull request could change a workflow to run their own code on a self-hosted runner; to avoid that risk, no runner was ever registered.</p>
+<p>For now the research site is built and link-checked locally and then pushed to the <code>gh-pages</code> branch, which GitHub Pages&#39; built-in deployment publishes; that deployment is not blocked by the billing lock. The browser package and the wiki archive for the <code>v0.1.0</code> release were likewise built locally, with SHA-256 values checked before upload. The steps are in the <a href="research.html#2026-11-10-manual-wiki-and-release-publishing">technical record</a>. This publishing work added no new game tests.</p>
+</article><footer class="footer"><span>One article source · documents and evidence reader</span><span>Source set <code>cc5f9109d9b3</code></span></footer></main></div></body></html>

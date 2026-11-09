@@ -1,7 +1,10 @@
 # Browser host
 
 `shell.html` starts from the pinned upstream browser host, with this project's
-title. It retains the original runtime timing and controller mappings.
+title. It retains the original runtime timing and controller mappings. Since
+2026-11-10 it shows a loading panel: bytes received for each runtime file, the
+transfer rate, the current start-up stage and any start-up error. The panel is
+not in the accepted `prebuilt/` HTML, which predates it; only new builds include it.
 
 `prebuilt/` contains the exact four accepted `0.1.0` HTML/JS/WASM/data files and
 their original build manifest. The historical manifest still calls its build a

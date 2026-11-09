@@ -10,7 +10,8 @@ unchanged. Online Mode needs a private backend and a separately built
 clients in browsers on two machines (a Windows PC and a MacBook Pro) connected
 through a private compatible server, registered accounts, logged in, used the
 original lobby and were matched into one original 2v2 battle. The result and its
-limits are in [Test record](#test-record). The source and research wiki are published separately; no public game or backend service is hosted.
+limits are in [Test record](#test-record). The source and research wiki are published separately. The tested client build is attached to the
+[`v0.2.0` pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0); no public game or backend service is hosted.
 
 ## Approach
 

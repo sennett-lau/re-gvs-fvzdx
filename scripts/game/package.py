@@ -12,9 +12,17 @@ def main():
     parser.add_argument('--build', type=Path, default=ROOT / 'apps/game/prebuilt')
     parser.add_argument('--output', type=Path, default=ROOT / '.local/package-0.1.0')
     parser.add_argument('--release', metavar='TAG', help='GitHub release tag this export is attached to')
+    parser.add_argument('--version', default='0.1.0', help='Package version recorded in the manifest')
+    parser.add_argument('--online', type=Path, metavar='DIR',
+                        help='Online build sidecar directory (online-manifest.json) for an --online web build')
     args = parser.parse_args()
     build = args.build.resolve()
     manifest = json.loads((build / 'build-manifest.json').read_text())
+    online = manifest.get('profile', '').startswith('online')
+    if online != (args.online is not None):
+        parser.error('--online is required for, and only for, an Online build manifest')
+    if online and digest(args.online / 'online-manifest.json') != manifest['online_manifest_sha256']:
+        parser.error('Online hook manifest does not match the build manifest')
     required = ['ps2web.html', 'ps2web.js', 'ps2web.wasm', 'ps2web.data']
     for name in required:
         expected = manifest['artifacts'][name]
@@ -33,19 +41,30 @@ def main():
     shutil.copy2(ROOT / 'ps2-web-re-pr.md', output / 'ps2-web-re-pr.md')
     if (ROOT / 'docs/evidence').is_dir():
         shutil.copytree(ROOT / 'docs/evidence', output / 'docs/evidence')
+    if online:
+        shutil.copy2(args.online / 'online-manifest.json', web / 'online-manifest.json')
+        shutil.copy2(ROOT / 'docs/online-mode.md', output / 'docs/online-mode.md')
+        shutil.copy2(ROOT / 'apps/server/README.md', output / 'docs/server.md')
+    online_text = (
+        'Online Mode: this build needs a private gdxsv backend and gateway (see docs/online-mode.md and\n'
+        'docs/server.md; build them from apps/server in the source archive). Start the page with\n'
+        'python3 serve.py --build web --disc /private/path/disc.iso --online-config /private/client.json\n'
+        'where client.json is {"gatewayURL": "ws://HOST:PORT/", "token": "..."}. A battle needs four players.\n'
+    ) if online else ''
     (output / 'README.txt').write_text(
-        'Renpou vs. Zeon DX 0.1.0 local package\n\n'
+        'Renpou vs. Zeon DX ' + args.version + (' Online' if online else '') + ' local package\n\n'
         'Supply the verified Japanese v2.00 SLPM_650.76 disc separately.\n'
         'Run: python3 serve.py --build web --disc /private/path/disc.iso\n'
         'Open http://127.0.0.1:8642/ in a browser supporting WebGPU and JSPI.\n'
         'Keyboard: Enter=Start, X=Circle, Z=Cross, A=Square, S=Triangle, arrows=D-pad.\n'
         'See research.md for the actual acceptance evidence and limitations.\n'
+        + online_text
         + ('This package is attached to the GitHub release ' + args.release + '. It contains no disc.\n'
            if args.release else
            'This directory contains local game-derived output. It is not a published release.\n')
     )
     write_json(output / 'package-manifest.json', {
-        'version': '0.1.0', 'publication': ('GitHub release ' + args.release) if args.release else 'local only', 'files': fingerprints(output),
+        'version': args.version, 'publication': ('GitHub release ' + args.release) if args.release else 'local only', 'files': fingerprints(output),
     })
     print('Verified local package: ' + str(output))
 

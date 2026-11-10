@@ -691,4 +691,3 @@ and `v0.2.1`. Each `SHA256SUMS` was regenerated from the published one, minus
 the wiki line, so the package hashes are unchanged. Each set of notes now says
 the archive was removed. Every remaining asset was downloaded again and passed
 `shasum -a 256 -c`. GVZG was asked to make the same change to its releases.
-

@@ -16,6 +16,7 @@ higher refresh rates and multiplayer are outside this stage.
 - [Research wiki](https://sennett-lau.github.io/re-gvs-fvzdx/): the hosted research reader.
 - [v0.1.0 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0): the matched browser package and a wiki archive. No disc is included.
 - [v0.2.0 pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0): the tested Online Mode client package. It needs a private backend.
+- [v0.2.1 pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.1): both packages with the touch Menu sheet and the loading panel. Only the HTML differs from `v0.1.0` and `v0.2.0`.
 - [Research reader source](docs/research-reader.md): the comparison with GVZG, reusable methods, new findings and further work.
 - [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.

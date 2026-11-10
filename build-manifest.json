@@ -2,8 +2,8 @@
   "schema": 1,
   "sources": {
     "docs/research-reader.md": "a6b79d80654161df5a81f865a4aa916712b2009f3665a924fb2cc76d92fa1f21",
-    "research.md": "5b6e05053f24e5118a9853e117201a5c1a54cf52439ae30b093fef862ad563a8",
-    "README.md": "490390130e66c94a3a6942c3bfea7d3b228fe82a06d3e75711b9f8fa247abe0e",
+    "research.md": "417a78f7eb6ab0145ff0f47a1408fc4db8239d73ee48f67688a0ac530ef6c2b4",
+    "README.md": "dbe5d49d7f76e6fb91d03b431a48d90b5529213e8e93a2bc24d909eff73e5843",
     "docs/online-mode.md": "46dec0285350929a149711747eeda0907a660b7c66bf4124132f77e7f1501b73",
     "docs/online-server-setup.md": "2a19a61732a8b10f95276681aa9287a9bc5b42acb2715b2157c999f631fc3736",
     "apps/server/README.md": "2717be526f7f5e0e2bb3c39180c7525200b922153fa4761057a304d1a5c18e15",
@@ -58,5 +58,5 @@
     "package.json": "14cc60d5523d5d6365fc88796356584d129447d96bd83080adc758d61eda7d6d",
     "package-lock.json": "8e87b37dce56227b1e156ba2f03ba9b56e8b0a1a4bcc636772c559bdfa007cbf"
   },
-  "sourceSet": "cc5f9109d9b34ed006ca213561b60906e3b1dcdd242ba9328c57545a0673901a"
+  "sourceSet": "5ce6e9bbbbe9c4ede4b0f92cbdce3b5447c2f13d6afae3ecea55d6a8525ba787"
 }

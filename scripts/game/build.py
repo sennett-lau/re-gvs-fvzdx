@@ -9,6 +9,9 @@ from common import ROOT, digest, fingerprints, run, source_tree, verify_generate
 from extract import extract
 import online
 
+# Version recorded by new builds. The accepted 0.1.0 package keeps its own manifest.
+VERSION = '0.2.1'
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -69,7 +72,7 @@ def main():
     artifacts = {p.name: {'bytes': p.stat().st_size, 'sha256': digest(p)}
                  for p in sorted(build.glob('ps2*')) if p.is_file()}
     write_json(build / 'build-manifest.json', {
-        'version_target': '0.1.0', 'acceptance': 'candidate; not a playable release claim',
+        'version_target': VERSION, 'acceptance': 'candidate; not a playable release claim',
         'target': args.target, 'upstream': lock['upstream']['revision'],
         'elf_sha256': digest(elf), 'generated': fingerprints(generated),
         'source_provenance_sha256': digest(source / 'provenance.json'),

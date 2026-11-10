@@ -12,13 +12,14 @@ def main():
     parser.add_argument('--build', type=Path, default=ROOT / 'apps/game/prebuilt')
     parser.add_argument('--output', type=Path, default=ROOT / '.local/package-0.1.0')
     parser.add_argument('--release', metavar='TAG', help='GitHub release tag this export is attached to')
-    parser.add_argument('--version', default='0.1.0', help='Package version recorded in the manifest')
+    parser.add_argument('--version', help="Package version (default: the build manifest's version_target)")
     parser.add_argument('--online', type=Path, metavar='DIR',
                         help='Online build sidecar directory (online-manifest.json) for an --online web build')
     args = parser.parse_args()
     build = args.build.resolve()
     manifest = json.loads((build / 'build-manifest.json').read_text())
-    online = manifest.get('profile', '').startswith('online')
+    online = (manifest.get('profile') or '').startswith('online')
+    args.version = args.version or manifest['version_target']
     if online != (args.online is not None):
         parser.error('--online is required for, and only for, an Online build manifest')
     if online and digest(args.online / 'online-manifest.json') != manifest['online_manifest_sha256']:

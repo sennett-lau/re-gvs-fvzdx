@@ -8,7 +8,8 @@ not in the accepted `prebuilt/` HTML, which predates it; only new builds include
 On touch screens the settings bar is folded into a **Menu** button at the top
 centre, which opens a bottom sheet. The sheet holds the status, resolution,
 aspect, control visibility, memory card and fullscreen options. The fullscreen
-exit is in this sheet, so no fixed button overlaps the shoulder buttons.
+exit is in this sheet, so no fixed button overlaps the shoulder buttons. Both
+changes ship in `v0.2.1`. That release's builds report `version_target` `0.2.1`.
 
 `prebuilt/` contains the exact four accepted `0.1.0` HTML/JS/WASM/data files and
 their original build manifest. The historical manifest still calls its build a

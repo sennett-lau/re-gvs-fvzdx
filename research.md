@@ -649,3 +649,37 @@ evidence JSON before translating. It narrowed six claims:
 
 Japanese in-game text in `docs/online-mode.md` keeps English glosses. The wiki
 build now accepts the extensionless `docs/license/LICENSE`.
+
+
+## 2026-11-10: v0.2.1 builds with the touch Menu
+
+The user approved the touch Menu sheet and asked for a `v0.2.1` release. New
+builds record `version_target` `0.2.1`, which `package.py` now reads from the
+build manifest. Commit `a6895ff` was cloned from GitHub into a new PC WSL
+directory and built twice, with Emscripten 6.0.11, CMake 3.31.6 and 16 jobs:
+
+```sh
+python3 scripts/game/build.py --disc <private-disc.iso> --target web \
+  --emsdk <emsdk-6.0.11> --work .local/web-v021 --jobs 16
+python3 scripts/game/build.py --disc <private-disc.iso> --online --target web \
+  --emsdk <emsdk-6.0.11> --work .local/online-web-v021 --jobs 16
+```
+
+The default build's JavaScript, WASM and data match the accepted `0.1.0` files
+byte for byte. The Online build's match the tested 2026-11-09 Online client,
+and its hook manifest hash (`31757094…`) is unchanged. Only `ps2web.html`
+differs: both builds produce the same new HTML (`9d9c321e…`), generated from
+the current `apps/game/shell.html`.
+
+A smoke test ran in headless Chrome on this Mac with touch emulation: portrait
+default, landscape default and portrait Online. Each page showed the loading
+panel or reached Start without page errors. Frames advanced after Start (about
+60 per second), and the Menu sheet opened. In fullscreen the separate exit
+button stayed hidden, and no control overlapped the Menu button. The Online
+page exposed its bridge. This is a layout and start-up check only: no new
+gameplay or Online battle was run, and a real phone has not yet confirmed the
+built HTML. The phone host now serves the `v0.2.1` default build.
+
+The wiki archives attached to `v0.1.0` and `v0.2.0` were replaced with the
+English wiki, and their `SHA256SUMS` were updated. Their browser packages are
+unchanged.

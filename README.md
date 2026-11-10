@@ -14,9 +14,9 @@ The baseline uses the original upstream NTSC timing, measured at approximately
 higher refresh rates and multiplayer are outside this stage.
 
 - [Research wiki](https://sennett-lau.github.io/re-gvs-fvzdx/): the hosted research reader.
-- [v0.1.0 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0): the matched browser package and a wiki archive. No disc is included.
-- [v0.2.0 pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0): the tested Online Mode client package. It needs a private backend.
-- [v0.2.1 pre-release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.1): both packages with the touch Menu sheet and the loading panel. Only the HTML differs from `v0.1.0` and `v0.2.0`.
+- [v0.1.0 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.1.0): the matched browser package. No disc is included.
+- [v0.2.0 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.0): the tested Online Mode client package. It needs a private backend.
+- [v0.2.1 release](https://github.com/sennett-lau/re-gvs-fvzdx/releases/tag/v0.2.1): both packages with the touch Menu sheet and the loading panel. Only the HTML differs from `v0.1.0` and `v0.2.0`.
 - [Research reader source](docs/research-reader.md): the comparison with GVZG, reusable methods, new findings and further work.
 - [Research record](research.md): the English technical log, extraction, compilation and test evidence.
 - [Upstream improvement candidates](ps2-web-re-pr.md): findings to review before any future contribution.
@@ -69,7 +69,7 @@ see [docs/online-mode.md](docs/online-mode.md) and
 [apps/server/README.md](apps/server/README.md). To start your own backend step
 by step, see [Run your own Online Mode server](docs/online-server-setup.md).
 
-The `v0.2.0` pre-release attaches that exact tested client build. It differs
+The `v0.2.0` release attaches that exact tested client build. It differs
 from the `0.1.0` package: its WASM and JavaScript contain the network hooks and
 the WebSocket bridge. It also needs a private gdxsv backend and gateway, built
 from `apps/server/`. No public backend is provided.

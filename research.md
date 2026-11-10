@@ -683,3 +683,11 @@ built HTML. The phone host now serves the `v0.2.1` default build.
 The wiki archives attached to `v0.1.0` and `v0.2.0` were replaced with the
 English wiki, and their `SHA256SUMS` were updated. Their browser packages are
 unchanged.
+
+**Releases without the wiki (2026-11-10).** The user made `v0.2.0` and
+`v0.2.1` full releases and decided that releases should not carry the wiki,
+which stays on GitHub Pages. The wiki ZIP was deleted from `v0.1.0`, `v0.2.0`
+and `v0.2.1`. Each `SHA256SUMS` was regenerated from the published one, minus
+the wiki line, so the package hashes are unchanged. Each set of notes now says
+the archive was removed. Every remaining asset was downloaded again and passed
+`shasum -a 256 -c`. GVZG was asked to make the same change to its releases.
